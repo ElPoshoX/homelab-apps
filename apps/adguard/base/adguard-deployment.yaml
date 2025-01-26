@@ -53,11 +53,11 @@ spec:
             cpu: "500m"
         securityContext:
           # readOnlyRootFilesystem: true
-          # runAsNonRoot: true
-          # runAsUser: 1000
-          capabilities:
-            drop:
-            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+          # capabilities:
+          #   drop:
+          #   - ALL
         livenessProbe:
           httpGet:
             path: /
