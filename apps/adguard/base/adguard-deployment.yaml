@@ -54,7 +54,7 @@ spec:
         securityContext:
           # readOnlyRootFilesystem: true
           # runAsNonRoot: true
-          runAsUser: 1000
+          # runAsUser: 1000
           capabilities:
             drop:
             - ALL
