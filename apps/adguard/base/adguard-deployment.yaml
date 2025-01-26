@@ -19,8 +19,8 @@ spec:
       labels:
         app: adguard
     spec:
-      securityContext:
-        fsGroup: 1000
+      # securityContext:
+      #   fsGroup: 1000
       containers:
       - name: adguard-home
         image: adguard/adguardhome:latest
