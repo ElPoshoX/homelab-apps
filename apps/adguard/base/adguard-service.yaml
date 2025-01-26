@@ -10,7 +10,7 @@ metadata:
     prometheus.io/port: "3000"
 spec:
   selector:
-    app: adguard-home
+    app: adguard-deployment
   ports:
   - name: web-admin
     protocol: TCP
@@ -28,5 +28,5 @@ spec:
     protocol: TCP
     port: 53
     targetPort: 53
-  type: ClusterIP
+  type: LoadBalancer
   externalTrafficPolicy: Local
