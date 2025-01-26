@@ -28,5 +28,5 @@ spec:
     protocol: TCP
     port: 53
     targetPort: 53
-  type: LoadBalancer
+  type: ClusterIP
   externalTrafficPolicy: Local
