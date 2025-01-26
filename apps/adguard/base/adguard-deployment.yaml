@@ -26,12 +26,12 @@ spec:
       - name: adguard-home
         image: adguard/adguardhome:latest
         imagePullPolicy: IfNotPresent
-        env:
-        - name: AGH_CONFIG
-          valueFrom:
-            configMapKeyRef:
-              name: adguard-config
-              key: AdGuardHome.yaml
+        # env:
+        # - name: AGH_CONFIG
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: adguard-config
+        #       key: AdGuardHome.yaml
         ports:
         - containerPort: 53
           name: dns-udp
