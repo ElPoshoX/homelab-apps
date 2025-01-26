@@ -51,13 +51,13 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
-        securityContext:
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 1000
-          capabilities:
-            drop:
-            - ALL
+        # securityContext:
+        #   readOnlyRootFilesystem: true
+        #   runAsNonRoot: true
+        #   runAsUser: 1000
+        #   capabilities:
+        #     drop:
+        #     - ALL
         livenessProbe:
           httpGet:
             path: /
