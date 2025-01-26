@@ -26,12 +26,12 @@ spec:
       - name: adguard-home
         image: adguard/adguardhome:latest
         imagePullPolicy: IfNotPresent
-        # env:
-        # - name: AGH_CONFIG
-        #   valueFrom:
-        #     configMapKeyRef:
-        #       name: adguard-config
-        #       key: AdGuardHome.yaml
+        env:
+        - name: AGH_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: adguard-config
+              key: AdGuardHome.yaml
         ports:
         - containerPort: 53
           name: dns-udp
@@ -68,8 +68,8 @@ spec:
         volumeMounts:
         - name: adguard-data
           mountPath: /opt/adguardhome/work
-        - name: adguard-config
-          mountPath: /opt/adguardhome/conf
+        # - name: adguard-config
+        #   mountPath: /opt/adguardhome/conf
         readinessProbe:
           httpGet:
             path: /
@@ -80,6 +80,6 @@ spec:
       - name: adguard-data
         persistentVolumeClaim:
           claimName: adguard-pvc
-      - name: adguard-config
-        configMap:
-          name: adguard-config
+      # - name: adguard-config
+      #   configMap:
+      #     name: adguard-config
