@@ -62,7 +62,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: http
+            port: http-initial
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
@@ -73,7 +73,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: http
+            port: http-initial
           initialDelaySeconds: 15
           periodSeconds: 10
       volumes:

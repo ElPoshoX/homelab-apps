@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adguard-dashboard
+  namespace: adguard
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: Host(`adguard.local`)
+    services:
+    - kind: Service
+      name: adguard-home
