@@ -25,11 +25,6 @@ spec:
         targetRevision: HEAD
         path: '{{.path.path}}'
 
-      # Destination cluster and namespace to deploy the application
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{index .path.segments 1}}'
-
       # Sync policy
       syncPolicy:
         syncOptions:
