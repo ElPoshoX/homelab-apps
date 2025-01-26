@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/instance: adguard
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   strategy:
     type: Recreate
   selector:
@@ -51,10 +52,10 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
-        securityContext:
+        # securityContext:
           # readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 1000
+          # runAsNonRoot: true
+          # runAsUser: 1000
           # capabilities:
           #   drop:
           #   - ALL
