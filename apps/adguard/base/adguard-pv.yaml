@@ -17,5 +17,5 @@ spec:
   storageClassName: longhorn
   volumeMode: Filesystem
   hostPath:
-    path: "/mnt/data/adguard"
+    path: "/media/poshox/ehdd/configs/adguard"
     type: DirectoryOrCreate
