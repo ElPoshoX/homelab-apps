@@ -13,6 +13,7 @@ metadata:
     app.kubernetes.io/part-of: adguard
     homelab.local/OwnedBy: ElPoshoX
 spec:
+  allocateLoadBalancerNodePorts: true
   selector:
     app: adguard
     app.kubernetes.io/managed-by: kustomize
