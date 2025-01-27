@@ -6,7 +6,7 @@ labels:
   pairs:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/part-of: adguard
-    cibaheatlh.com/OwnedBy: ElPoshoX
+    homelab.local/OwnedBy: ElPoshoX
 
 resources:
 - adguard-namespace.yaml
@@ -15,3 +15,4 @@ resources:
 - adguard-pvc.yaml
 - adguard-service.yaml
 - adguard-deployment.yaml
+- adguard-ingress.yaml

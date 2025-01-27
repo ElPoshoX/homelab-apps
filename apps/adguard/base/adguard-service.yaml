@@ -6,14 +6,18 @@ metadata:
   name: adguard-home
   namespace: adguard
   labels:
-    app: adguard-home
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
+    app: adguard
+    app.kubernetes.io/instance: adguard-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
 spec:
-  allocateLoadBalancerNodePorts: true
   selector:
-    app: adguard-deployment
+    app: adguard
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
   ports:
   - name: web-admin
     protocol: TCP
@@ -37,4 +41,5 @@ spec:
   - IPv4
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
-  
+status:
+  loadBalancer: {}
