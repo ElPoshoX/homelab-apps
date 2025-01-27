@@ -46,10 +46,7 @@ spec:
     protocol: TCP
     port: 53
     targetPort: 53
-  ipFamilyPolicy: PreferDualStack
   type: LoadBalancer
-  ipFamilies:
-  - IPv4
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
 status:
