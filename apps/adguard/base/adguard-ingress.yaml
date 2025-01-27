@@ -8,7 +8,9 @@ spec:
   - web
   routes:
   - kind: Rule
-    match: Host(`adguard.elposhox.dev`)
+    match: Host(`adguard.local`)
     services:
     - kind: Service
       name: adguard-home
+      port: 3000
+
