@@ -14,12 +14,6 @@ metadata:
     homelab.local/OwnedBy: ElPoshoX
 spec:
   allocateLoadBalancerNodePorts: true
-  # clusterIP: 10.43.63.67
-  # clusterIPs:
-  # - 10.43.63.67
-  # ipFamilies:
-  # - IPv4
-  # ipFamilyPolicy: SingleStack
   selector:
     app: adguard
     app.kubernetes.io/managed-by: kustomize
@@ -36,21 +30,17 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-  # - name: dns-udp
-  #   nodePort: 32149
-  #   protocol: UDP
-  #   port: 53
-  #   targetPort: 53
-  # - name: dns-tcp
-  #   nodePort: 32149
-  #   protocol: TCP
-  #   port: 53
-  #   targetPort: 53
-  type: LoadBalancer
+  - name: dns-udp
+    nodePort: 32149
+    protocol: UDP
+    port: 53
+    targetPort: 53
+  - name: dns-tcp
+    nodePort: 32149
+    protocol: TCP
+    port: 53
+    targetPort: 53
+  type: ClusterIP
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
-status:
-  loadBalancer:
-    ingress:
-    - ip: 192.168.86.27
-      ipMode: VIP
+---
