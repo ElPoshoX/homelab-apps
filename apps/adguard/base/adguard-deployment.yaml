@@ -52,13 +52,6 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
-        # securityContext:
-          # readOnlyRootFilesystem: true
-          # runAsNonRoot: true
-          # runAsUser: 1000
-          # capabilities:
-          #   drop:
-          #   - ALL
         livenessProbe:
           httpGet:
             path: /
@@ -66,10 +59,10 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
-        - name: adguard-data
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+        - name: adguard-work
           mountPath: /opt/adguardhome/work
-        # - name: adguard-config
-        #   mountPath: /opt/adguardhome/conf
         readinessProbe:
           httpGet:
             path: /
@@ -77,9 +70,9 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 10
       volumes:
-      - name: adguard-data
+      - name: adguard-conf
         persistentVolumeClaim:
-          claimName: adguard-pvc
-      # - name: adguard-config
-      #   configMap:
-      #     name: adguard-config
+          claimName: adguard-conf-pvc
+      - name: adguard-work
+        persistentVolumeClaim:
+          claimName: adguard-work-pvc
