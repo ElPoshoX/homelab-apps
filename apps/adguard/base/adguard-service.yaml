@@ -14,12 +14,12 @@ metadata:
     homelab.local/OwnedBy: ElPoshoX
 spec:
   allocateLoadBalancerNodePorts: true
-  clusterIP: 10.43.63.67
-  clusterIPs:
-  - 10.43.63.67
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
+  # clusterIP: 10.43.63.67
+  # clusterIPs:
+  # - 10.43.63.67
+  # ipFamilies:
+  # - IPv4
+  # ipFamilyPolicy: SingleStack
   selector:
     app: adguard
     app.kubernetes.io/managed-by: kustomize
@@ -27,7 +27,7 @@ spec:
     homelab.local/OwnedBy: ElPoshoX
   ports:
   - name: web-admin
-    nodePort: 32350
+    # nodePort: 32350
     protocol: TCP
     port: 3000
     targetPort: 3000
