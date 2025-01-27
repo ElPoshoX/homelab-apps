@@ -8,7 +8,7 @@ spec:
   - web
   routes:
   - kind: Rule
-    match: Host(`adguard.local`)
+    match: Host(`adguard.homelab.local`)
     services:
     - kind: Service
       name: adguard-home
