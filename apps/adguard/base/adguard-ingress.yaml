@@ -12,3 +12,4 @@ spec:
     services:
     - kind: Service
       name: adguard-home
+      port: 3000
