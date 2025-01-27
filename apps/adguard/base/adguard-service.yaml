@@ -14,6 +14,12 @@ metadata:
     homelab.local/OwnedBy: ElPoshoX
 spec:
   allocateLoadBalancerNodePorts: true
+  clusterIP: 10.43.63.67
+  clusterIPs:
+  - 10.43.63.67
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
   selector:
     app: adguard
     app.kubernetes.io/managed-by: kustomize
