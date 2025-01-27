@@ -13,9 +13,3 @@ spec:
     - kind: Service
       name: adguard-home
       port: 3000
-    - kind: Service
-      name: adguard-home
-      port: 80
-    - kind: Service
-      name: adguard-home
-      port: 53

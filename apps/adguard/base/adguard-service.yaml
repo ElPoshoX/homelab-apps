@@ -48,9 +48,8 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-  type: LoadBalancer
-  internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
+  type: ClusterIp
+  internalTrafficPolicy: Local
 ---
 apiVersion: v1
 kind: Service
