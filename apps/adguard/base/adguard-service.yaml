@@ -40,6 +40,6 @@ spec:
     port: 53
     targetPort: 53
   type: ClusterIP
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
+  
 ---
