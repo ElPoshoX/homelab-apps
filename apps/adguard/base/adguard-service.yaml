@@ -31,21 +31,21 @@ spec:
     protocol: TCP
     port: 3000
     targetPort: 3000
-  - name: web-interface
-    nodePort: 31608
-    protocol: TCP
-    port: 80
-    targetPort: 80
-  - name: dns-udp
-    nodePort: 32149
-    protocol: UDP
-    port: 53
-    targetPort: 53
-  - name: dns-tcp
-    nodePort: 32149
-    protocol: TCP
-    port: 53
-    targetPort: 53
+  # - name: web-interface
+  #   nodePort: 31608
+  #   protocol: TCP
+  #   port: 80
+  #   targetPort: 80
+  # - name: dns-udp
+  #   nodePort: 32149
+  #   protocol: UDP
+  #   port: 53
+  #   targetPort: 53
+  # - name: dns-tcp
+  #   nodePort: 32149
+  #   protocol: TCP
+  #   port: 53
+  #   targetPort: 53
   type: LoadBalancer
   externalTrafficPolicy: Cluster
   internalTrafficPolicy: Cluster
