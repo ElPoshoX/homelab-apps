@@ -21,19 +21,87 @@ spec:
     protocol: TCP
     port: 3000
     targetPort: 3000
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-home-web-interface
+  namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/instance: adguard-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: adguard
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
   - name: web-interface
     protocol: TCP
     port: 80
     targetPort: 80
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-home-dns-udp
+  namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/instance: adguard-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: adguard
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
   - name: dns-udp
     protocol: UDP
     port: 53
     targetPort: 53
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-home-dns-tcp
+  namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/instance: adguard-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: adguard
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: adguard
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
   - name: dns-tcp
     protocol: TCP
     port: 53
     targetPort: 53
-  type: ClusterIP
-  internalTrafficPolicy: Local
-  
----
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
