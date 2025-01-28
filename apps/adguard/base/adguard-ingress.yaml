@@ -5,7 +5,7 @@ metadata:
   namespace: adguard
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
   - kind: Rule
     match: Host(`adguard.local`)
