@@ -8,9 +8,11 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`adguard.local`)
+    match: Host(`adguard.elposhox.dev`)
     services:
     - kind: Service
       name: adguard-home
       port: 3000
+  tls:
+    secretName: domain-tls
 
