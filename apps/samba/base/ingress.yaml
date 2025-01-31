@@ -3,6 +3,11 @@ kind: IngressRoute
 metadata:
   name: samba-server
   namespace: sambda
+  annotations:
+  - flame.pawelmalak/type=application
+  - flame.pawelmalak/name=Samba
+  - flame.pawelmalak/url=https://samba.elposhox.dev
+  - flame.pawelmalak/icon=kubernetes
 spec:
   entryPoints:
   - websecure

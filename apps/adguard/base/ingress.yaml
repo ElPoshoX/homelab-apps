@@ -3,6 +3,11 @@ kind: IngressRoute
 metadata:
   name: adguard-dashboard
   namespace: adguard
+  annotations:
+  - flame.pawelmalak/type=application
+  - flame.pawelmalak/name=AdGuard
+  - flame.pawelmalak/url=https://adguard.elposhox.dev
+  - flame.pawelmalak/icon=kubernetes
 spec:
   entryPoints:
   - websecure
