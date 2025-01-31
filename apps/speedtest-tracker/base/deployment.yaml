@@ -50,6 +50,11 @@ spec:
            secretKeyRef:
              name: speedtest-tracker-secret
              key: app-key
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+           secretKeyRef:
+             name: speedtest-tracker-secret
+             key: bot-token
         - name: "APP_TIMEZONE"
           value: "America/Mexico_City"
         - name: "DISPLAY_TIMEZONE"
