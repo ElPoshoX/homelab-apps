@@ -4,10 +4,10 @@ metadata:
   name: samba-server
   namespace: sambda
   annotations:
-  - flame.pawelmalak/type=application
-  - flame.pawelmalak/name=Samba
-  - flame.pawelmalak/url=https://samba.elposhox.dev
-  - flame.pawelmalak/icon=kubernetes
+    flame.pawelmalak/type: application
+    flame.pawelmalak/name: AdGuard
+    flame.pawelmalak/url: https://adguard.elposhox.dev
+    flame.pawelmalak/icon: kubernetes
 spec:
   entryPoints:
   - websecure

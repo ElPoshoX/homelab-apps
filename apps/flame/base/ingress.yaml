@@ -3,11 +3,11 @@ kind: IngressRoute
 metadata:
   name: flame
   namespace: sambda
-  # annotations:
-  # - flame.pawelmalak/type=application
-  # - flame.pawelmalak/name=Flame
-  # - flame.pawelmalak/url=https://flame.elposhox.dev
-  # - flame.pawelmalak/icon=kubernetes
+  annotations:
+    flame.pawelmalak/type: application
+    flame.pawelmalak/name: AdGuard
+    flame.pawelmalak/url: https://adguard.elposhox.dev
+    flame.pawelmalak/icon: kubernetes
 spec:
   entryPoints:
   - websecure
