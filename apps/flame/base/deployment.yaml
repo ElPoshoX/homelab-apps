@@ -57,9 +57,10 @@ spec:
         - name: flame-docker
           mountPath: /var/run/docker.sock
       volumes:
-        - name: flame-config
-          persistentVolumeClaim:
-            claimName: flame-pvc-config
         - name: flame-docker
           persistentVolumeClaim:
             claimName: flame-pvc-docker
+        - name: flame-config
+          hostPath:
+            path: /media/poshox/ehdd/configs/flame/
+            type: DirectoryOrCreate

@@ -3,11 +3,6 @@ kind: IngressRoute
 metadata:
   name: samba-server
   namespace: sambda
-  annotations:
-    flame.pawelmalak/type: application
-    flame.pawelmalak/name: AdGuard
-    flame.pawelmalak/url: https://adguard.elposhox.dev
-    flame.pawelmalak/icon: kubernetes
 spec:
   entryPoints:
   - websecure
