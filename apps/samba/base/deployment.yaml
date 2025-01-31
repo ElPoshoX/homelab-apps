@@ -29,8 +29,8 @@ spec:
         env:
         - name: TZ
           value: "MX"
-        - name: PERMISSIONS
-          value: ""
+        # - name: PERMISSIONS
+        #   value: ""
         - name: USER
           valueFrom:
            secretKeyRef:
