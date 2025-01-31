@@ -54,6 +54,8 @@ spec:
           value: "America/Mexico_City"
         - name: "PUBLIC_DASHBOARD"
           value: "true"
+        - name: "SPEEDTEST_SCHEDULE"
+          value: "0 12 * * *"
         ports:
         - containerPort: 80
           name: speedtest
