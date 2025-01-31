@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba-deployment
+  namespace: samba
+  labels:
+    app: samba
+    app.kubernetes.io/name: samba
+    app.kubernetes.io/instance: samba
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: samba
+        image: dperson/samba:latest
+        args: ["-u", "$(USER):$(PASS)", "-s", "media;/media;yes;no", "-s", "downloads;/downloads;yes;no"]
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: MX
+        - name: USER
+          valueFrom:
+           secretKeyRef:
+             name: samba-credentials
+             key: username
+        - name: PASS
+          valueFrom:
+           secretKeyRef:
+             name: samba-credentials
+             key: password
+        ports:
+        - containerPort: 445
+          name: samba
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 445
+        volumeMounts:
+        - name: shareable-media
+          mountPath: /media
+        - name: shareable-downloads
+          mountPath: /downloads
+
+      volumes:
+      - name: shareable-media
+        hostPath:
+          path: /media/poshox/ehdd/content/media/
+          type: DirectoryOrCreate
+      - name: shareable-downloads
+        hostPath:
+          path: /media/poshox/ehdd/storage/torrent/
+          type: DirectoryOrCreate
