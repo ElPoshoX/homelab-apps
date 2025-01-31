@@ -8,7 +8,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`sambaserver.local`)
+    match: Host(`sambaserver.elposhox.dev`)
     services:
     - kind: Service
       name: samba-server
