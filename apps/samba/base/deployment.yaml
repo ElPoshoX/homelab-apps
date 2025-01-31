@@ -25,17 +25,17 @@ spec:
       containers:
       - name: samba
         image: dperson/samba:latest
-        args: ['-s "media;/media;yes;no" -s "downloads;/downloads;yes;no"']
+        args: ['-u $USER-RO:$PASS-RO -s "media;/media;yes;no" -s "downloads;/downloads;yes;no"']
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
           value: MX
-        - name: USER
+        - name: USER-RO
           valueFrom:
            secretKeyRef:
              name: samba-credentials
              key: username
-        - name: PASS
+        - name: PASS-RO
           valueFrom:
            secretKeyRef:
              name: samba-credentials
