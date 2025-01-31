@@ -25,23 +25,19 @@ spec:
       containers:
       - name: samba
         image: dperson/samba:latest
-        args: ['-s "media;/media;yes;no" -s "downloads;/downloads;yes;no"']
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
-          value: MX
-        - name: USER-RO
-          valueFrom:
-           secretKeyRef:
-             name: samba-credentials
-             key: username
-        - name: PASS-RO
-          valueFrom:
-           secretKeyRef:
-             name: samba-credentials
-             key: password
+          value: "MX"
+        - name: PERMISSIONS
+          value: ""
         - name: USER
-          value: "$(USER-RO);$(PASS-RO)"
+          valueFrom:
+           secretKeyRef:
+             name: samba-credentials
+             key: fulluser
+        - name: SHARE
+          value: "media;/media;yes;no downloads;/downloads;yes;no"
         ports:
         - containerPort: 445
           name: samba
