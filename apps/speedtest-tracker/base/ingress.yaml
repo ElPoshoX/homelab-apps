@@ -12,5 +12,5 @@ spec:
     services:
     - kind: Service
       name: speedtest-tracker
-      port: 80
+      port: 8080
 
