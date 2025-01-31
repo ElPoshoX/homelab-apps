@@ -52,6 +52,8 @@ spec:
              key: app-key
         - name: "APP_TIMEZONE"
           value: "America/Mexico_City"
+        - name: "DISPLAY_TIMEZONE"
+          value: "America/Mexico_City"
         - name: "PUBLIC_DASHBOARD"
           value: "true"
         - name: "SPEEDTEST_SCHEDULE"
