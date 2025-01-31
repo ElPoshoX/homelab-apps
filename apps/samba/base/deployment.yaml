@@ -25,7 +25,7 @@ spec:
       containers:
       - name: samba
         image: dperson/samba:latest
-        args: ['-u "$USER:$PASS" -s "media;/media;yes;no" -s "downloads;/downloads;yes;no"']
+        args: ['-s "media;/media;yes;no" -s "downloads;/downloads;yes;no"']
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
