@@ -31,7 +31,7 @@ spec:
           valueFrom:
            secretKeyRef:
              name: flame-credentials
-             key: fulluser
+             key: password
         - name: SHARE
           value: "media;/media;yes;no;no;all;none downloads;/downloads;yes;no;no;all;none"
         ports:
