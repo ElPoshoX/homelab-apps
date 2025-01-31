@@ -37,7 +37,7 @@ spec:
              name: samba-credentials
              key: fulluser
         - name: SHARE
-          value: "media;/media;yes;no downloads;/downloads;yes;no"
+          value: "media;/media;yes;nono;all;none" # downloads;/downloads;yes;no;no;all;none"
         ports:
         - containerPort: 445
           name: samba
