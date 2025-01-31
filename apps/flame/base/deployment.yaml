@@ -52,25 +52,14 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
-        - name: shareable-media
-          mountPath: /media
-        - name: shareable-downloads
-          mountPath: /downloads
-
-
+        - name: flame-pvc-config
+          mountPath: /app/data
+        - name: flame-pvc-docker
+          mountPath: /var/run/docker.sock
       volumes:
-        - name: flame-claim0
+        - name: flame-config
           persistentVolumeClaim:
-            claimName: flame-claim0
-        - name: flame-claim1
+            claimName: flame-pvc-config
+        - name: flame-docker
           persistentVolumeClaim:
-            claimName: flame-claim1
-      # volumes:
-      # - name: shareable-media
-      #   hostPath:
-      #     path: /media/poshox/ehdd/content/media/
-      #     type: DirectoryOrCreate
-      # - name: shareable-downloads
-      #   hostPath:
-      #     path: /media/poshox/ehdd/storage/torrent/
-      #     type: DirectoryOrCreate
+            claimName: flame-pvc-docker
