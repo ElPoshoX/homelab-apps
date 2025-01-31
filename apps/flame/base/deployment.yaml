@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flame-deployment
+  namespace: flame
+  labels:
+    app: flame
+    app.kubernetes.io/name: flame
+    app.kubernetes.io/instance: flame
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: flame
+  template:
+    metadata:
+      labels:
+        app: flame
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: flame-dashboard
+        image: pawelmalak/flame:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PASSWORD
+          valueFrom:
+           secretKeyRef:
+             name: flame-credentials
+             key: fulluser
+        - name: SHARE
+          value: "media;/media;yes;no;no;all;none downloads;/downloads;yes;no;no;all;none"
+        ports:
+        - containerPort: 5005
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: shareable-media
+          mountPath: /media
+        - name: shareable-downloads
+          mountPath: /downloads
+
+
+      volumes:
+        - name: flame-claim0
+          persistentVolumeClaim:
+            claimName: flame-claim0
+        - name: flame-claim1
+          persistentVolumeClaim:
+            claimName: flame-claim1
+      # volumes:
+      # - name: shareable-media
+      #   hostPath:
+      #     path: /media/poshox/ehdd/content/media/
+      #     type: DirectoryOrCreate
+      # - name: shareable-downloads
+      #   hostPath:
+      #     path: /media/poshox/ehdd/storage/torrent/
+      #     type: DirectoryOrCreate

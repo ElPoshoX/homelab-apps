@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flame
+  namespace: flame
+  labels:
+    app: flame
+    app.kubernetes.io/instance: flame-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: flame
+    app.kubernetes.io/part-of: flame
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: flame
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: flame
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
+  - name: flame
+    protocol: TCP
+    port: 5005
+    targetPort: 5005
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
