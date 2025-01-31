@@ -52,9 +52,9 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
-        - name: flame-pvc-config
+        - name: flame-config
           mountPath: /app/data
-        - name: flame-pvc-docker
+        - name: flame-docker
           mountPath: /var/run/docker.sock
       volumes:
         - name: flame-config
