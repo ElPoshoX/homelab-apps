@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr-deployment
+  namespace: homarr
+  labels:
+    app: homarr
+    app.kubernetes.io/name: homarr
+    app.kubernetes.io/instance: homarr
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: homarr-dashboard
+        image: ghcr.io/homarr-labs/homarr:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SECRET_ENCRYPTION_KEY
+          valueFrom:
+           secretKeyRef:
+             name: homarr-credentials
+             key: encryption-key
+        ports:
+        - containerPort: 7575
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: homarr-config
+          mountPath: /appdata
+      volumes:
+        - name: homarr-config
+          hostPath:
+            path: /media/poshox/ehdd/configs/homarr/
+            type: DirectoryOrCreate
