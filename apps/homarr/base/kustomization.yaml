@@ -14,5 +14,3 @@ resources:
 - deployment.yaml
 - secret.yaml
 - ingress.yaml
-- pvc-config.yaml
-- pvc-docker.yaml
