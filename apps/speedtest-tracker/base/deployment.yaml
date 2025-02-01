@@ -62,7 +62,9 @@ spec:
         - name: "PUBLIC_DASHBOARD"
           value: "true"
         - name: "SPEEDTEST_SCHEDULE"
-          value: "*/5 * * * *"
+          value: "0 12 * * *"
+        - name: "APP_URL"
+          value: "https://speedtest.elposhox.dev"
         ports:
         - containerPort: 80
           name: speedtest
@@ -79,7 +81,7 @@ spec:
             port: 80
         volumeMounts:
         - name: speedtest-tracker-config
-          mountPath: /configs
+          mountPath: /config
       volumes:
       - name: speedtest-tracker-config
         hostPath:
