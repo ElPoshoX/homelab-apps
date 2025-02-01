@@ -37,11 +37,11 @@ spec:
           name: http
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "100m"
+            memory: "512Mi"
+            cpu: "1Gi"
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "1Gi"
+            cpu: "1.5Gi"
         livenessProbe:
           livenessProbe:
           httpGet:
