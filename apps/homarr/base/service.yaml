@@ -20,8 +20,8 @@ spec:
   ports:
   - name: homarr
     protocol: TCP
-    port: 7575
-    targetPort: 7575
+    port: 3001
+    targetPort: 3000
   type: LoadBalancer
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
