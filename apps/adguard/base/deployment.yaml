@@ -71,8 +71,10 @@ spec:
           periodSeconds: 10
       volumes:
       - name: adguard-conf
-        persistentVolumeClaim:
-          claimName: adguard-conf-pvc
+        hostPath:
+          path: "/media/poshox/ehdd/configs/adguard"
+          type: DirectoryOrCreate
       - name: adguard-work
-        persistentVolumeClaim:
-          claimName: adguard-work-pvc
+        hostPath:
+          path: "/media/poshox/ehdd/storage/adguard"
+          type: DirectoryOrCreate
