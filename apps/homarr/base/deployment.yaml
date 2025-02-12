@@ -21,7 +21,7 @@ spec:
         app: homarr
     spec:
       nodeSelector:
-        prefix: worker
+        kubernetes.io/role: agent
       securityContext:
         fsGroup: 1000
       containers:
