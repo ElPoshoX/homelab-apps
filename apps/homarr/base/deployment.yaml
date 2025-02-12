@@ -51,11 +51,11 @@ spec:
             port: http
           initialDelaySeconds: 30
           periodSeconds: 10
-        volumeMounts:
-        - name: homarr-config
-          mountPath: /appdata
-      volumes:
-        - name: homarr-config
-          hostPath:
-            path: /media/poshox/ehdd/configs/homarr/
-            type: DirectoryOrCreate
+        # volumeMounts:
+        # - name: homarr-config
+        #   mountPath: /appdata
+      # volumes:
+      #   - name: homarr-config
+      #     hostPath:
+      #       path: /media/poshox/ehdd/configs/homarr/
+      #       type: DirectoryOrCreate
