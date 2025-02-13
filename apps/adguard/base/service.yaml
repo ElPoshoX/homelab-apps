@@ -21,7 +21,7 @@ spec:
     protocol: TCP
     port: 3000
     targetPort: 3000
-  type: LoadBalancer
+  type: NodePort
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
 ---
@@ -74,7 +74,7 @@ spec:
     protocol: UDP
     port: 53
     targetPort: 53
-  type: LoadBalancer
+  type: NodePort
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
 ---
@@ -101,6 +101,6 @@ spec:
     protocol: TCP
     port: 53
     targetPort: 53
-  type: LoadBalancer
+  type: NodePort
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
