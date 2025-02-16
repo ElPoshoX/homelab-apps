@@ -13,6 +13,7 @@ spec:
       - selector:
           dnsZones:
             - "elposhox.dev"
+            - "*.elposhox.dev"
         dns01:
           cloudflare:
             email: poshox.pr@gmail.com
