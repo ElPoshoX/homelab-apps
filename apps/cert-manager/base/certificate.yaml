@@ -6,7 +6,7 @@ spec:
   secretName: domain-tls
   dnsNames:
   - elpoxhox.dev
-  - *.elpoxhox.dev
+  - '*.elpoxhox.dev'
   issuerRef:
     name: elposhox-dev-cluster-issuer
     # We can reference ClusterIssuers by changing the kind here.
