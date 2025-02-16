@@ -10,3 +10,5 @@ labels:
 
 resources:
 - https://github.com/cert-manager/cert-manager/releases/download/v1.17.0/cert-manager.yaml
+- secret.yaml
+- cluster-issuer.yaml
