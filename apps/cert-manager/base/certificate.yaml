@@ -10,8 +10,8 @@ spec:
     organizations:
     - elposhox.dev
   dnsNames:
-  - elpoxhox.dev
-  - '*.elpoxhox.dev'
+  - elposhox.dev
+  - '*.elposhox.dev'
   issuerRef:
     name: elposhox-dev-cluster-issuer
     # We can reference ClusterIssuers by changing the kind here.
