@@ -9,6 +9,7 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
+- https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.crds.yaml
 - https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
 - secret.yaml
 - cluster-issuer.yaml
