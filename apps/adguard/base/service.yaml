@@ -19,9 +19,9 @@ spec:
   ports:
   - name: web-admin
     protocol: TCP
-    port: 3000
+    port: 80
     targetPort: 3000
-  type: NodePort
+  type: ClusterIP
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
 ---
@@ -46,10 +46,11 @@ spec:
   ports:
   - name: web-interface
     protocol: TCP
-    port: 80
+    port: 8080
     targetPort: 80
-  type: LoadBalancer
+  type: NodePort
   internalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
 ---
 apiVersion: v1
 kind: Service
