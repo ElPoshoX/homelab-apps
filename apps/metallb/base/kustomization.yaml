@@ -9,7 +9,6 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- namespace.yaml
 - github.com/metallb/metallb/config/native?ref=v0.14.9
 - address-pool.yaml
 - advertisement.yaml
