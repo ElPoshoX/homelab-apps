@@ -12,7 +12,6 @@ resources:
 - namespace.yaml
 - service.yaml
 - deployment.yaml
-- secret.yaml
 - ingress.yaml
 - cm.yaml
 - cluster-role.yaml
