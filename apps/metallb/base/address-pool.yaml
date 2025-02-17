@@ -6,4 +6,4 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.87.170-192.168.87.200 # example: 192.168.1.5-192.168.1.10
+  - 192.168.86.170-192.168.86.200 # example: 192.168.1.5-192.168.1.10
