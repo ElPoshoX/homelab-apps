@@ -20,8 +20,8 @@ spec:
   ports:
   - name: speedtest
     protocol: TCP
-    port: 8080
+    port: 80
     targetPort: 80
-  type: NodePort
+  type: LoadBalancer
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
