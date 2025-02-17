@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: homarr-deployment
-  namespace: homarr
+  name: homepage-deployment
+  namespace: homepage
   labels:
-    app: homarr
-    app.kubernetes.io/name: homarr
-    app.kubernetes.io/instance: homarr
+    app: homepage
+    app.kubernetes.io/name: homepage
+    app.kubernetes.io/instance: homepage
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -14,23 +14,23 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: homarr
+      app: homepage
   template:
     metadata:
       labels:
-        app: homarr
+        app: homepage
     spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: homarr-dashboard
-        image: ghcr.io/homarr-labs/homarr:latest
+      - name: homepage-dashboard
+        image: ghcr.io/gethomepage/homepage:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: SECRET_ENCRYPTION_KEY
           valueFrom:
            secretKeyRef:
-             name: homarr-credentials
+             name: homepage-credentials
              key: encryption-key
         ports:
         - containerPort: 3000

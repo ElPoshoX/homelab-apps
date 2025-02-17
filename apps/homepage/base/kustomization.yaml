@@ -1,11 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: homarr
+namespace: homepage
 labels:
 - includeSelectors: true
   pairs:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: homarr
+    app.kubernetes.io/part-of: homepage
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
