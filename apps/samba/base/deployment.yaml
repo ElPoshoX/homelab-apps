@@ -58,7 +58,7 @@ spec:
         - name: shareable-downloads
           mountPath: /downloads
       nodeSelector:
-        name: homelab
+        kubernetes.io/hostname: homelab
       volumes:
       - name: shareable-media
         hostPath:
