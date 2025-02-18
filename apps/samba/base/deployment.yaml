@@ -57,7 +57,8 @@ spec:
           mountPath: /media
         - name: shareable-downloads
           mountPath: /downloads
-
+      nodeSelector:
+        name: homelab
       volumes:
       - name: shareable-media
         hostPath:
