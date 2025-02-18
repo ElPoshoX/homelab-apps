@@ -22,6 +22,6 @@ spec:
     protocol: TCP
     port: 445
     targetPort: 445
-  type: NodePort
+  type: LoadBalancer
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
