@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: all-apps
+  namespace: argocd
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/ElPoshoX/homelab-apps.git
+    targetRevision: HEAD
+    path: appsets
+  destination:
+    name: in-cluster
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

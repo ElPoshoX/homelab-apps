@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest-tracker-deployment
+  namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
+    app.kubernetes.io/name: speedtest-tracker
+    app.kubernetes.io/instance: speedtest-tracker
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: speedtest-tracker
+  template:
+    metadata:
+      labels:
+        app: speedtest-tracker
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: speedtest-tracker
+        image: lscr.io/linuxserver/speedtest-tracker:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: DB_CONNECTION
+          value: "sqlite"
+        - name: ADMIN_NAME
+          value: "poshox"
+        - name: ADMIN_EMAIL
+          valueFrom:
+           secretKeyRef:
+             name: speedtest-tracker-secret
+             key: email
+        - name: ADMIN_PASSWORD
+          valueFrom:
+           secretKeyRef:
+             name: speedtest-tracker-secret
+             key: password
+        - name: APP_KEY
+          valueFrom:
+           secretKeyRef:
+             name: speedtest-tracker-secret
+             key: app-key
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+           secretKeyRef:
+             name: speedtest-tracker-secret
+             key: bot-token
+        - name: "APP_TIMEZONE"
+          value: "America/Mexico_City"
+        - name: "DISPLAY_TIMEZONE"
+          value: "America/Mexico_City"
+        - name: "PUBLIC_DASHBOARD"
+          value: "true"
+        - name: "SPEEDTEST_SCHEDULE"
+          value: "0 12 * * *"
+        - name: "APP_URL"
+          value: "https://speedtest.elposhox.dev"
+        ports:
+        - containerPort: 80
+          name: speedtest
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 80
+        volumeMounts:
+        - name: speedtest-tracker-config
+          mountPath: /config
+      volumes:
+      - name: speedtest-tracker-config
+        hostPath:
+          path: /media/poshox/ehdd/configs/speedtest-tracker/
+          type: DirectoryOrCreate
