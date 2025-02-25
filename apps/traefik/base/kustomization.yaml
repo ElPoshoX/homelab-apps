@@ -13,5 +13,5 @@ resources:
 - https-middleware.yaml
 - tlsoptions.yaml
 - tlsstore.yaml
-- service.yaml
+# - service.yaml
 - ingress.yaml
