@@ -7,4 +7,3 @@ metadata:
 spec:
   defaultCertificate:
     secretName: domain-tls
-    namespace: cert-manager
