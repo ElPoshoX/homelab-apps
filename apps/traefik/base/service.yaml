@@ -18,10 +18,6 @@ spec:
     app.kubernetes.io/part-of: traefik
     homelab.local/OwnedBy: ElPoshoX
   ports:
-  - name: web
-    protocol: TCP
-    port: 80
-    targetPort: 8000
   - name: websecure
     protocol: TCP
     port: 443
