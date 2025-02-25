@@ -7,10 +7,13 @@ metadata:
   namespace: traefik
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
   - kind: Rule
-    match: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    match: Host(`traefik.elposhox.dev`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     services:
     - kind: TraefikService
       name: api@internal
+  tls:
+    secretName: domain-tls
+
