@@ -1,8 +1,6 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  labels:
-    app.kubernetes.io/name: traefik
   name: traefik-dashboard
   namespace: traefik
 spec:
@@ -16,4 +14,3 @@ spec:
       name: api@internal
   tls:
     secretName: domain-tls
-
