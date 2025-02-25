@@ -13,5 +13,10 @@ spec:
     - kind: Service
       name: speedtest-tracker
       port: 80
+      tls: true
 
-  tls: {}
+  tls:
+    secretName: domain-tls
+    options:
+      name: default
+      namespace: traefik
