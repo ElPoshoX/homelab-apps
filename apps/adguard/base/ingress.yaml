@@ -12,7 +12,7 @@ spec:
     services:
     - kind: Service
       name: adguard-home
-      port: 3000
+      port: 80
   tls:
     secretName: domain-tls
 

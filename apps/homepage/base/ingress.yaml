@@ -12,5 +12,5 @@ spec:
     services:
     - kind: Service
       name: homepage
-      port: 3000
+      port: 80
 
