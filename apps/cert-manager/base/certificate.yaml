@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: elposhox-dev-certificate
-  namespace: default
+  namespace: traefik
 spec:
   commonName: elposhox.dev
   secretName: domain-tls
