@@ -3,7 +3,5 @@ kind: TLSStore
 metadata:
   name: default
 spec:
-  certificates:
-    - secretName: domain-tls
   defaultCertificate:
     secretName: domain-tls
