@@ -13,7 +13,6 @@ spec:
     - kind: Service
       name: speedtest-tracker
       port: 80
-      tls: true
 
   tls:
     secretName: domain-tls
