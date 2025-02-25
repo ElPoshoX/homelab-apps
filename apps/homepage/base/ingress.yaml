@@ -5,7 +5,7 @@ metadata:
   namespace: homepage
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
   - kind: Rule
     match: Host(`home.elposhox.dev`)
