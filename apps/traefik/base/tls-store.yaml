@@ -6,6 +6,6 @@ metadata:
 
 spec:
   certificates:
-    secretName: domain-tls
+    - secretName: domain-tls
   defaultCertificate:
     secretName: domain-tls
