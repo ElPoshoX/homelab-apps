@@ -5,7 +5,7 @@ metadata:
   namespace: speedtest-tracker
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
   - kind: Rule
     match: Host(`speedtest.elposhox.dev`)
