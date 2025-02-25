@@ -29,23 +29,3 @@ spec:
   type: LoadBalancer
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-internal
-  namespace: traefik
-  annotations:
-    metallb.universe.tf/address-pool: private
-spec:
-  type: LoadBalancer
-  ports:
-    - protocol: TCP
-      name: web
-      port: 80
-    - protocol: TCP
-      name: websecure
-      port: 443
-  selector:
-    app: traefi
