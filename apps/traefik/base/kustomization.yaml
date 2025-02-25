@@ -10,7 +10,9 @@ labels:
 
 resources:
 - https://github.com/traefik/traefik-helm-chart/releases/download/v34.4.0/traefik.yaml
+- https-middleware.yaml
 - tlsoptions.yaml
 - tlsstore.yaml
-- dashboard-ingressroute.yaml
+- ingress.yaml
+- service.yaml
 

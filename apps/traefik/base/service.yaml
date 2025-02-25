@@ -1,107 +1,51 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: adguard-home
-  namespace: adguard
+  name: traefik
+  namespace: traefik
   labels:
-    app: adguard
-    app.kubernetes.io/instance: adguard-prd
+    app: traefik
+    app.kubernetes.io/instance: traefik-prd
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: adguard
-    app.kubernetes.io/part-of: adguard
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: traefik
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: adguard
+    app: traefik
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: adguard
+    app.kubernetes.io/part-of: traefik
     homelab.local/OwnedBy: ElPoshoX
   ports:
-  - name: web-admin
+  - name: web
     protocol: TCP
     port: 80
-    targetPort: 3000
-  type: LoadBalancer
-  internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: adguard-home-web-interface
-  namespace: adguard
-  labels:
-    app: adguard
-    app.kubernetes.io/instance: adguard-prd
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: adguard
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
-spec:
-  selector:
-    app: adguard
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
-  ports:
-  - name: web-interface
+    targetPort: 8000
+  - name: websecure
     protocol: TCP
-    port: 8080
-    targetPort: 80
-  type: NodePort
-  internalTrafficPolicy: Local
+    port: 443
+    targetPort: 8443
+  type: LoadBalancer
+  internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: adguard-home-dns-udp
-  namespace: adguard
-  labels:
-    app: adguard
-    app.kubernetes.io/instance: adguard-prd
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: adguard
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
+  name: traefik-internal
+  namespace: traefik
+  annotations:
+    metallb.universe.tf/address-pool: private
 spec:
-  selector:
-    app: adguard
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
-  ports:
-  - name: dns-udp
-    protocol: UDP
-    port: 53
-    targetPort: 53
   type: LoadBalancer
-  internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: adguard-home-dns-tcp
-  namespace: adguard
-  labels:
-    app: adguard
-    app.kubernetes.io/instance: adguard-prd
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: adguard
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
-spec:
-  selector:
-    app: adguard
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: adguard
-    homelab.local/OwnedBy: ElPoshoX
   ports:
-  - name: dns-tcp
-    protocol: TCP
-    port: 53
-    targetPort: 53
-  type: LoadBalancer
-  internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
+    - protocol: TCP
+      name: web
+      port: 80
+    - protocol: TCP
+      name: websecure
+      port: 443
+  selector:
+    app: traefi

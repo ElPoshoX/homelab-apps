@@ -1,18 +1,16 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: adguard-dashboard
-  namespace: adguard
+  name: traefik-dashboard
+  namespace: traefik
 spec:
   entryPoints:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`adguard.elposhox.dev`)
+    match: Host(`traefik.elposhox.dev`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     services:
-    - kind: Service
-      name: adguard-home
-      port: 3000
+    - kind: TraefikService
+      name: api@internal
   tls:
     secretName: domain-tls
-
