@@ -5,7 +5,7 @@ metadata:
   name: longhorn
   namespace: longhorn
   labels:
-    app: longhorn
+    app: longhorn-ui
     app.kubernetes.io/instance: longhorn-prd
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: longhorn
@@ -13,7 +13,7 @@ metadata:
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: longhorn
+    app: longhorn-ui
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/part-of: longhorn
     homelab.local/OwnedBy: ElPoshoX
