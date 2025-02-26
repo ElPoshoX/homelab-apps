@@ -16,9 +16,6 @@ spec:
 
   tls:
     secretName: domain-tls
-    options:
-      name: default
-      namespace: default
 
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress
