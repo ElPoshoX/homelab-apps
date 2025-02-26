@@ -25,7 +25,7 @@ kind: Ingress
 metadata:
   name: speedtest-tracker
   annotations:
-    cert-manager.io/cluster-issuer: "elposhox-dev-cluster-issuer"
+    # cert-manager.io/cluster-issuer: "elposhox-dev-cluster-issuer"
     # traefik.ingress.kubernetes.io/router.entrypoints: websecureext
 spec:
   tls:
