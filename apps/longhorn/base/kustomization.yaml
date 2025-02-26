@@ -9,5 +9,5 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- namespace.yaml
+# - namespace.yaml
 - https://github.com/longhorn/longhorn/releases/download/v1.8.0/longhorn.yaml
