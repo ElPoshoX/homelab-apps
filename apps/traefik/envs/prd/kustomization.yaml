@@ -4,5 +4,19 @@ kind: Kustomization
 resources:
 - ./../../base
 
+
 patches:
-- path: deployment.yaml
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --entryPoints.web.http.redirections.entryPoint.to=websecure
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --entryPoints.web.http.redirections.entryPoint.scheme=https
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --log.level=DEBUG
+  target:
+    kind: Deployment
+    name: traefik
+    namespace: traefik
