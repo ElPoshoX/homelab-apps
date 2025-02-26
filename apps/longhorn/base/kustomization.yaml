@@ -11,3 +11,4 @@ labels:
 resources:
 # - namespace.yaml
 - https://github.com/longhorn/longhorn/releases/download/v1.8.0/longhorn.yaml
+- service.yaml
