@@ -10,12 +10,15 @@ spec:
     spec:
       containers:
       - name: traefik
-        volumeMounts:
-          - name: certs
-            mountPath: "/certs"
-            readOnly: true
-          - name: dynamic
-            mountPath: "/config"
-            readOnly: true
+        # volumeMounts:
+        #   - name: certs
+        #     mountPath: "/certs"
+        #     readOnly: true
+        #   - name: dynamic
+        #     mountPath: "/config"
+        #     readOnly: true
         args:
-          - "--providers.file.filename=/config/dynamic.toml"
+          # - "--providers.file.filename=/config/dynamic.toml"
+          - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+          - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+          - "--log.level=DEBUG"
