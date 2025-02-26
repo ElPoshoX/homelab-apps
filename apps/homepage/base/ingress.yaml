@@ -13,6 +13,6 @@ spec:
     - kind: Service
       name: homepage
       port: 80
-  tls:
-    secretName: domain-tls
+  # tls:
+  #   secretName: domain-tls
 
