@@ -51,7 +51,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-  - host: home.elposhox.dev
+  - host: speedtest.elposhox.dev
     http:
       paths:
         - path: /
