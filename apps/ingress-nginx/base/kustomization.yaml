@@ -9,6 +9,6 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-# - namespace.yaml
 - https://github.com/kubernetes/ingress-nginx/blob/controller-v1.12.0/deploy/static/provider/baremetal/deploy.yaml
+- service.yaml
 
