@@ -64,7 +64,7 @@ spec:
         - name: "SPEEDTEST_SCHEDULE"
           value: "0 12 * * *"
         - name: "APP_URL"
-          value: "https://speedtest.elposhox.dev"
+          value: "http://speedtest.elposhox.dev"
         ports:
         - containerPort: 80
           name: speedtest
