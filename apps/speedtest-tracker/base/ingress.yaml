@@ -17,26 +17,47 @@
 #   tls:
 #     secretName: domain-tls
 
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: speedtest-tracker
+#   annotations:
+#     # cert-manager.io/cluster-issuer: "elposhox-dev-cluster-issuer"
+#     # traefik.ingress.kubernetes.io/router.entrypoints: websecureext
+# spec:
+#   tls:
+#     - hosts:
+#         - speedtest.elposhox.dev
+#       secretName: domain-tls
+#   rules:
+#     - host: speedtest.elposhox.dev
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: speedtest-tracker
+#                 port:
+#                   number: 80
+
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: speedtest-tracker
+
   annotations:
-    # cert-manager.io/cluster-issuer: "elposhox-dev-cluster-issuer"
-    # traefik.ingress.kubernetes.io/router.entrypoints: websecureext
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  tls:
-    - hosts:
-        - speedtest.elposhox.dev
-      secretName: domain-tls
   rules:
-    - host: speedtest.elposhox.dev
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: speedtest-tracker
-                port:
-                  number: 80
+  - host: home.elposhox.dev
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: speedtest-tracker
+              port:
+                number: 80
