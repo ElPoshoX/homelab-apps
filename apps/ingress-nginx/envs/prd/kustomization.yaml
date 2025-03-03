@@ -12,7 +12,7 @@ patches:
       value: --default-ssl-certificate=cert-manager/domain-tls
     - op: add
       path: /spec/template/spec/containers/0/args/-
-      value: --v=5
+      value: --v=3
   target:
     kind: Deployment
     name: ingress-nginx-controller
