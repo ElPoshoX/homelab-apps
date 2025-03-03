@@ -46,7 +46,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: speedtest-tracker
-
+  namespace: default
   annotations:
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "false" #we added this for turn off https redirection
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
