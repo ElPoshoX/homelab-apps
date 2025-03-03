@@ -51,6 +51,7 @@ metadata:
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "false" #we added this for turn off https redirection
     # nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - speedtest.elposhox.dev
