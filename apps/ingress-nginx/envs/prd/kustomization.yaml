@@ -9,7 +9,7 @@ patches:
 - patch: |-
     - op: add
       path: /spec/template/spec/containers/0/args/-
-      value: --controller.wildcardTLS.cert=cert-manager/elposhox-dev-certificate
+      value: --default-ssl-certificate=cert-manager/elposhox-dev-certificate
   target:
     kind: Deployment
     name: ingress-nginx-controller
