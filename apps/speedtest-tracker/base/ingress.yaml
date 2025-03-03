@@ -47,12 +47,12 @@ kind: Ingress
 metadata:
   name: speedtest-tracker
   annotations:
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: false
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: true
 spec:
-  # tls:
-  #   - hosts:
-  #       - speedtest.elposhox.dev
+  tls:
+    - hosts:
+        - speedtest.elposhox.dev
   ingressClassName: nginx
   rules:
   - host: 'speedtest.elposhox.dev'
