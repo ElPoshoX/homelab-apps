@@ -62,4 +62,4 @@ spec:
             service:
               name: speedtest-tracker
               port:
-                number: 80
+                number: 8090
