@@ -1,23 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: adguard-home
+  name: longhorn
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: true
 spec:
   tls:
     - hosts:
-        - adguard.elposhox.dev
+        - longhorn.elposhox.dev
   ingressClassName: nginx
   rules:
-  - host: 'adguard.elposhox.dev'
+  - host: 'longhorn.elposhox.dev'
     http:
       paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: adguard-home
+              name: longhorn
               port:
                 number: 80
