@@ -20,4 +20,4 @@ spec:
             service:
               name: adguard-home
               port:
-                number: 80
+                number: 81
