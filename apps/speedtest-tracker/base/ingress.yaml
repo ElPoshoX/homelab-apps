@@ -55,7 +55,7 @@ spec:
   #       - speedtest.elposhox.dev
   ingressClassName: nginx
   rules:
-  - host: speedtest.elposhox.dev
+  - host: 'speedtest.elposhox.dev'
     http:
       paths:
         - path: /
