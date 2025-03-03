@@ -23,7 +23,7 @@ spec:
     targetPort: 3000
   type: LoadBalancer
   internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
+  # externalTrafficPolicy: Cluster
 ---
 apiVersion: v1
 kind: Service
