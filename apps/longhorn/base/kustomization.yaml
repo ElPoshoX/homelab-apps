@@ -14,3 +14,4 @@ resources:
 - https://github.com/longhorn/longhorn/releases/download/v1.8.0/longhorn.yaml
 - service.yaml
 - secret.yaml
+- ingress.yaml
