@@ -50,6 +50,7 @@ metadata:
   annotations:
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "false" #we added this for turn off https redirection
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "elposhox-dev-cluster-issuer"
 spec:
   ingressClassName: nginx
   tls:
