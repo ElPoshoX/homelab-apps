@@ -2,8 +2,9 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: pool
+  name: shared-ip
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.86.169/32 # example: 192.168.1.5-192.168.1.10
+  - 192.168.86.160-192.168.86.180
+  avoidBuggyIPs: true
