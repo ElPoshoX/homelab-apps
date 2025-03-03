@@ -1,0 +1,18 @@
+---
+# Source: traefik/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  template: 
+    spec:
+      containers:
+      - name: controller
+        args:
+          # - "--providers.file.filename=/config/dynamic.toml"
+          - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+          - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+          - "--log.level=DEBUG"
+          - "--controller.wildcardTLS.cert=cert-manager/elposhox-dev-certificate"
