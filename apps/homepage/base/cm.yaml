@@ -43,21 +43,34 @@ data:
     - HomeLab:
         - Speedtest:
             icon: speedtest-tracker.png
-            href: http://192.168.86.175/
+            href: http://speedtest.elposhox.dev/
             widget:
               type: speedtest
-              url: http://192.168.86.175
-
+              url: http://speedtest.elposhox.dev
+        - ArgoCD
+            icon: argo-cd.png
+            href: https://argocd.elposhox.dev/
+            widget:
+              type: argocd
+              url: https://argocd.elposhox.dev/
+              username: "{{HOMEPAGE_VAR_ARGOCD_USER}}"
+              password: "{{HOMEPAGE_VAR_ARGOCD_PASS}}"
         - Primary AdGuard:
-            icon: adguard.png
+            icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev/
             widget:
               type: adguard
               url: https://adguard-primary.elposhox.dev/
               username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
               password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
-              # username: admin
-              # password: password
+        - Secondary AdGuard:
+            icon: adguard-home.png
+            href: https://adguard-primary.elposhox.dev/
+            widget:
+              type: adguard
+              url: https://adguard-primary.elposhox.dev/
+              username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+              password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
     - My First Group:
         - My First Service:
             href: http://localhost/
