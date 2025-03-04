@@ -62,7 +62,7 @@ spec:
         - name: "PUBLIC_DASHBOARD"
           value: "true"
         - name: "SPEEDTEST_SCHEDULE"
-          value: "0 12 * * *"
+          value: "0 * * * *"
         - name: "APP_URL"
           value: "https://speedtest.elposhox.dev"
         ports:
