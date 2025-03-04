@@ -15,4 +15,3 @@ resources:
 - service.yaml
 - secret.yaml
 - ingress.yaml
-- storage-class.yaml
