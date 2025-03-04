@@ -47,7 +47,8 @@ data:
             widget:
               type: speedtest
               url: http://speedtest.elposhox.dev
-        - ArgoCD
+
+        - ArgoCD:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev/
             widget:
@@ -55,6 +56,7 @@ data:
               url: https://argocd.elposhox.dev/
               username: "{{HOMEPAGE_VAR_ARGOCD_USER}}"
               password: "{{HOMEPAGE_VAR_ARGOCD_PASS}}"
+
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev/
@@ -63,6 +65,7 @@ data:
               url: https://adguard-primary.elposhox.dev/
               username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
               password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+
         - Secondary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev/
