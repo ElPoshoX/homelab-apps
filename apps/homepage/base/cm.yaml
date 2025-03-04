@@ -9,10 +9,6 @@ data:
   kubernetes.yaml: |
     mode: cluster
   settings.yaml: |
-   providers:
-     longhorn:
-       url: https://longhorn.my.network
-  settings.yaml: |
     title: ElPoshoX's Homepage
     theme: dark
     headerStyle: boxed
