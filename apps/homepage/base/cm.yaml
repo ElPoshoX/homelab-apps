@@ -17,9 +17,9 @@ data:
     showStats: true
     statusStyle: "dot"
 
-  #  providers:
-  #    longhorn:
-  #      url: https://longhorn.my.network
+  providers:
+    longhorn:
+      url: https://longhorn.elposhox.dev
   custom.css: ""
   custom.js: ""
   bookmarks.yaml: |
@@ -48,14 +48,6 @@ data:
               type: speedtest
               url: http://speedtest.elposhox.dev
 
-        - ArgoCD:
-            icon: argo-cd.png
-            href: https://argocd.elposhox.dev/
-            widget:
-              type: argocd
-              url: https://argocd.elposhox.dev/
-              key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
-
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev/
@@ -78,10 +70,14 @@ data:
             href: http://localhost/
             description: Homepage is awesome
 
-    - My Second Group:
-        - My Second Service:
-            href: http://localhost/
-            description: Homepage is the best
+    - General Health:
+        - ArgoCD:
+            icon: argo-cd.png
+            href: https://argocd.elposhox.dev/
+            widget:
+              type: argocd
+              url: https://argocd.elposhox.dev/
+              key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
 
   widgets.yaml: |
     - kubernetes:
@@ -91,11 +87,6 @@ data:
           memory: true
           showLabel: true
           label: "cluster"
-        nodes:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
     - search:
         provider: brave
         focus: true
@@ -112,4 +103,9 @@ data:
         cpu: true
         memory: true
         network: default
+    - longhorn:
+        # Show the expanded view
+        expanded: true
+        # Shows a node representing the aggregate values
+        total: true
   docker.yaml: ""
