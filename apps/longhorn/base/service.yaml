@@ -24,4 +24,4 @@ spec:
     targetPort: 8000
   type: LoadBalancer
   internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
+  # externalTrafficPolicy: Cluster
