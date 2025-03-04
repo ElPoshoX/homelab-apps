@@ -16,10 +16,9 @@ data:
     target: _blank
     showStats: true
     statusStyle: "dot"
-
-  providers:
-    longhorn:
-      url: https://longhorn.elposhox.dev
+    providers
+      longhorn:
+        url: https://longhorn.elposhox.dev
   custom.css: ""
   custom.js: ""
   bookmarks.yaml: |
