@@ -54,8 +54,7 @@ data:
             widget:
               type: argocd
               url: https://argocd.elposhox.dev/
-              username: "{{HOMEPAGE_VAR_ARGOCD_USER}}"
-              password: "{{HOMEPAGE_VAR_ARGOCD_PASS}}"
+              key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
 
         - Primary AdGuard:
             icon: adguard-home.png
