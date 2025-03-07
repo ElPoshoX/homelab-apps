@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: adguard
+        app.kubernetes.io/name: adguard
     spec:
       securityContext:
         fsGroup: 1000
