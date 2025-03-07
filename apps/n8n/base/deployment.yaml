@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: n8n
+        app.kubernetes.io/name: n8n
     spec:
       securityContext:
         fsGroup: 1000

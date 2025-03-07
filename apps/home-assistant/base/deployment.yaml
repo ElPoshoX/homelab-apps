@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: home-assistant
+        app.kubernetes.io/name: home-assistant
     spec:
       securityContext:
         fsGroup: 1000

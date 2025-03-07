@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: speedtest-tracker
+        app.kubernetes.io/name: speedtest-tracker
     spec:
       securityContext:
         fsGroup: 1000

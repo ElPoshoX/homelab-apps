@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: uptime-kuma
+        app.kubernetes.io/name: uptime-kuma
     spec:
       securityContext:
         fsGroup: 1000
