@@ -68,6 +68,11 @@ data:
               url: https://argocd.elposhox.dev
               key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
 
+        - Longhorn:
+            icon: longhorn.png
+            href: https://longhorn.elposhox.dev
+            siteMonitor: https://longhorn.elposhox.dev
+
     - Personal:
         - Home Assistant:
             icon: home-assistant.png
