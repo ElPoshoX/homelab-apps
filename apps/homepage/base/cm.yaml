@@ -49,6 +49,7 @@ data:
             icon: adguard-home.png
             href: https://adguard-secondary.elposhox.dev
             siteMonitor: https://adguard-secondary.elposhox.dev
+            app: adguard
             widget:
               type: adguard
               url: https://adguard-secondary.elposhox.dev
@@ -57,8 +58,8 @@ data:
 
         - Traefik:
             icon: traefik.png
-            href: https://traefik.elposhox.dev
-            siteMonitor: https://traefik.elposhox.dev
+            href: https://traefik.elposhox.dev/dashboard/
+            siteMonitor: https://traefik.elposhox.dev/dashboard/
             widget:
               type: traefik
               url: https://traefik.elposhox.dev
@@ -82,6 +83,7 @@ data:
             icon: home-assistant.png
             href: https://home-assistant.elposhox.dev
             siteMonitor: https://home-assistant.elposhox.dev
+            app: home-assistant
             widget:
               type: homeassistant
               url: https://home-assistant.elposhox.dev
@@ -95,6 +97,24 @@ data:
               #   - state: weather.forecast_home
               #     label: wind speed
               #     value: "{attributes.wind_speed} {attributes.wind_speed_unit}"
+
+        - Bookstack:
+            icon: bookstack.png
+            href: https://bookstack.elposhox.dev
+            siteMonitor: https://bookstack.elposhox.dev
+
+        - N8N:
+            icon: n8n.png
+            href: https://n8n.elposhox.dev
+            siteMonitor: https://n8n.elposhox.dev
+            widget:
+              type: n8n
+              url: https://n8n.elposhox.dev
+
+        - Excalidraw:
+            icon: excalidraw.png
+            href: https://excalidraw.elposhox.dev
+            siteMonitor: https://excalidraw.elposhox.dev
 
         - NextCloud:
             icon: nextcloud.png
@@ -128,6 +148,95 @@ data:
             widget:
               type: speedtest
               url: https://speedtest.elposhox.dev
+
+        - ChangeDetection:
+            icon: changedetection.png
+            href: https://change-detection.elposhox.dev
+            siteMonitor: https://change-detection.elposhox.dev
+
+        - Grafana:
+            icon: grafana.png
+            href: https://grafana.elposhox.dev
+            siteMonitor: https://grafana.elposhox.dev
+
+        - Prometheus:
+            icon: prometheus.png
+            href: https://prometheus.elposhox.dev
+            siteMonitor: https://prometheus.elposhox.dev
+
+        - Promtail:
+            icon: promtail.png
+            href: https://promtail.elposhox.dev
+            siteMonitor: https://promtail.elposhox.dev
+
+    - Media:
+        - Jellyfin:
+            icon: jellyfin.png
+            href: https://jellyfin.elposhox.dev
+            siteMonitor: https://jellyfin.elposhox.dev
+
+        - Jellyseer:
+            icon: jellyseer.png
+            href: https://jellyseer.elposhox.dev
+            siteMonitor: https://jellyseer.elposhox.dev
+
+        - Plex:
+            icon: plex.png
+            href: https://plex.elposhox.dev
+            siteMonitor: https://plex.elposhox.dev
+
+        - Sonarr:
+            icon: sonarr.png
+            href: https://sonarr.elposhox.dev
+            siteMonitor: https://sonarr.elposhox.dev
+
+        - Radarr:
+            icon: radarr.png
+            href: https://radarr.elposhox.dev
+            siteMonitor: https://radarr.elposhox.dev
+
+        - Bazarr:
+            icon: bazarr.png
+            href: https://bazarr.elposhox.dev
+            siteMonitor: https://bazarr.elposhox.dev
+
+        - Jackett:
+            icon: jackett.png
+            href: https://jackett.elposhox.dev
+            siteMonitor: https://jackett.elposhox.dev
+
+        - Transmission:
+            icon: transmission.png
+            href: https://transmission.elposhox.dev
+            siteMonitor: https://transmission.elposhox.dev
+
+        - Prowlarr:
+            icon: prowlarr.png
+            href: https://prowlarr.elposhox.dev
+            siteMonitor: https://prowlarr.elposhox.dev
+
+        - Jellystat:
+            icon: jellystat.png
+            href: https://jellystat.elposhox.dev
+            siteMonitor: https://jellystat.elposhox.dev
+
+        - Kavita:
+            icon: kavita.png
+            href: https://kavita.elposhox.dev
+            siteMonitor: https://kavita.elposhox.dev
+
+        - Suwayomi:
+            icon: suwayomi.png
+            href: https://suwayomi.elposhox.dev
+            siteMonitor: https://suwayomi.elposhox.dev
+
+    - Devices:
+        - Unifi:
+            icon: unifi.png
+            href: https://unifi.elposhox.dev
+            siteMonitor: https://unifi.elposhox.dev
+
+    
 
   widgets.yaml: |
     - kubernetes:
