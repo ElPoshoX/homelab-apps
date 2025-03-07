@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homepage
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`home.elposhox.dev`)
+    services:
+    - kind: Service
+      name: homepage
+      port: 80

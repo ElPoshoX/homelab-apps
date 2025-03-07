@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-assistant
+  labels:
+    app: home-assistant
+    app.kubernetes.io/instance: home-assistant-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: home-assistant
+    app.kubernetes.io/part-of: home-assistant
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: home-assistant
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: home-assistant
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
+  - name: home-assistant
+    protocol: TCP
+    port: 80
+    targetPort: 8123
+  internalTrafficPolicy: Cluster

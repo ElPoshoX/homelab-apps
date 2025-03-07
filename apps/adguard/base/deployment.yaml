@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-deployment
+  labels:
+    app: adguard
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/instance: adguard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: adguard-home
+        image: adguard/adguardhome:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: AGH_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: adguard-config-cm
+              key: AdGuardHome.yaml
+        ports:
+        - containerPort: 53
+          name: dns-udp
+          protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 3000
+          name: http-initial
+          protocol: TCP
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http-initial
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: adguard-config
+          mountPath: /opt/adguardhome/conf
+        - name: adguard-work
+          mountPath: /opt/adguardhome/work
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http-initial
+          initialDelaySeconds: 15
+          periodSeconds: 10
+      volumes:
+      - name: adguard-config
+        persistentVolumeClaim:
+          claimName: adguard-config
+      - name: adguard-work
+        persistentVolumeClaim:
+          claimName: adguard-work
