@@ -61,6 +61,8 @@ data:
             icon: traefik.png
             href: https://traefik.elposhox.dev/dashboard/
             siteMonitor: https://traefik.elposhox.dev/dashboard/
+            app: traefik
+            namespace: traefik
             widget:
               type: traefik
               url: https://traefik.elposhox.dev
@@ -69,6 +71,8 @@ data:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev
             siteMonitor: https://argocd.elposhox.dev
+            app: argocd
+            namespace: argocd
             widget:
               type: argocd
               url: https://argocd.elposhox.dev
@@ -78,6 +82,8 @@ data:
             icon: longhorn.png
             href: https://longhorn.elposhox.dev
             siteMonitor: https://longhorn.elposhox.dev
+            app: longhorn-ui
+            namespace: longhorn-system
 
     - Personal:
         - Home Assistant:
@@ -109,6 +115,8 @@ data:
             icon: n8n.png
             href: https://n8n.elposhox.dev
             siteMonitor: https://n8n.elposhox.dev
+            app: n8n
+            namespace: n8n
 
         - Excalidraw:
             icon: excalidraw.png
@@ -135,6 +143,8 @@ data:
             icon: uptime-kuma.png
             href: https://uptime.elposhox.dev
             siteMonitor: https://uptime.elposhox.dev
+            app: uptime-kuma
+            namespace: uptime-kuma
             widget:
               type: uptimekuma
               url: https://uptime.elposhox.dev
@@ -144,6 +154,8 @@ data:
             icon: speedtest-tracker.png
             href: https://speedtest.elposhox.dev
             siteMonitor: https://speedtest.elposhox.dev
+            app: speedtest-tracker
+            namespace: speedtest-tracker
             widget:
               type: speedtest
               url: https://speedtest.elposhox.dev
