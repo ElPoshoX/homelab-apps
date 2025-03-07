@@ -118,16 +118,6 @@ data:
             app: n8n
             namespace: n8n
 
-        - Excalidraw:
-            icon: excalidraw.png
-            href: https://excalidraw.elposhox.dev
-            siteMonitor: https://excalidraw.elposhox.dev
-
-        - NextCloud:
-            icon: nextcloud.png
-            href: https://nextcloud.elposhox.dev
-            siteMonitor: https://nextcloud.elposhox.dev
-
         - Immich:
             icon: immich.png
             href: https://immich.elposhox.dev
@@ -137,6 +127,11 @@ data:
             icon: octoprint.png
             href: https://octoprint.elposhox.dev
             siteMonitor: https://octoprint.elposhox.dev
+
+        - Actual Budget:
+            icon: actual-budget.png
+            href: https://actual-budget.elposhox.dev
+            siteMonitor: https://actual-budget.elposhox.dev
 
     - Observability:
         - Uptime Kuma:
@@ -179,6 +174,8 @@ data:
             icon: loki.png
             href: https://promtail.elposhox.dev
             siteMonitor: https://promtail.elposhox.dev
+
+
 
     - Media:
         - Jellyfin:
