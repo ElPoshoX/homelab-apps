@@ -71,7 +71,7 @@ data:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev
             siteMonitor: https://argocd.elposhox.dev
-            app: argocd
+            app: argocd-server
             namespace: argocd
             widget:
               type: argocd
