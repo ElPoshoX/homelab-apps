@@ -50,6 +50,7 @@ data:
             href: https://adguard-secondary.elposhox.dev
             siteMonitor: https://adguard-secondary.elposhox.dev
             app: adguard
+            namespace: adguard
             widget:
               type: adguard
               url: https://adguard-secondary.elposhox.dev
@@ -84,6 +85,7 @@ data:
             href: https://home-assistant.elposhox.dev
             siteMonitor: https://home-assistant.elposhox.dev
             app: home-assistant
+            namespace: home-assistant
             widget:
               type: homeassistant
               url: https://home-assistant.elposhox.dev
