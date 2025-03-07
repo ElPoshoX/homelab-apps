@@ -39,6 +39,7 @@ data:
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
+            siteMonitor: https://adguard-primary.elposhox.dev
             widget:
               type: adguard
               url: https://adguard-primary.elposhox.dev
@@ -47,6 +48,7 @@ data:
         - Secondary AdGuard:
             icon: adguard-home.png
             href: https://adguard-secondary.elposhox.dev
+            siteMonitor: https://adguard-secondary.elposhox.dev
             widget:
               type: adguard
               url: https://adguard-secondary.elposhox.dev
@@ -56,6 +58,7 @@ data:
         - Traefik:
             icon: traefik.png
             href: https://traefik.elposhox.dev
+            siteMonitor: https://traefik.elposhox.dev
             widget:
               type: traefik
               url: https://traefik.elposhox.dev
@@ -63,6 +66,7 @@ data:
         - ArgoCD:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev
+            siteMonitor: https://argocd.elposhox.dev
             widget:
               type: argocd
               url: https://argocd.elposhox.dev
@@ -77,6 +81,7 @@ data:
         - Home Assistant:
             icon: home-assistant.png
             href: https://home-assistant.elposhox.dev
+            siteMonitor: https://home-assistant.elposhox.dev
             widget:
               type: homeassistant
               url: https://home-assistant.elposhox.dev
@@ -107,20 +112,22 @@ data:
             siteMonitor: https://octoprint.elposhox.dev
 
     - Observability:
+        - Uptime Kuma:
+            icon: uptime-kuma.png
+            href: https://uptime.elposhox.dev
+            siteMonitor: https://uptime.elposhox.dev
+            widget:
+              type: uptimekuma
+              url: https://uptime.elposhox.dev
+              slug: home-lab
+
         - Speedtest Tracker:
             icon: speedtest-tracker.png
             href: https://speedtest.elposhox.dev
+            siteMonitor: https://speedtest.elposhox.dev
             widget:
               type: speedtest
               url: https://speedtest.elposhox.dev
-
-        - ArgoCD:
-            icon: argo-cd.png
-            href: https://argocd.elposhox.dev
-            widget:
-              type: argocd
-              url: https://argocd.elposhox.dev
-              key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
 
   widgets.yaml: |
     - kubernetes:
