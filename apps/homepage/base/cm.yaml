@@ -107,9 +107,6 @@ data:
             icon: n8n.png
             href: https://n8n.elposhox.dev
             siteMonitor: https://n8n.elposhox.dev
-            widget:
-              type: n8n
-              url: https://n8n.elposhox.dev
 
         - Excalidraw:
             icon: excalidraw.png
@@ -165,7 +162,7 @@ data:
             siteMonitor: https://prometheus.elposhox.dev
 
         - Promtail:
-            icon: promtail.png
+            icon: loki.png
             href: https://promtail.elposhox.dev
             siteMonitor: https://promtail.elposhox.dev
 
@@ -175,10 +172,10 @@ data:
             href: https://jellyfin.elposhox.dev
             siteMonitor: https://jellyfin.elposhox.dev
 
-        - Jellyseer:
-            icon: jellyseer.png
-            href: https://jellyseer.elposhox.dev
-            siteMonitor: https://jellyseer.elposhox.dev
+        - Jellyseerr:
+            icon: jellyseerr.png
+            href: https://jellyseerr.elposhox.dev
+            siteMonitor: https://jellyseerr.elposhox.dev
 
         - Plex:
             icon: plex.png
