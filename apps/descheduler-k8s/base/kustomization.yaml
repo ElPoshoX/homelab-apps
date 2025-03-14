@@ -8,4 +8,4 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- https://github.com/kubernetes-sigs/descheduler/tree/v0.32.2/kubernetes/cronjob/kustomization.yaml
+- https://github.com/kubernetes-sigs/descheduler/tree/v0.32.2/kubernetes/cronjob/
