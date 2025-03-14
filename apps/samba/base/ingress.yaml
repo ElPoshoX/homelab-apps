@@ -1,24 +1,14 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
   name: samba-server
-  annotations:
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: true
-    nginx.org/mergeable-ingress-type: "minion"
 spec:
-  tls:
-    - hosts:
-        - samba.elposhox.dev
-  ingressClassName: nginx
-  rules:
-  - host: 'samba.elposhox.dev'
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: samba-server
-              port:
-                number: 445
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`samba.elposhox.dev`)
+    services:
+    - kind: Service
+      name: samba-server
+      port: 445
