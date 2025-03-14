@@ -69,7 +69,7 @@ spec:
     port: 53
     targetPort: 53
   type: LoadBalancer
-  loadBalancerIP: 192.168.86.161 
+  loadBalancerIP: 192.168.3.12
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Cluster
 ---
