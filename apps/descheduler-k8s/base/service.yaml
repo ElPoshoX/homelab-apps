@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uptime-kuma
+  labels:
+    app: uptime-kuma
+    app.kubernetes.io/instance: uptime-kuma-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/part-of: uptime-kuma
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: uptime-kuma
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: uptime-kuma
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
+  - name: uptime-kuma
+    protocol: TCP
+    port: 80
+    targetPort: 3001
+  internalTrafficPolicy: Cluster
