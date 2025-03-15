@@ -51,7 +51,7 @@ kind: Service
 metadata:
   name: adguard-home-dns-udp
   annotations:
-    metallb.io/allow-shared-ip: "shared-ip"
+    metallb.universe.tf/allow-shared-ip: "adguard-home-shared-key"
   labels:
     app: adguard
     app.kubernetes.io/instance: adguard-prd
@@ -71,16 +71,16 @@ spec:
     port: 53
     targetPort: 53
   type: LoadBalancer
-  loadBalancerIP: 192.168.3.10
+  loadBalancerIP: 192.168.3.12
   internalTrafficPolicy: Cluster
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: adguard-home-dns-tcp
   annotations:
-    metallb.io/allow-shared-ip: "shared-ip"
+    metallb.universe.tf/allow-shared-ip: "adguard-home-shared-key"
   labels:
     app: adguard
     app.kubernetes.io/instance: adguard-prd
@@ -100,6 +100,6 @@ spec:
     port: 53
     targetPort: 53
   type: LoadBalancer
-  loadBalancerIP: 192.168.3.10
+  loadBalancerIP: 192.168.3.12
   internalTrafficPolicy: Cluster
   externalTrafficPolicy: Local
