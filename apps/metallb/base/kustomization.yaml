@@ -10,4 +10,6 @@ labels:
 resources:
 - github.com/metallb/metallb/config/native?ref=v0.14.9
 - address-pool.yaml
-- l2-advertisement.yaml
+# - l2-advertisement.yaml
+- bgp-peer.yaml
+- bgp-advert.yaml
