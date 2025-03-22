@@ -19,11 +19,11 @@ data:
             thresholds:
               "cpu" : 20
               "memory": 20
-              "pods": 20
+              "pods": 15
             targetThresholds:
               "cpu" : 50
               "memory": 50
-              "pods": 50
+              "pods": 25
         - name: "RemovePodsViolatingTopologySpreadConstraint"
           args:
             topologyBalanceNodeFit: true
