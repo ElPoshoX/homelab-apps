@@ -27,7 +27,6 @@ data:
         - name: "RemovePodsViolatingTopologySpreadConstraint"
           args:
             topologyBalanceNodeFit: true
-            maxSkew: 1
             constraints:
               - DoNotSchedule
         plugins:
