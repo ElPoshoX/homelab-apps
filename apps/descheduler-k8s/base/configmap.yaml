@@ -24,11 +24,18 @@ data:
               "cpu" : 50
               "memory": 50
               "pods": 50
+        - name: "RemovePodsViolatingTopologySpreadConstraint"
+          args:
+            topologyBalanceNodeFit: true
+            maxSkew: 1
+            constraints:
+              - DoNotSchedule
         plugins:
           balance:
             enabled:
               - "LowNodeUtilization"
               - "RemoveDuplicates"
+              - "RemovePodsViolatingTopologySpreadConstraint"
           deschedule:
             enabled:
               - "RemovePodsViolatingInterPodAntiAffinity"
