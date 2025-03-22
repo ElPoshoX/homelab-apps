@@ -8,4 +8,10 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- https://github.com/kubernetes-sigs/descheduler/tree/v0.32.2/kubernetes/cronjob/
+- configmap.yaml
+- cluster-role.yaml
+- role-binding.yaml
+- service-account.yaml
+- role.yaml
+- cluster-role-binding.yaml
+- cronjob.yaml
