@@ -7,12 +7,15 @@ metadata:
 spec:
   schedule: "*/2 * * * *"
   concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
   jobTemplate:
     spec:
       template:
         metadata:
           name: descheduler-pod
         spec:
+
           priorityClassName: system-cluster-critical
           containers:
           - name: descheduler
