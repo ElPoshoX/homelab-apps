@@ -263,14 +263,6 @@ data:
             href: https://suwayomi.elposhox.dev
             siteMonitor: https://suwayomi.elposhox.dev
 
-    - Devices:
-        - Unifi:
-            icon: unifi.png
-            href: https://unifi.elposhox.dev
-            siteMonitor: https://unifi.elposhox.dev
-
-    
-
   widgets.yaml: |
     - kubernetes:
         cluster:
@@ -290,4 +282,8 @@ data:
         cpu: true
         memory: true
         network: default
+    - unifi_console:
+        url: https://192.168.1.1
+        username: "{{HOMEPAGE_VAR_UNIFI_USER}}"
+        password: "{{HOMEPAGE_VAR_UNIFI_PASS}}"
   docker.yaml: ""
