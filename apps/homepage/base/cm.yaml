@@ -47,8 +47,6 @@ data:
         - Secondary AdGuard:
             icon: adguard-home.png
             href: http://192.168.2.2
-            app: adguard
-            namespace: adguard
             widget:
               type: adguard
               url: https://adguard-secondary.elposhox.dev
