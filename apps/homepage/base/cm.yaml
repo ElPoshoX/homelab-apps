@@ -292,8 +292,3 @@ data:
         memory: true
         network: default
   docker.yaml: ""
-widget:
-                type: sonarr
-                url: https://sonarr.elposhox.dev
-                key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
-                enableQueue: true 
