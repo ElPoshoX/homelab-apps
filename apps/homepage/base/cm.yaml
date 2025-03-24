@@ -39,7 +39,6 @@ data:
         - Unifi Controller:
             icon: ubiquiti.png
             href: https://192.168.1.1
-            siteMonitor: https://192.168.1.1
             widget:
                 type: unifi
                 url: https://192.168.1.1
@@ -48,7 +47,6 @@ data:
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
-            siteMonitor: https://adguard-primary.elposhox.dev
             widget:
               type: adguard
               url: https://adguard-primary.elposhox.dev
@@ -57,7 +55,6 @@ data:
         - Secondary AdGuard:
             icon: adguard-home.png
             href: http://192.168.2.2
-            siteMonitor: http://192.168.2.2
             app: adguard
             namespace: adguard
             widget:
@@ -68,7 +65,6 @@ data:
         - Traefik:
             icon: traefik.png
             href: https://traefik.elposhox.dev/dashboard/
-            siteMonitor: https://traefik.elposhox.dev/dashboard/
             app: traefik
             namespace: traefik
             widget:
@@ -78,7 +74,6 @@ data:
         - ArgoCD:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev
-            siteMonitor: https://argocd.elposhox.dev
             app: argocd-server
             namespace: argocd
             widget:
@@ -89,7 +84,6 @@ data:
         - TrueNas:
             icon: truenas-scale.png
             href: https://truenas.elposhox.dev
-            siteMonitor: https://truenas.elposhox.dev
             widget:
               type: truenas
               url: https://truenas.elposhox.dev
@@ -99,7 +93,6 @@ data:
         - Longhorn:
             icon: longhorn.png
             href: https://longhorn.elposhox.dev
-            siteMonitor: https://longhorn.elposhox.dev
             app: longhorn-ui
             namespace: longhorn-system
 
@@ -107,7 +100,6 @@ data:
         - Home Assistant:
             icon: home-assistant.png
             href: https://home-assistant.elposhox.dev
-            siteMonitor: https://home-assistant.elposhox.dev
             app: home-assistant
             namespace: home-assistant
             widget:
@@ -127,19 +119,16 @@ data:
         - Bookstack:
             icon: bookstack.png
             href: https://bookstack.elposhox.dev
-            siteMonitor: https://bookstack.elposhox.dev
 
         - N8N:
             icon: n8n.png
             href: https://n8n.elposhox.dev
-            siteMonitor: https://n8n.elposhox.dev
             app: n8n
             namespace: n8n
 
         - Immich:
             icon: immich.png
             href: https://immich.elposhox.dev
-            siteMonitor: https://immich.elposhox.dev
             widget:
                 type: immich
                 url: https://immich.elposhox.dev
@@ -149,18 +138,15 @@ data:
         - Octoprint:
             icon: octoprint.png
             href: https://octoprint.elposhox.dev
-            siteMonitor: https://octoprint.elposhox.dev
 
         - Actual Budget:
             icon: actual-budget.png
             href: https://actual-budget.elposhox.dev
-            siteMonitor: https://actual-budget.elposhox.dev
 
     - Observability:
         - Uptime Kuma:
             icon: uptime-kuma.png
             href: https://uptime.elposhox.dev
-            siteMonitor: https://uptime.elposhox.dev
             app: uptime-kuma
             namespace: uptime-kuma
             widget:
@@ -171,7 +157,6 @@ data:
         - Speedtest Tracker:
             icon: speedtest-tracker.png
             href: https://speedtest.elposhox.dev
-            siteMonitor: https://speedtest.elposhox.dev
             app: speedtest-tracker
             namespace: speedtest-tracker
             widget:
@@ -181,22 +166,18 @@ data:
         - ChangeDetection:
             icon: changedetection.png
             href: https://change-detection.elposhox.dev
-            siteMonitor: https://change-detection.elposhox.dev
 
         - Grafana:
             icon: grafana.png
             href: https://grafana.elposhox.dev
-            siteMonitor: https://grafana.elposhox.dev
 
         - Prometheus:
             icon: prometheus.png
             href: https://prometheus.elposhox.dev
-            siteMonitor: https://prometheus.elposhox.dev
 
         - Promtail:
             icon: loki.png
             href: https://promtail.elposhox.dev
-            siteMonitor: https://promtail.elposhox.dev
 
 
 
@@ -204,7 +185,6 @@ data:
         - Jellyfin:
             icon: jellyfin.png
             href: https://jellyfin.elposhox.dev
-            siteMonitor: https://jellyfin.elposhox.dev
             widget:
                 type: jellyfin
                 url: https://jellyfin.elposhox.dev
@@ -213,7 +193,6 @@ data:
         - Jellyseerr:
             icon: jellyseerr.png
             href: https://jellyseerr.elposhox.dev
-            siteMonitor: https://jellyseerr.elposhox.dev
             widget:
                 type: jellyseerr
                 url: https://jellyseerr.elposhox.dev
@@ -222,7 +201,6 @@ data:
         - Sonarr:
             icon: sonarr.png
             href: https://sonarr.elposhox.dev
-            siteMonitor: https://sonarr.elposhox.dev
             widget:
                 type: sonarr
                 url: https://sonarr.elposhox.dev
@@ -232,7 +210,6 @@ data:
         - Radarr:
             icon: radarr.png
             href: https://radarr.elposhox.dev
-            siteMonitor: https://radarr.elposhox.dev
             widget:
                 type: radarr
                 url: https://radarr.elposhox.dev
@@ -242,7 +219,6 @@ data:
         - Bazarr:
             icon: bazarr.png
             href: https://bazarr.elposhox.dev
-            siteMonitor: https://bazarr.elposhox.dev
             widget:
                 type: bazarr
                 url: https://bazarr.elposhox.dev
@@ -251,12 +227,10 @@ data:
         - Jackett:
             icon: jackett.png
             href: https://jackett.elposhox.dev
-            siteMonitor: https://jackett.elposhox.dev
 
         - Prowlarr:
             icon: prowlarr.png
             href: https://prowlarr.elposhox.dev
-            siteMonitor: https://prowlarr.elposhox.dev
             widget:
                 type: prowlarr
                 url: https://prowlarr.elposhox.dev
@@ -265,12 +239,10 @@ data:
         - Kavita:
             icon: kavita.png
             href: https://kavita.elposhox.dev
-            siteMonitor: https://kavita.elposhox.dev
 
         - Suwayomi:
             icon: suwayomi.png
             href: https://suwayomi.elposhox.dev
-            siteMonitor: https://suwayomi.elposhox.dev
 
   widgets.yaml: |
     - unifi_console:
