@@ -36,6 +36,16 @@ data:
               href: https://elposhox.dev/
   services.yaml: |
     - Administration:
+        - Unifi Controller:
+            icon: ubiquiti.png
+            href: https://192.168.1.1/
+            siteMonitor: https://192.168.1.1/
+            widget:
+                type: unifi
+                url: https://192.168.1.1/
+                site: PoshoX-Network
+                username: "{{HOMEPAGE_VAR_UNIFI_USER}}"
+                password: "{{HOMEPAGE_VAR_UNIFI_PASS}}"
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
@@ -47,8 +57,8 @@ data:
               password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
         - Secondary AdGuard:
             icon: adguard-home.png
-            href: https://adguard-secondary.elposhox.dev
-            siteMonitor: https://adguard-secondary.elposhox.dev
+            href: http://192.168.2.2
+            siteMonitor: http://192.168.2.2
             app: adguard
             namespace: adguard
             widget:
@@ -122,6 +132,11 @@ data:
             icon: immich.png
             href: https://immich.elposhox.dev
             siteMonitor: https://immich.elposhox.dev
+            widget:
+                type: immich
+                url: https://immich.elposhox.dev
+                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+                version: 2
 
         - Octoprint:
             icon: octoprint.png
@@ -182,52 +197,63 @@ data:
             icon: jellyfin.png
             href: https://jellyfin.elposhox.dev
             siteMonitor: https://jellyfin.elposhox.dev
+            widget:
+                type: jellyfin
+                url: https://jellyfin.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
         - Jellyseerr:
             icon: jellyseerr.png
             href: https://jellyseerr.elposhox.dev
             siteMonitor: https://jellyseerr.elposhox.dev
-
-        - Plex:
-            icon: plex.png
-            href: https://plex.elposhox.dev
-            siteMonitor: https://plex.elposhox.dev
+            widget:
+                type: jellyseerr
+                url: https://jellyseerr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
 
         - Sonarr:
             icon: sonarr.png
             href: https://sonarr.elposhox.dev
             siteMonitor: https://sonarr.elposhox.dev
-
+            widget:
+                type: sonarr
+                url: https://sonarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+                enableQueue: true             
+                
         - Radarr:
             icon: radarr.png
             href: https://radarr.elposhox.dev
             siteMonitor: https://radarr.elposhox.dev
+            widget:
+                type: radarr
+                url: https://radarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+                enableQueue: true 
 
         - Bazarr:
             icon: bazarr.png
             href: https://bazarr.elposhox.dev
             siteMonitor: https://bazarr.elposhox.dev
+            widget:
+                type: bazarr
+                url: https://bazarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
 
         - Jackett:
             icon: jackett.png
             href: https://jackett.elposhox.dev
             siteMonitor: https://jackett.elposhox.dev
 
-        - Transmission:
-            icon: transmission.png
-            href: https://transmission.elposhox.dev
-            siteMonitor: https://transmission.elposhox.dev
-
         - Prowlarr:
             icon: prowlarr.png
             href: https://prowlarr.elposhox.dev
             siteMonitor: https://prowlarr.elposhox.dev
-
-        - Jellystat:
-            icon: jellystat.png
-            href: https://jellystat.elposhox.dev
-            siteMonitor: https://jellystat.elposhox.dev
-
+            widget:
+                type: prowlarr
+                url: https://prowlarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+            
         - Kavita:
             icon: kavita.png
             href: https://kavita.elposhox.dev
@@ -266,3 +292,8 @@ data:
         memory: true
         network: default
   docker.yaml: ""
+widget:
+                type: sonarr
+                url: https://sonarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+                enableQueue: true 
