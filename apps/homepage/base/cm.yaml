@@ -35,6 +35,7 @@ data:
             - abbreviation: WP
               href: https://elposhox.dev/
   services.yaml: |
+    - Administration:
         - Primary AdGuard:
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
@@ -240,7 +241,7 @@ data:
         url: https://192.168.1.1
         username: "{{HOMEPAGE_VAR_UNIFI_USER}}"
         password: "{{HOMEPAGE_VAR_UNIFI_PASS}}"
-        
+
     - kubernetes:
         cluster:
           show: true
