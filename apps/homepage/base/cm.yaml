@@ -247,6 +247,11 @@ data:
           memory: true
           showLabel: true
           label: "cluster"
+        nodes:
+          show: false
+          cpu: false
+          memory: false
+          showLabel: false
     - resources:
         backend: resources
         expanded: true
