@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: homarr
-        image: lissy93/homarr
+        image: ghcr.io/homarr-labs/homarr:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
@@ -35,7 +35,7 @@ spec:
         - secretRef:
             name: homarr-secrets
         ports:
-        - containerPort: 8080
+        - containerPort: 7575
           name: homarr
           protocol: TCP
         resources:
