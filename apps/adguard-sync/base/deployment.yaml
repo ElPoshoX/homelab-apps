@@ -35,6 +35,9 @@ spec:
           value: "0 */2 * * *"
         - name: RUN_ON_START
           value: "true"
+        envFrom:
+        - secretRef:
+            name: adguard-sync-secret
         ports:
         - containerPort: 8080
           name: adguard-sync
