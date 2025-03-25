@@ -41,10 +41,10 @@ spec:
         resources:
           requests:
             memory: "256Mi"
-            cpu: "128m"
+            cpu: "256m"
           limits:
             memory: "512Mi"
-            cpu: "256m"
+            cpu: "512m"
         volumeMounts:
         - name: dashy-data
           mountPath: /appdata
