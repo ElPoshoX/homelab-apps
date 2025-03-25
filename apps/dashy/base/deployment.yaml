@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy
+  labels:
+    app: dashy
+    app.kubernetes.io/name: dashy
+    app.kubernetes.io/instance: dashy
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: dashy
+  template:
+    metadata:
+      labels:
+        app: dashy
+        app.kubernetes.io/name: dashy
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: dashy
+        image: ghcr.io/homarr-labs/homarr:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        ports:
+        - containerPort: 7575
+          name: dashy
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: dashy-data
+          mountPath: /appdata
+      volumes:
+      - name: dashy-data
+        persistentVolumeClaim:
+          claimName: dashy-data
