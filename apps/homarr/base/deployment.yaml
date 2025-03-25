@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr
+  labels:
+    app: homarr
+    app.kubernetes.io/name: homarr
+    app.kubernetes.io/instance: homarr
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+        app.kubernetes.io/name: homarr
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: homarr
+        image: lissy93/homarr
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        envFrom:
+        - secretRef:
+            name: homarr-secrets
+        ports:
+        - containerPort: 8080
+          name: homarr
+          protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "256m"
+          limits:
+            memory: "512Mi"
+            cpu: "512m"
+        volumeMounts:
+        - name: homarr-data
+          mountPath: /appdata
+      volumes:
+      - name: homarr-data
+        persistentVolumeClaim:
+          claimName: homarr-data
