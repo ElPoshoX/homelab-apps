@@ -42,9 +42,9 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "256m"
-          limits:
-            memory: "512Mi"
-            cpu: "512m"
+          # limits:
+          #   memory: "512Mi"
+          #   cpu: "512m"
         volumeMounts:
         - name: homarr-data
           mountPath: /appdata
