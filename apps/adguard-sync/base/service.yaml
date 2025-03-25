@@ -2,23 +2,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: uptime-kuma
+  name: adguard-sync
   labels:
-    app: uptime-kuma
-    app.kubernetes.io/instance: uptime-kuma-prd
+    app: adguard-sync
+    app.kubernetes.io/instance: adguard-sync-prd
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: uptime-kuma
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/name: adguard-sync
+    app.kubernetes.io/part-of: adguard-sync
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: uptime-kuma
+    app: adguard-sync
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: adguard-sync
     homelab.local/OwnedBy: ElPoshoX
   ports:
-  - name: uptime-kuma
+  - name: adguard-sync
     protocol: TCP
     port: 80
-    targetPort: 3001
+    targetPort: 8080
   internalTrafficPolicy: Cluster

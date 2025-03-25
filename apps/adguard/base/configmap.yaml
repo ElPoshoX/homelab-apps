@@ -158,21 +158,6 @@ data:
       blocking_mode: default
       parental_block_host: family-block.dns.adguard.com
       safebrowsing_block_host: standard-block.dns.adguard.com
-      rewrites:
-        - domain: adguard-secondary.elposhox.dev
-          answer: 192.168.86.168
-        - domain: home.elposhox.dev
-          answer: 192.168.86.168
-        - domain: argocd.elposhox.dev
-          answer: 192.168.86.168
-        - domain: speedtest.elposhox.dev
-          answer: 192.168.86.168
-        - domain: adguard-primary.elposhox.dev
-          answer: 192.168.86.35
-        - domain: longhorn.elposhox.dev
-          answer: 192.168.86.168
-        - domain: traefik.elposhox.dev
-          answer: 192.168.86.168
       safe_fs_patterns:
         - /opt/adguardhome/work/userfilters/*
       safebrowsing_cache_size: 1048576
