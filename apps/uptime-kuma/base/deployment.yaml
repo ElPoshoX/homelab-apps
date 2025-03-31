@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: uptime-kuma
-        image: louislam/uptime-kuma:1
+        image: louislam/uptime-kuma:beta
         imagePullPolicy: IfNotPresent
         envFrom:
         - secretRef:
@@ -50,10 +50,10 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 3001
-        # volumeMounts:
-        # - name: uptime-kuma-data
-        #   mountPath: /app/data
-      # volumes:
-      # - name: uptime-kuma-data
-      #   persistentVolumeClaim:
-      #     claimName: uptime-kuma-data
+        volumeMounts:
+        - name: uptime-kuma-data
+          mountPath: /app/data
+      volumes:
+      - name: uptime-kuma-data
+        persistentVolumeClaim:
+          claimName: uptime-kuma-data
