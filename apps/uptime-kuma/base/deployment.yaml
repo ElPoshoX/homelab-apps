@@ -50,10 +50,10 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 3001
-        volumeMounts:
-        - name: uptime-kuma-data
-          mountPath: /app/data
-      volumes:
-      - name: uptime-kuma-data
-        persistentVolumeClaim:
-          claimName: uptime-kuma-data
+        # volumeMounts:
+        # - name: uptime-kuma-data
+        #   mountPath: /app/data
+      # volumes:
+      # - name: uptime-kuma-data
+      #   persistentVolumeClaim:
+      #     claimName: uptime-kuma-data
