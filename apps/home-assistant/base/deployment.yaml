@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  labels:
+    app: home-assistant
+    app.kubernetes.io/name: home-assistant
+    app.kubernetes.io/instance: home-assistant
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+        app.kubernetes.io/name: home-assistant
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: home-assistant
+        image: ghcr.io/home-assistant/home-assistant:stable
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "America/Mexico_City"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        envFrom:
+        - secretRef:
+            name: home-assistant-secrets
+        ports:
+        - containerPort: 8123
+          name: home-assistant
+          protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        livenessProbe:
+          tcpSocket:
+            port: 8123
+        volumeMounts:
+          - name: home-assistant-config
+            mountPath: /config
+          - name: home-assistant-time
+            mountPath: /etc/localtime
+            readOnly: true
+      volumes:
+      - name: home-assistant-time
+        persistentVolumeClaim:
+          claimName: home-assistant-time
+      - name: home-assistant-config
+        persistentVolumeClaim:
+          claimName: home-assistant-config

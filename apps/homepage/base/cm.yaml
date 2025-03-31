@@ -1,0 +1,261 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+  settings.yaml: |
+    title: ElPoshoX's Homepage
+    theme: dark
+    headerStyle: boxed
+    language: es-MX
+    target: _blank
+    showStats: true
+    statusStyle: "dot"
+  custom.css: ""
+  custom.js: ""
+  bookmarks.yaml: |
+    - ElPoshoX Channel:
+        - Github:
+            - abbr: GH
+              href: https://github.com/
+        - Facebook:
+            - abbr: FB
+              href: https://facebook.com/
+        - Instagram:
+            - abbr: IG
+              href: https://instagram.com/
+        - Youtube:
+            - abbreviation: YT
+              href: https://youtube.com/
+        - Website:
+            - abbreviation: WP
+              href: https://elposhox.dev/
+  services.yaml: |
+    - Administration:
+        - Primary AdGuard:
+            icon: adguard-home.png
+            href: https://adguard-primary.elposhox.dev
+            widget:
+              type: adguard
+              url: https://adguard-primary.elposhox.dev
+              username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+              password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+        - Secondary AdGuard:
+            icon: adguard-home.png
+            href: http://192.168.2.2
+            widget:
+              type: adguard
+              url: https://adguard-secondary.elposhox.dev
+              username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+              password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+        - Traefik:
+            icon: traefik.png
+            href: https://traefik.elposhox.dev/dashboard/
+            app: traefik
+            namespace: traefik
+            widget:
+              type: traefik
+              url: https://traefik.elposhox.dev
+
+        - ArgoCD:
+            icon: argo-cd.png
+            href: https://argocd.elposhox.dev
+            app: argocd-server
+            namespace: argocd
+            widget:
+              type: argocd
+              url: https://argocd.elposhox.dev
+              key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
+
+        - TrueNas:
+            icon: truenas-scale.png
+            href: https://truenas.elposhox.dev
+            widget:
+              type: truenas
+              url: https://truenas.elposhox.dev
+              key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+              enablePools: true
+
+        - Longhorn:
+            icon: longhorn.png
+            href: https://longhorn.elposhox.dev
+            app: longhorn-ui
+            namespace: longhorn-system
+
+    - Personal:
+        - Home Assistant:
+            icon: home-assistant.png
+            href: https://home-assistant.elposhox.dev
+            app: home-assistant
+            namespace: home-assistant
+            widget:
+              type: homeassistant
+              url: https://home-assistant.elposhox.dev
+              key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
+              # custom:
+              #   - state: sensor.total_power
+              #   - state: sensor.total_energy_today
+              #     label: energy today
+              #   - template: "{{ states.switch|selectattr('state','equalto','on')|list|length }}"
+              #     label: switches on
+              #   - state: weather.forecast_home
+              #     label: wind speed
+              #     value: "{attributes.wind_speed} {attributes.wind_speed_unit}"
+
+        - Bookstack:
+            icon: bookstack.png
+            href: https://bookstack.elposhox.dev
+
+        - N8N:
+            icon: n8n.png
+            href: https://n8n.elposhox.dev
+            app: n8n
+            namespace: n8n
+
+        - Immich:
+            icon: immich.png
+            href: https://immich.elposhox.dev
+            widget:
+                type: immich
+                url: https://immich.elposhox.dev
+                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+                version: 2
+
+        - Octoprint:
+            icon: octoprint.png
+            href: https://octoprint.elposhox.dev
+
+        - Actual Budget:
+            icon: actual-budget.png
+            href: https://actual-budget.elposhox.dev
+
+    - Observability:
+        - Uptime Kuma:
+            icon: uptime-kuma.png
+            href: https://uptime.elposhox.dev
+            app: uptime-kuma
+            namespace: uptime-kuma
+            widget:
+              type: uptimekuma
+              url: https://uptime.elposhox.dev
+              slug: home-lab
+
+        - Speedtest Tracker:
+            icon: speedtest-tracker.png
+            href: https://speedtest.elposhox.dev
+            app: speedtest-tracker
+            namespace: speedtest-tracker
+            widget:
+              type: speedtest
+              url: https://speedtest.elposhox.dev
+
+        - ChangeDetection:
+            icon: changedetection.png
+            href: https://change-detection.elposhox.dev
+
+        - Grafana:
+            icon: grafana.png
+            href: https://grafana.elposhox.dev
+
+        - Prometheus:
+            icon: prometheus.png
+            href: https://prometheus.elposhox.dev
+
+        - Promtail:
+            icon: loki.png
+            href: https://promtail.elposhox.dev
+
+
+
+    - Media:
+        - Jellyfin:
+            icon: jellyfin.png
+            href: https://jellyfin.elposhox.dev
+            widget:
+                type: jellyfin
+                url: https://jellyfin.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+
+        - Jellyseerr:
+            icon: jellyseerr.png
+            href: https://jellyseerr.elposhox.dev
+            widget:
+                type: jellyseerr
+                url: https://jellyseerr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+
+        - Sonarr:
+            icon: sonarr.png
+            href: https://sonarr.elposhox.dev
+            widget:
+                type: sonarr
+                url: https://sonarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+                enableQueue: true             
+                
+        - Radarr:
+            icon: radarr.png
+            href: https://radarr.elposhox.dev
+            widget:
+                type: radarr
+                url: https://radarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+                enableQueue: true 
+
+        - Bazarr:
+            icon: bazarr.png
+            href: https://bazarr.elposhox.dev
+            widget:
+                type: bazarr
+                url: https://bazarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+
+        - Jackett:
+            icon: jackett.png
+            href: https://jackett.elposhox.dev
+
+        - Prowlarr:
+            icon: prowlarr.png
+            href: https://prowlarr.elposhox.dev
+            widget:
+                type: prowlarr
+                url: https://prowlarr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+            
+        - Kavita:
+            icon: kavita.png
+            href: https://kavita.elposhox.dev
+
+        - Suwayomi:
+            icon: suwayomi.png
+            href: https://suwayomi.elposhox.dev
+
+  widgets.yaml: |
+    - unifi_console:
+        url: https://192.168.1.1
+        username: "{{HOMEPAGE_VAR_UNIFI_USER}}"
+        password: "{{HOMEPAGE_VAR_UNIFI_PASS}}"
+
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: false
+          cpu: false
+          memory: false
+          showLabel: false
+    - resources:
+        backend: resources
+        expanded: true
+        cpu: true
+        memory: true
+        network: default
+  docker.yaml: ""

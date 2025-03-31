@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-sync
+  labels:
+    app: adguard-sync
+    app.kubernetes.io/name: adguard-sync
+    app.kubernetes.io/instance: adguard-sync
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adguard-sync
+  template:
+    metadata:
+      labels:
+        app: adguard-sync
+        app.kubernetes.io/name: adguard-sync
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: adguard-sync
+        image: ghcr.io/bakito/adguardhome-sync
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: CRON
+          value: "0 */2 * * *"
+        - name: RUN_ON_START
+          value: "true"
+        envFrom:
+        - secretRef:
+            name: adguard-sync-secret
+        ports:
+        - containerPort: 8080
+          name: adguard-sync
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

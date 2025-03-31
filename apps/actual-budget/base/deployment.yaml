@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual-budget
+  labels:
+    app: actual-budget
+    app.kubernetes.io/name: actual-budget
+    app.kubernetes.io/instance: actual-budget
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: actual-budget
+  template:
+    metadata:
+      labels:
+        app: actual-budget
+        app.kubernetes.io/name: actual-budget
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: actual-budget
+        image: docker.io/actualbudget/actual-server:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        ports:
+        - containerPort: 5006
+          name: actual-budget
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 5006
+        volumeMounts:
+        - name: actual-budget-data
+          mountPath: /data
+      volumes:
+      - name: actual-budget-data
+        persistentVolumeClaim:
+          claimName: actual-budget-data
