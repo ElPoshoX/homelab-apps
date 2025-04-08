@@ -31,6 +31,10 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: "database__client"
+          value: "sqlite3"
+        - name: "database__connection__filename"
+          value: "/data/ghost.db"
         ports:
         - containerPort: 2368
           name: ghost
