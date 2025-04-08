@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`ghost.elposhox.dev`)
+    services:
+    - kind: Service
+      name: ghost
+      port: 80

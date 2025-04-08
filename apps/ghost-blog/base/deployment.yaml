@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  labels:
+    app: ghost
+    app.kubernetes.io/name: ghost
+    app.kubernetes.io/instance: ghost
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+        app.kubernetes.io/name: ghost
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: ghost
+        image: ghost:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        ports:
+        - containerPort: 2368
+          name: ghost
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 2368
+        volumeMounts:
+        - name: ghost-data
+          mountPath: /data
+      volumes:
+      - name: ghost-data
+        persistentVolumeClaim:
+          claimName: ghost-data
