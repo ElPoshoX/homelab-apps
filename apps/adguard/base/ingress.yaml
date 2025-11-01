@@ -34,7 +34,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`adguard-secondary-k3s.homelab.local`)
+    - match: Host(`adguard-secondary-k3s.elposhox.dev`)
       kind: Rule
       services:
         - name: adguard-home
