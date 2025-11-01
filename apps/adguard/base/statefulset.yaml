@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: adguard-statefulset
+  namespace: adguard
+spec:
+  serviceName: "adguard"
+  replicas: 1  # Number of replicas
+  selector:
+    matchLabels:
+      app: adguard-home
+  template:
+    metadata:
+      labels:
+        app: adguard-home
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - adguard-home
+              topologyKey: "kubernetes.io/hostname" # Ensure 1 pod per node
+      containers:
+      - name: adguard-home
+        image: adguard/adguardhome:latest
+        ports:
+        - containerPort: 53
+          name: dns
+          hostPort: 53  # Bind the node's port to the pod for DNS
+          protocol: UDP
+        - containerPort: 3000
+          name: http-initial
+        - containerPort: 80
+          name: http
+          hostPort: 5380 # Bind the node's port to the pod for API/UI
+          protocol: TCP
+        volumeMounts:
+        - name: adguard-data
+          mountPath: /opt/adguardhome/work/ # AdGuard Runtime data
+        - name: adguard-config
+          mountPath: /opt/adguardhome/conf/ # AdGuard configuration
+  volumes:
+    - name: adguard-data
+      persistentVolumeClaim:
+        claimName: adguard-data
+    - name: adguard-config
+      persistentVolumeClaim:
+        claimName: adguard-config
