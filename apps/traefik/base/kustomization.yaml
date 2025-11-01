@@ -8,7 +8,7 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- https://github.com/traefik/traefik-helm-chart/releases/download/v34.4.0/traefik.yaml
+- https://github.com/traefik/traefik-helm-chart/releases/download/v37.2.0/traefik.yaml
 # - https-middleware.yaml
 - tls-options.yaml
 - tls-store.yaml

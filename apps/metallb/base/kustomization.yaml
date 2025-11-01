@@ -8,7 +8,7 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- github.com/metallb/metallb/config/native?ref=v0.14.9
+- github.com/metallb/metallb/config/native?ref=v0.15.2
 - address-pool.yaml
 # - l2-advertisement.yaml
 - bgp-peer.yaml
