@@ -30,13 +30,14 @@ spec:
         ports:
         - containerPort: 53
           name: dns
-          hostPort: 53  # Bind the node's port to the pod for DNS
           protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
         - containerPort: 3000
           name: http-initial
         - containerPort: 80
           name: http
-          hostPort: 5380 # Bind the node's port to the pod for API/UI
           protocol: TCP
         volumeMounts:
         - name: adguard-data

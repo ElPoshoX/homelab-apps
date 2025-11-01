@@ -19,7 +19,32 @@ patches:
     - op: add
       path: "/spec/template/metadata/labels/app.kubernetes.io~1name"
       value: traefik
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --entryPoints.dns-tcp.address=:53/tcp
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --entryPoints.dns-udp.address=:53/udp
   target:
     kind: Deployment
+    name: traefik
+    namespace: traefik
+- patch: |-
+    - op: add
+      path: /spec/ports/-
+      value:
+        name: dns-tcp
+        protocol: TCP
+        port: 53
+        targetPort: 53
+    - op: add
+      path: /spec/ports/-
+      value:
+        name: dns-udp
+        protocol: UDP
+        port: 53
+        targetPort: 53
+  target:
+    kind: Service
     name: traefik
     namespace: traefik
