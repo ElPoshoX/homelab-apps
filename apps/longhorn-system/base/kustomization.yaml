@@ -9,7 +9,7 @@ labels:
 
 resources:
 - https://github.com/kubernetes-csi/external-snapshotter/client/config/crd
-- https://github.com/longhorn/longhorn/releases/download/v1.9.0/longhorn.yaml
+- https://github.com/longhorn/longhorn/releases/download/v1.9.2/longhorn.yaml
 - secret.yaml
 - ingress.yaml
 - storage-class.yaml
