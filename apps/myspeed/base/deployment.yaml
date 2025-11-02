@@ -37,9 +37,6 @@ spec:
           value: "5216"
         - name: TZ
           value: "America/Mexico_City"
-        envFrom:
-        - secretRef:
-            name: myspeed-secret
         ports:
         - containerPort: 5216
           name: http
