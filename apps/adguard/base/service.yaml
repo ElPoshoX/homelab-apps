@@ -4,12 +4,11 @@ metadata:
   name: adguard-home
   namespace: adguard
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: adguard-home
   ports:
     - port: 3000
-      nodePort: 30030
       targetPort: 3000
       protocol: TCP
       name: http-initial

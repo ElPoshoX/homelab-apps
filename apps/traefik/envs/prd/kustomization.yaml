@@ -25,6 +25,18 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/args/-
       value: --entryPoints.dns-udp.address=:53/udp
+    - op: add
+      path: /spec/template/spec/containers/0/ports/-
+      value:
+        name: dns-tcp
+        containerPort: 53
+        protocol: TCP
+    - op: add
+      path: /spec/template/spec/containers/0/ports/-
+      value:
+        name: dns-udp
+        containerPort: 53
+        protocol: UDP
   target:
     kind: Deployment
     name: traefik
