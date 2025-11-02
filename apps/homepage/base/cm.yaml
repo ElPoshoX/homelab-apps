@@ -244,7 +244,7 @@ data:
 
   widgets.yaml: |
     - unifi_console:
-        url: https://192.168.1.1
+        url: https://192.168.0.1
         username: "{{HOMEPAGE_VAR_UNIFI_USER}}"
         password: "{{HOMEPAGE_VAR_UNIFI_PASS}}"
 
