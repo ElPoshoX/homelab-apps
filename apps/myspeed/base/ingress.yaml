@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: speedtest-tracker
+  name: myspeed
 spec:
   entryPoints:
   - websecure
@@ -10,5 +10,6 @@ spec:
     match: Host(`speedtest.elposhox.dev`)
     services:
     - kind: Service
-      name: speedtest-tracker
+      name: myspeed
       port: 80
+  tls: {}

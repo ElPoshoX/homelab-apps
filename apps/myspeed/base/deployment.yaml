@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myspeed-deployment
+  labels:
+    app: myspeed
+    app.kubernetes.io/name: myspeed
+    app.kubernetes.io/instance: myspeed
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: myspeed
+  template:
+    metadata:
+      labels:
+        app: myspeed
+        app.kubernetes.io/name: myspeed
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: myspeed
+        image: germannewsmaker/myspeed:latest
+        imagePullPolicy: Always
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: DB_CONNECTION
+          value: "sqlite"
+        - name: PORT
+          value: "5216"
+        - name: TZ
+          value: "America/Mexico_City"
+        envFrom:
+        - secretRef:
+            name: myspeed-secret
+        ports:
+        - containerPort: 5216
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: myspeed-config
+          mountPath: /config
+      volumes:
+      - name: myspeed-config
+        persistentVolumeClaim:
+          claimName: myspeed-config
