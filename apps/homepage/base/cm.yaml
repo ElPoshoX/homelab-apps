@@ -36,7 +36,7 @@ data:
               href: https://elposhox.dev/
   services.yaml: |
     - Administration:
-        - Primary AdGuard:
+        - Primary AdGuard (Pi Zero 2 W):
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
             widget:
@@ -44,12 +44,20 @@ data:
               url: https://adguard-primary.elposhox.dev
               username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
               password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
-        - Secondary AdGuard:
+        - Secondary AdGuard (TrueNas Scale):
             icon: adguard-home.png
-            href: http://192.168.2.2
+            href: https://adguard-secondary-truenas.elposhox.dev/
             widget:
               type: adguard
-              url: http://192.168.2.2
+              url: https://adguard-secondary-truenas.elposhox.dev/
+              username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
+              password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
+        - Secondary AdGuard (K3S):
+            icon: adguard-home.png
+            href: https://adguard-secondary-k3s.elposhox.dev/
+            widget:
+              type: adguard
+              url: https://adguard-secondary-k3s.elposhox.dev/
               username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
               password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
         - Traefik:
