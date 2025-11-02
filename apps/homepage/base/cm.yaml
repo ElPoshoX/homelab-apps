@@ -156,13 +156,13 @@ data:
               url: https://uptime.elposhox.dev
               slug: home-lab
 
-        - Speedtest Tracker:
+        - My Speed:
             icon: speedtest-tracker.png
             href: https://speedtest.elposhox.dev
-            app: speedtest-tracker
-            namespace: speedtest-tracker
+            app: myspeed
+            namespace: myspeed
             widget:
-              type: speedtest
+              type: myspeed
               url: https://speedtest.elposhox.dev
 
         - ChangeDetection:
