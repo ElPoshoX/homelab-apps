@@ -15,6 +15,10 @@ data:
     target: _blank
     showStats: true
     statusStyle: "dot"
+    useEqualHeights: true
+    providers:
+      longhorn:
+        url: https://longhorn.elposhox.dev
   custom.css: ""
   custom.js: ""
   bookmarks.yaml: |
@@ -260,6 +264,11 @@ data:
           cpu: false
           memory: false
           showLabel: false
+    - longhorn:
+        expanded: true
+        total: true
+        labels: true
+        nodes: true
     - resources:
         backend: resources
         expanded: true
