@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: adguard-sync
-        image: ghcr.io/bakito/adguardhome-sync
+        image: ghcr.io/bakito/adguardhome-sync:v0.8.2
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
