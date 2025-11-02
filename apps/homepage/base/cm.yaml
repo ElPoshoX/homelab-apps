@@ -157,7 +157,7 @@ data:
               slug: home-lab
 
         - My Speed:
-            icon: speedtest-tracker.png
+            icon: myspeed.png
             href: https://speedtest.elposhox.dev
             app: myspeed
             namespace: myspeed
