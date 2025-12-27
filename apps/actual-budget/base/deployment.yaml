@@ -25,7 +25,7 @@ spec:
       containers:
       - name: actual-budget
         image: docker.io/actualbudget/actual-server:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: PUID
           value: "1000"
