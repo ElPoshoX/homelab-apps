@@ -4,7 +4,7 @@ labels:
 - includeSelectors: true
   pairs:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: actual.budget
+    app.kubernetes.io/part-of: firefly-iii
     homelab.local/OwnedBy: ElPoshoX
 
 resources:

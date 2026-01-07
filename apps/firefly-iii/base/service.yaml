@@ -2,23 +2,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: actual-budget
+  name: firefly-iii
   labels:
-    app: actual-budget
-    app.kubernetes.io/instance: actual-budget-prd
+    app: firefly-iii
+    app.kubernetes.io/instance: firefly-iii-prd
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: actual-budget
-    app.kubernetes.io/part-of: actual-budget
+    app.kubernetes.io/name: firefly-iii
+    app.kubernetes.io/part-of: firefly-iii
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: actual-budget
+    app: firefly-iii
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: actual-budget
+    app.kubernetes.io/part-of: firefly-iii
     homelab.local/OwnedBy: ElPoshoX
   ports:
-  - name: actual-budget
+  - name: http
     protocol: TCP
     port: 80
-    targetPort: 5006
+    targetPort: 8080
   internalTrafficPolicy: Cluster
