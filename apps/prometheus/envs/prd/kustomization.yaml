@@ -1,0 +1,64 @@
+# Prometheus Production Environment
+# Link: https://kustomize.io/
+#
+# Production-specific overrides for Prometheus
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prometheus
+bases:
+  - ../../base
+
+# Production labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/environment: prd
+
+# Resources for production environment
+resources:
+  - ingress.yaml
+  - rbac-prd.yaml
+
+# Patches for production
+patchesJson6902:
+  # Increase storage retention for production
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: prometheus
+      namespace: prometheus
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: "--storage.tsdb.retention.time=90d"
+
+  # Increase storage size for production
+  - target:
+      group: v1
+      kind: PersistentVolumeClaim
+      name: prometheus-storage-prometheus-0
+    patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: 200Gi
+
+  # Production resource limits
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: prometheus
+      namespace: prometheus
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests
+        value:
+          memory: "3Gi"
+          cpu: "1"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits
+        value:
+          memory: "6Gi"
+          cpu: "4"

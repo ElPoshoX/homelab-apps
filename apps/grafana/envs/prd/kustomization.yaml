@@ -1,0 +1,53 @@
+# Grafana Production Environment
+# Link: https://kustomize.io/
+#
+# Production-specific overrides for Grafana
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: grafana
+bases:
+  - ../../base
+
+# Production labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/environment: prd
+
+# Resources for production environment
+resources:
+  - ingress.yaml
+
+# Patches for production
+patchesJson6902:
+  # Increase replicas for HA (requires persistent storage solution)
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: grafana
+      namespace: grafana
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+
+  # Increase resource limits for production
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: grafana
+      namespace: grafana
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests
+        value:
+          memory: "512Mi"
+          cpu: "250m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits
+        value:
+          memory: "1Gi"
+          cpu: "1"

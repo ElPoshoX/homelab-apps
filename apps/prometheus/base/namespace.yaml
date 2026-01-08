@@ -1,0 +1,12 @@
+# Prometheus Namespace
+# Link: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+#
+# Isolates Prometheus and related monitoring components
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: prometheus

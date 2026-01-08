@@ -1,0 +1,36 @@
+# Promtail Production Environment
+# Link: https://kustomize.io/
+#
+# Production-specific overrides for Promtail
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: promtail
+bases:
+  - ../../base
+
+# Production labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/environment: prd
+
+# Patches for production (increase resource limits)
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+      name: promtail
+      namespace: promtail
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests
+        value:
+          memory: "128Mi"
+          cpu: "100m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits
+        value:
+          memory: "256Mi"
+          cpu: "500m"

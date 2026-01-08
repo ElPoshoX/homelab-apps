@@ -1,0 +1,16 @@
+# Loki Base Configuration
+# Link: https://kustomize.io/
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: loki
+
+commonLabels:
+  app.kubernetes.io/name: loki
+  app.kubernetes.io/part-of: loki
+
+resources:
+  - namespace.yaml
+  - loki-rbac.yaml
+  - loki-statefulset.yaml
