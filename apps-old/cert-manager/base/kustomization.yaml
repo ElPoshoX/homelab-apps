@@ -4,12 +4,11 @@ labels:
 - includeSelectors: true
   pairs:
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/part-of: metallb-system
+    app.kubernetes.io/part-of: cert-manager
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- github.com/metallb/metallb/config/native?ref=v0.15.2
-- address-pool.yaml
-# - l2-advertisement.yaml
-- bgp-peer.yaml
-- bgp-advert.yaml
+- secret.yaml
+- https://github.com/cert-manager/cert-manager/releases/download/v1.19.1/cert-manager.yaml
+- cluster-issuer.yaml
+- certificate.yaml
