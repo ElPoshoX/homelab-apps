@@ -3,6 +3,9 @@ kind: Namespace
 metadata:
   name: longhorn-system
   labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: longhorn
+    homelab.local/OwnedBy: ElPoshoX
     pod-security.kubernetes.io/enforce: privileged
     pod-security.kubernetes.io/audit: privileged
     pod-security.kubernetes.io/warn: privileged
