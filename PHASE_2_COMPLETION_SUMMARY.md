@@ -73,10 +73,10 @@ apps/prometheus/base/
 
 **Production Overrides:**
 ```
-apps/prometheus/envs/prd/
+apps/prometheus/envs/homelab/
 ├── kustomization.yaml         # Production patches (storage, retention, resources)
 ├── ingress.yaml              # Traefik IngressRoute for prometheus.elposhox.dev
-└── rbac-prd.yaml             # Production-specific RBAC
+└── rbac-homelab.yaml             # Production-specific RBAC
 ```
 
 ### Loki Component (5 files)
@@ -92,7 +92,7 @@ apps/loki/base/
 
 **Production Overrides:**
 ```
-apps/loki/envs/prd/
+apps/loki/envs/homelab/
 ├── kustomization.yaml         # Production patches (storage, resources)
 └── ingress.yaml              # Traefik IngressRoute for loki.elposhox.dev
 ```
@@ -110,7 +110,7 @@ apps/promtail/base/
 
 **Production Overrides:**
 ```
-apps/promtail/envs/prd/
+apps/promtail/envs/homelab/
 └── kustomization.yaml         # Production patches (resources)
 ```
 
@@ -127,7 +127,7 @@ apps/grafana/base/
 
 **Production Overrides:**
 ```
-apps/grafana/envs/prd/
+apps/grafana/envs/homelab/
 ├── kustomization.yaml         # Production patches (resources)
 └── ingress.yaml              # Traefik IngressRoute for grafana.elposhox.dev
 ```
@@ -249,18 +249,18 @@ User: https://grafana.elposhox.dev
 
 ## Integration with ArgoCD
 
-All components follow the **base/envs/prd** pattern and will be auto-discovered by your ApplicationSet:
+All components follow the **base/envs/homelab** pattern and will be auto-discovered by your ApplicationSet:
 
 **ApplicationSet Discovery Pattern:**
 ```
-Glob: apps/*/envs/prd/kustomization.yaml
+Glob: apps/*/envs/homelab/kustomization.yaml
 ```
 
 **Automatic Applications Created:**
-1. `prometheus-prd` → Deploys to `prometheus` namespace
-2. `loki-prd` → Deploys to `loki` namespace
-3. `promtail-prd` → Deploys to `promtail` namespace
-4. `grafana-prd` → Deploys to `grafana` namespace
+1. `prometheus-homelab` → Deploys to `prometheus` namespace
+2. `loki-homelab` → Deploys to `loki` namespace
+3. `promtail-homelab` → Deploys to `promtail` namespace
+4. `grafana-homelab` → Deploys to `grafana` namespace
 
 **Dependency Order (ArgoCD handles automatically):**
 1. Prometheus (independent)
@@ -369,7 +369,7 @@ Before deploying, ensure:
 - [ ] cert-manager is deployed and letsencrypt-prod resolver exists
 - [ ] DNS is configured: `prometheus.elposhox.dev`, `loki.elposhox.dev`, `grafana.elposhox.dev`
 - [ ] Sufficient cluster capacity: ~300Gi storage, ~2.6 CPU, ~4.6Gi RAM (production)
-- [ ] ArgoCD ApplicationSet is configured for `apps/*/envs/prd`
+- [ ] ArgoCD ApplicationSet is configured for `apps/*/envs/homelab`
 
 ---
 
@@ -550,7 +550,7 @@ kubectl port-forward -n grafana deployment/grafana 3000:3000
 
 All components have been created following Kubernetes best practices:
 - ✅ Declarative configuration (YAML)
-- ✅ GitOps-ready (base/envs/prd pattern)
+- ✅ GitOps-ready (base/envs/homelab pattern)
 - ✅ Security hardened (RBAC, PSS, non-root, etc.)
 - ✅ High availability ready (StatefulSet/DaemonSet)
 - ✅ Resource managed (requests/limits)

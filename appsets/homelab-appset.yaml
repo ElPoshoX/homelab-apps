@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: prd-appset
+  name: homelab-appset
   namespace: argocd
 spec:
   goTemplate: true
@@ -11,7 +11,7 @@ spec:
       repoURL: https://github.com/ElPoshoX/homelab-apps.git
       revision: HEAD
       directories:
-      - path: apps/*/envs/prd
+      - path: apps/*/envs/homelab
   template:
     metadata:
       name: '{{index .path.segments 1}}-{{index .path.segments 3}}'

@@ -13,7 +13,7 @@ bases:
 # Production labels
 commonLabels:
   environment: production
-  app.kubernetes.io/environment: prd
+  app.kubernetes.io/environment: homelab
 
 # Resources for production environment
 resources:

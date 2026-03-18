@@ -5,7 +5,7 @@ metadata:
   name: firefly-iii
   labels:
     app: firefly-iii
-    app.kubernetes.io/instance: firefly-iii-prd
+    app.kubernetes.io/instance: firefly-iii-homelab
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: firefly-iii
     app.kubernetes.io/part-of: firefly-iii

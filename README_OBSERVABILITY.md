@@ -57,10 +57,10 @@ apps/
 │   │   ├── prometheus-rbac.yaml
 │   │   ├── prometheus-statefulset.yaml
 │   │   └── prometheus-service.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       ├── kustomization.yaml    (patches & overrides)
 │       ├── ingress.yaml          (prometheus.elposhox.dev)
-│       └── rbac-prd.yaml
+│       └── rbac-homelab.yaml
 │
 ├── loki/            (6 files)   - Log aggregation
 │   ├── base/
@@ -68,7 +68,7 @@ apps/
 │   │   ├── namespace.yaml
 │   │   ├── loki-rbac.yaml
 │   │   └── loki-statefulset.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       ├── kustomization.yaml
 │       └── ingress.yaml          (loki.elposhox.dev)
 │
@@ -78,7 +78,7 @@ apps/
 │   │   ├── namespace.yaml
 │   │   ├── promtail-rbac.yaml
 │   │   └── promtail-daemonset.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       └── kustomization.yaml
 │
 └── grafana/         (6 files)   - Visualization
@@ -87,7 +87,7 @@ apps/
     │   ├── namespace.yaml
     │   ├── grafana-rbac.yaml
     │   └── grafana-deployment.yaml
-    └── envs/prd/
+    └── envs/homelab/
         ├── kustomization.yaml
         └── ingress.yaml          (grafana.elposhox.dev)
 
@@ -221,7 +221,7 @@ Promtail collects logs with labels:
 
 ### Change Prometheus Retention
 
-Edit: `apps/prometheus/envs/prd/kustomization.yaml`
+Edit: `apps/prometheus/envs/homelab/kustomization.yaml`
 
 ```yaml
 - op: replace
@@ -233,7 +233,7 @@ Then: `git add . && git commit && git push`
 
 ### Change Storage Size
 
-Edit: `apps/prometheus/envs/prd/kustomization.yaml`
+Edit: `apps/prometheus/envs/homelab/kustomization.yaml`
 
 ```yaml
 - op: replace
@@ -308,7 +308,7 @@ sum by (pod) (count_over_time({namespace="default"} |= "ERROR" [5m]))
 kubectl -n argocd get applications
 
 # Get app details
-kubectl -n argocd describe application prometheus-prd
+kubectl -n argocd describe application prometheus-homelab
 
 # Check pod status
 kubectl get pods -n prometheus
@@ -352,7 +352,7 @@ kubectl exec -it deployment/grafana -n grafana -- \
    - Drop high-cardinality labels
 
 2. **Increase resources:**
-   - Edit `envs/prd/kustomization.yaml`
+   - Edit `envs/homelab/kustomization.yaml`
    - Increase memory/CPU requests and limits
 
 3. **Enable compression:**
@@ -365,7 +365,7 @@ kubectl exec -it deployment/grafana -n grafana -- \
    - Adjust `table_manager.retention_period`
 
 2. **Increase storage:**
-   - Edit `envs/prd/kustomization.yaml`
+   - Edit `envs/homelab/kustomization.yaml`
    - Increase PVC storage size
 
 3. **Filter logs:**
@@ -432,7 +432,7 @@ Before deploying, verify:
 - [ ] cert-manager deployed
 - [ ] DNS configured for domains
 - [ ] Sufficient cluster capacity
-- [ ] ArgoCD ApplicationSet for `apps/*/envs/prd`
+- [ ] ArgoCD ApplicationSet for `apps/*/envs/homelab`
 
 ---
 

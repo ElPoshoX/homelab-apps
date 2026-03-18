@@ -13,12 +13,12 @@ bases:
 # Production labels
 commonLabels:
   environment: production
-  app.kubernetes.io/environment: prd
+  app.kubernetes.io/environment: homelab
 
 # Resources for production environment
 resources:
   - ingress.yaml
-  - rbac-prd.yaml
+  - rbac-homelab.yaml
 
 # Patches for production
 patchesJson6902:

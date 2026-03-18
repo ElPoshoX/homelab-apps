@@ -29,7 +29,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Configuration
 COMPONENTS=("prometheus" "loki" "promtail" "grafana")
-REQUIRED_FILES=("base/kustomization.yaml" "base/namespace.yaml" "envs/prd/kustomization.yaml")
+REQUIRED_FILES=("base/kustomization.yaml" "base/namespace.yaml" "envs/homelab/kustomization.yaml")
 ERRORS=0
 WARNINGS=0
 
@@ -141,14 +141,14 @@ echo -e "${BLUE}═════════════════════�
 
 # Validate kustomize for each component
 for component in "${COMPONENTS[@]}"; do
-    component_path="$REPO_ROOT/apps/$component/envs/prd"
+    component_path="$REPO_ROOT/apps/$component/envs/homelab"
 
     if [[ ! -d "$component_path" ]]; then
         print_error "Production environment not found: $component_path"
         continue
     fi
 
-    echo "Validating $component/envs/prd..."
+    echo "Validating $component/envs/homelab..."
 
     if kustomize build "$component_path" >/dev/null 2>&1; then
         print_status 0 "Kustomize validation passed for $component"
@@ -171,7 +171,7 @@ echo -e "${BLUE}═════════════════════�
 
 ingress_components=("prometheus" "loki" "grafana")
 for component in "${ingress_components[@]}"; do
-    ingress_file="$REPO_ROOT/apps/$component/envs/prd/ingress.yaml"
+    ingress_file="$REPO_ROOT/apps/$component/envs/homelab/ingress.yaml"
 
     if [[ -f "$ingress_file" ]]; then
         print_status 0 "$component has ingress.yaml"
@@ -313,10 +313,10 @@ if [[ $ERRORS -eq 0 ]]; then
     echo "3. Watch deployment: kubectl -n argocd get applications -w"
     echo ""
     echo "Or manually deploy:"
-    echo "  kustomize build apps/prometheus/envs/prd | kubectl apply -f -"
-    echo "  kustomize build apps/loki/envs/prd | kubectl apply -f -"
-    echo "  kustomize build apps/promtail/envs/prd | kubectl apply -f -"
-    echo "  kustomize build apps/grafana/envs/prd | kubectl apply -f -"
+    echo "  kustomize build apps/prometheus/envs/homelab | kubectl apply -f -"
+    echo "  kustomize build apps/loki/envs/homelab | kubectl apply -f -"
+    echo "  kustomize build apps/promtail/envs/homelab | kubectl apply -f -"
+    echo "  kustomize build apps/grafana/envs/homelab | kubectl apply -f -"
 
     exit 0
 else

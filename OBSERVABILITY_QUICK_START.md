@@ -208,7 +208,7 @@ kubectl exec -n loki loki-0 -- du -sh /loki
 ### Adjust Retention
 
 **Prometheus retention:**
-Edit: `apps/prometheus/envs/prd/kustomization.yaml`
+Edit: `apps/prometheus/envs/homelab/kustomization.yaml`
 - Find: `--storage.tsdb.retention.time=90d`
 - Change to desired retention (e.g., `180d` for 6 months)
 

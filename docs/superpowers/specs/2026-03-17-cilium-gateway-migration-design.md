@@ -76,13 +76,13 @@ spec:
 - apps-old/cert-manager/ (if exists)
 - apps-old/descheduler-k8s/ (if exists)
 - apps-old/firefly-iii/base/ingress.yaml
-- apps-old/grafana/envs/prd/ingress.yaml
+- apps-old/grafana/envs/homelab/ingress.yaml
 - apps-old/home-assistant/base/ingress.yaml
 - apps-old/homepage/base/ingress.yaml
-- apps-old/loki/envs/prd/ingress.yaml
+- apps-old/loki/envs/homelab/ingress.yaml
 - apps-old/myspeed/base/ingress.yaml
 - apps-old/n8n/base/ingress.yaml
-- apps-old/prometheus/envs/prd/ingress.yaml
+- apps-old/prometheus/envs/homelab/ingress.yaml
 - apps-old/uptime-kuma/base/ingress.yaml
 
 ## Implementation Plan

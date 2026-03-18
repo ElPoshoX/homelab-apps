@@ -5,7 +5,7 @@ metadata:
   name: adguard-sync
   labels:
     app: adguard-sync
-    app.kubernetes.io/instance: adguard-sync-prd
+    app.kubernetes.io/instance: adguard-sync-homelab
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: adguard-sync
     app.kubernetes.io/part-of: adguard-sync

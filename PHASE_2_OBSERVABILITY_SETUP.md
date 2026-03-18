@@ -203,10 +203,10 @@ All logs are tagged with:
 │   │   ├── prometheus-rbac.yaml
 │   │   ├── prometheus-statefulset.yaml
 │   │   └── prometheus-service.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       ├── kustomization.yaml (overrides)
 │       ├── ingress.yaml
-│       └── rbac-prd.yaml
+│       └── rbac-homelab.yaml
 │
 ├── loki/
 │   ├── base/
@@ -214,7 +214,7 @@ All logs are tagged with:
 │   │   ├── namespace.yaml
 │   │   ├── loki-rbac.yaml
 │   │   └── loki-statefulset.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       ├── kustomization.yaml (overrides)
 │       └── ingress.yaml
 │
@@ -224,7 +224,7 @@ All logs are tagged with:
 │   │   ├── namespace.yaml
 │   │   ├── promtail-rbac.yaml
 │   │   └── promtail-daemonset.yaml
-│   └── envs/prd/
+│   └── envs/homelab/
 │       └── kustomization.yaml (overrides)
 │
 └── grafana/
@@ -233,7 +233,7 @@ All logs are tagged with:
     │   ├── namespace.yaml
     │   ├── grafana-rbac.yaml
     │   └── grafana-deployment.yaml
-    └── envs/prd/
+    └── envs/homelab/
         ├── kustomization.yaml (overrides)
         └── ingress.yaml
 ```
@@ -253,10 +253,10 @@ find /Users/az/Git-Repos/homelab-apps/apps/{prometheus,loki,promtail,grafana} -n
 
 ```bash
 # Validate each component
-kustomize build /Users/az/Git-Repos/homelab-apps/apps/prometheus/envs/prd
-kustomize build /Users/az/Git-Repos/homelab-apps/apps/loki/envs/prd
-kustomize build /Users/az/Git-Repos/homelab-apps/apps/promtail/envs/prd
-kustomize build /Users/az/Git-Repos/homelab-apps/apps/grafana/envs/prd
+kustomize build /Users/az/Git-Repos/homelab-apps/apps/prometheus/envs/homelab
+kustomize build /Users/az/Git-Repos/homelab-apps/apps/loki/envs/homelab
+kustomize build /Users/az/Git-Repos/homelab-apps/apps/promtail/envs/homelab
+kustomize build /Users/az/Git-Repos/homelab-apps/apps/grafana/envs/homelab
 ```
 
 ### Step 3: Commit to Git
@@ -270,7 +270,7 @@ git commit -m "Add complete observability stack (Prometheus, Loki, Promtail, Gra
 - Loki: Log aggregation with label-based querying (50Gi)
 - Promtail: Log shipping DaemonSet on all nodes
 - Grafana: Unified visualization with pre-configured datasources
-- All components follow base/envs/prd pattern
+- All components follow base/envs/homelab pattern
 - Traefik ingress configured for all components
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -281,10 +281,10 @@ git push origin main
 ### Step 4: ArgoCD Auto-Discovery
 
 ArgoCD's ApplicationSet will automatically detect and deploy:
-1. **prometheus-prd** → prometheus namespace
-2. **loki-prd** → loki namespace
-3. **promtail-prd** → promtail namespace
-4. **grafana-prd** → grafana namespace
+1. **prometheus-homelab** → prometheus namespace
+2. **loki-homelab** → loki namespace
+3. **promtail-homelab** → promtail namespace
+4. **grafana-homelab** → grafana namespace
 
 Monitor deployment:
 ```bash

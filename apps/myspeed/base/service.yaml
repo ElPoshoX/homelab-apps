@@ -5,7 +5,7 @@ metadata:
   name: myspeed
   labels:
     app: myspeed
-    app.kubernetes.io/instance: myspeed-prd
+    app.kubernetes.io/instance: myspeed-homelab
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: myspeed
     app.kubernetes.io/part-of: myspeed

@@ -5,7 +5,7 @@ metadata:
   name: uptime-kuma
   labels:
     app: uptime-kuma
-    app.kubernetes.io/instance: uptime-kuma-prd
+    app.kubernetes.io/instance: uptime-kuma-homelab
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: uptime-kuma
     app.kubernetes.io/part-of: uptime-kuma

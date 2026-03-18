@@ -18,14 +18,14 @@
 2. `apps-old/adguard-sync/base/ingress.yaml`
 3. `apps-old/adguard/base/ingress.yaml`
 4. `apps-old/firefly-iii/base/ingress.yaml`
-5. `apps-old/grafana/envs/prd/ingress.yaml`
+5. `apps-old/grafana/envs/homelab/ingress.yaml`
 6. `apps-old/home-assistant/base/ingress.yaml`
 7. `apps-old/homepage/base/ingress.yaml`
-8. `apps-old/loki/envs/prd/ingress.yaml`
+8. `apps-old/loki/envs/homelab/ingress.yaml`
 9. `apps-old/longhorn-system/base/ingress.yaml`
 10. `apps-old/myspeed/base/ingress.yaml`
 11. `apps-old/n8n/base/ingress.yaml`
-12. `apps-old/prometheus/envs/prd/ingress.yaml`
+12. `apps-old/prometheus/envs/homelab/ingress.yaml`
 13. `apps-old/uptime-kuma/base/ingress.yaml`
 
 **No new files created.** All conversions are in-place replacements.
@@ -79,7 +79,7 @@ apps-old/firefly-iii/base/ingress.yaml
   Service: firefly-iii
   Port: 80
 
-apps-old/grafana/envs/prd/ingress.yaml
+apps-old/grafana/envs/homelab/ingress.yaml
   Name: grafana
   Namespace: grafana
   Hostname: grafana.elposhox.dev
@@ -100,7 +100,7 @@ apps-old/homepage/base/ingress.yaml
   Service: homepage
   Port: 80
 
-apps-old/loki/envs/prd/ingress.yaml
+apps-old/loki/envs/homelab/ingress.yaml
   Name: loki
   Namespace: loki (inferred)
   Hostname: loki.elposhox.dev
@@ -128,7 +128,7 @@ apps-old/n8n/base/ingress.yaml
   Service: n8n
   Port: (extract from file)
 
-apps-old/prometheus/envs/prd/ingress.yaml
+apps-old/prometheus/envs/homelab/ingress.yaml
   Name: prometheus
   Namespace: prometheus (inferred)
   Hostname: prometheus.elposhox.dev
@@ -329,10 +329,10 @@ git commit -m "feat: convert firefly-iii ingress to cilium httproute"
 
 ---
 
-## Task 6: Convert apps-old/grafana/envs/prd/ingress.yaml
+## Task 6: Convert apps-old/grafana/envs/homelab/ingress.yaml
 
 **Files:**
-- Modify: `apps-old/grafana/envs/prd/ingress.yaml`
+- Modify: `apps-old/grafana/envs/homelab/ingress.yaml`
 
 - [ ] **Step 1: Replace with HTTPRoute**
 
@@ -365,13 +365,13 @@ Note: Preserved labels from original. Port is 3000 (not 80).
 - [ ] **Step 2: Validate YAML syntax**
 
 ```bash
-kubectl apply -f apps-old/grafana/envs/prd/ingress.yaml --dry-run=client
+kubectl apply -f apps-old/grafana/envs/homelab/ingress.yaml --dry-run=client
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add apps-old/grafana/envs/prd/ingress.yaml
+git add apps-old/grafana/envs/homelab/ingress.yaml
 git commit -m "feat: convert grafana ingress to cilium httproute"
 ```
 
@@ -475,15 +475,15 @@ git commit -m "feat: convert homepage ingress to cilium httproute"
 
 ---
 
-## Task 9: Convert apps-old/loki/envs/prd/ingress.yaml
+## Task 9: Convert apps-old/loki/envs/homelab/ingress.yaml
 
 **Files:**
-- Modify: `apps-old/loki/envs/prd/ingress.yaml`
+- Modify: `apps-old/loki/envs/homelab/ingress.yaml`
 
 - [ ] **Step 1: Read the file to extract exact service name and port**
 
 ```bash
-cat apps-old/loki/envs/prd/ingress.yaml
+cat apps-old/loki/envs/homelab/ingress.yaml
 ```
 
 - [ ] **Step 2: Replace with HTTPRoute** (adjust service/port from step 1)
@@ -513,13 +513,13 @@ spec:
 - [ ] **Step 3: Validate YAML syntax**
 
 ```bash
-kubectl apply -f apps-old/loki/envs/prd/ingress.yaml --dry-run=client
+kubectl apply -f apps-old/loki/envs/homelab/ingress.yaml --dry-run=client
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add apps-old/loki/envs/prd/ingress.yaml
+git add apps-old/loki/envs/homelab/ingress.yaml
 git commit -m "feat: convert loki ingress to cilium httproute"
 ```
 
@@ -659,15 +659,15 @@ git commit -m "feat: convert n8n ingress to cilium httproute"
 
 ---
 
-## Task 13: Convert apps-old/prometheus/envs/prd/ingress.yaml
+## Task 13: Convert apps-old/prometheus/envs/homelab/ingress.yaml
 
 **Files:**
-- Modify: `apps-old/prometheus/envs/prd/ingress.yaml`
+- Modify: `apps-old/prometheus/envs/homelab/ingress.yaml`
 
 - [ ] **Step 1: Read the file to extract exact service name and port**
 
 ```bash
-cat apps-old/prometheus/envs/prd/ingress.yaml
+cat apps-old/prometheus/envs/homelab/ingress.yaml
 ```
 
 - [ ] **Step 2: Replace with HTTPRoute** (adjust service/port from step 1)
@@ -697,13 +697,13 @@ spec:
 - [ ] **Step 3: Validate YAML syntax**
 
 ```bash
-kubectl apply -f apps-old/prometheus/envs/prd/ingress.yaml --dry-run=client
+kubectl apply -f apps-old/prometheus/envs/homelab/ingress.yaml --dry-run=client
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add apps-old/prometheus/envs/prd/ingress.yaml
+git add apps-old/prometheus/envs/homelab/ingress.yaml
 git commit -m "feat: convert prometheus ingress to cilium httproute"
 ```
 
