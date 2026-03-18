@@ -1,23 +1,21 @@
-# Prometheus Ingress
-# Link: https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/
-#
-# Exposes Prometheus web UI via Traefik IngressRoute
-
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: prometheus
   namespace: prometheus
   labels:
     app.kubernetes.io/name: prometheus
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`prometheus.elposhox.dev`)
-      kind: Rule
-      services:
+  parentRefs:
+    - name: homelab-gateway
+      namespace: ingress
+  hostnames:
+    - prometheus.elposhox.dev
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
         - name: prometheus
           port: 9090
-  tls:
-    certResolver: letsencrypt-prod

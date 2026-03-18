@@ -1,24 +1,21 @@
-# Loki Ingress
-# Link: https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/
-#
-# Exposes Loki query API via Traefik IngressRoute
-
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: loki
   namespace: loki
   labels:
     app.kubernetes.io/name: loki
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`loki.elposhox.dev`)
-      kind: Rule
-      services:
+  parentRefs:
+    - name: homelab-gateway
+      namespace: ingress
+  hostnames:
+    - loki.elposhox.dev
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
         - name: loki
           port: 3100
-  tls:
-    certResolver: letsencrypt-prod
