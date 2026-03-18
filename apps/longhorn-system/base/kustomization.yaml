@@ -8,7 +8,6 @@ labels:
     homelab.local/OwnedBy: ElPoshoX
 
 resources:
-- priority-class.yaml
 - https://github.com/kubernetes-csi/external-snapshotter/client/config/crd
 - https://github.com/longhorn/longhorn/releases/download/v1.11.1/longhorn.yaml
 - secret.yaml
