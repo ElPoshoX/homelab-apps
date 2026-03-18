@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: descheduler-policy-configmap
+  namespace: kube-system
+data:
+  policy.yaml: |
+    apiVersion: "descheduler/v1alpha2"
+    kind: "DeschedulerPolicy"
+    profiles:
+      - name: ProfileName
+        pluginConfig:
+        - name: "DefaultEvictor"
+        - name: "RemovePodsViolatingInterPodAntiAffinity"
+        - name: "RemoveDuplicates"
+        - name: "LowNodeUtilization"
+          args:
+            thresholds:
+              "cpu" : 20
+              "memory": 20
+              "pods": 15
+            targetThresholds:
+              "cpu" : 50
+              "memory": 50
+              "pods": 25
+        - name: "RemovePodsViolatingTopologySpreadConstraint"
+          args:
+            topologyBalanceNodeFit: true
+            constraints:
+              - DoNotSchedule
+        plugins:
+          balance:
+            enabled:
+              - "LowNodeUtilization"
+              - "RemoveDuplicates"
+              - "RemovePodsViolatingTopologySpreadConstraint"
+          deschedule:
+            enabled:
+              - "RemovePodsViolatingInterPodAntiAffinity"

@@ -1,0 +1,16 @@
+# Promtail Base Configuration
+# Link: https://kustomize.io/
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: promtail
+
+commonLabels:
+  app.kubernetes.io/name: promtail
+  app.kubernetes.io/part-of: promtail
+
+resources:
+  - namespace.yaml
+  - promtail-rbac.yaml
+  - promtail-daemonset.yaml

@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adguard-sync
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`adguard-sync.elposhox.dev`)
+    services:
+    - kind: Service
+      name: adguard-sync
+      port: 80

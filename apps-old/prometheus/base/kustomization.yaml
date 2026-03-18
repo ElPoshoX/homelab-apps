@@ -1,0 +1,38 @@
+# Prometheus - Metrics Collection for Kubernetes Cluster
+# Link: https://prometheus.io/
+#
+# This deployment uses kube-prometheus-stack Helm chart which includes:
+# - Prometheus StatefulSet
+# - AlertManager
+# - Grafana (separate - we'll deploy that separately)
+# - Node Exporter (monitors node metrics)
+# - kube-state-metrics (Kubernetes object metrics)
+# - Prometheus Operator (CRD management)
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: prometheus
+  namespace: prometheus
+
+commonLabels:
+  app.kubernetes.io/name: prometheus
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/part-of: prometheus
+  homelab.local/OwnedBy: ElPoshoX
+
+namespace: prometheus
+
+# Remote Helm chart
+# Note: Using GitHub releases URL; adjust version as needed
+resources:
+  - namespace.yaml
+  - prometheus-statefulset.yaml
+  - prometheus-service.yaml
+  - prometheus-rbac.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: prometheus
+  app.kubernetes.io/component: prometheus

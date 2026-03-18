@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firefly-iii
+  labels:
+    app: firefly-iii
+    app.kubernetes.io/name: firefly-iii
+    app.kubernetes.io/instance: firefly-iii
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: firefly-iii
+  template:
+    metadata:
+      labels:
+        app: firefly-iii
+        app.kubernetes.io/name: firefly-iii
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: firefly-iii
+        image: docker.io/fireflyiii/core:latest
+        imagePullPolicy: Always
+        env:
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: firefly-iii-secrets
+              key: app-key
+        - name: DB_HOST
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: "firefly"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: firefly-iii-secrets
+              key: db-username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: firefly-iii-secrets
+              key: db-password
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        volumeMounts:
+        - name: firefly-iii-data
+          mountPath: /var/www/html/storage
+      volumes:
+      - name: firefly-iii-data
+        persistentVolumeClaim:
+          claimName: firefly-iii-data

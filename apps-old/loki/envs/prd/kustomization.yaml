@@ -1,0 +1,51 @@
+# Loki Production Environment
+# Link: https://kustomize.io/
+#
+# Production-specific overrides for Loki
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: loki
+bases:
+  - ../../base
+
+# Production labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/environment: prd
+
+# Resources for production environment
+resources:
+  - ingress.yaml
+
+# Patches for production
+patchesJson6902:
+  # Increase storage retention for production
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: loki
+      namespace: loki
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests
+        value:
+          memory: "1Gi"
+          cpu: "250m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits
+        value:
+          memory: "2Gi"
+          cpu: "1"
+
+  # Increase storage size for production
+  - target:
+      group: v1
+      kind: PersistentVolumeClaim
+      name: loki-storage-loki-0
+    patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: 100Gi

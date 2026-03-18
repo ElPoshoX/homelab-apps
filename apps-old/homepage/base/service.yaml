@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homepage
+  labels:
+    app: homepage
+    app.kubernetes.io/instance: homepage-prd
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: homepage
+    app.kubernetes.io/part-of: homepage
+    homelab.local/OwnedBy: ElPoshoX
+spec:
+  selector:
+    app: homepage
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: homepage
+    homelab.local/OwnedBy: ElPoshoX
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+  internalTrafficPolicy: Cluster
+
