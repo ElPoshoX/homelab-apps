@@ -574,13 +574,7 @@ git commit -m "feat: convert longhorn-system ingress to cilium httproute"
 **Files:**
 - Modify: `apps-old/myspeed/base/ingress.yaml`
 
-- [ ] **Step 1: Read the file to extract exact service name and port**
-
-```bash
-cat apps-old/myspeed/base/ingress.yaml
-```
-
-- [ ] **Step 2: Replace with HTTPRoute** (adjust service/port from step 1)
+- [ ] **Step 1: Replace with HTTPRoute**
 
 ```yaml
 apiVersion: gateway.networking.k8s.io/v1
@@ -593,7 +587,7 @@ spec:
     - name: homelab-gateway
       namespace: ingress
   hostnames:
-    - myspeed.elposhox.dev
+    - speedtest.elposhox.dev
   rules:
     - matches:
         - path:
@@ -604,13 +598,15 @@ spec:
           port: 80
 ```
 
-- [ ] **Step 3: Validate YAML syntax**
+Note: Hostname is `speedtest.elposhox.dev` (not `myspeed.elposhox.dev`)
+
+- [ ] **Step 2: Validate YAML syntax**
 
 ```bash
 kubectl apply -f apps-old/myspeed/base/ingress.yaml --dry-run=client
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add apps-old/myspeed/base/ingress.yaml
@@ -624,13 +620,7 @@ git commit -m "feat: convert myspeed ingress to cilium httproute"
 **Files:**
 - Modify: `apps-old/n8n/base/ingress.yaml`
 
-- [ ] **Step 1: Read the file to extract exact service name and port**
-
-```bash
-cat apps-old/n8n/base/ingress.yaml
-```
-
-- [ ] **Step 2: Replace with HTTPRoute** (adjust service/port from step 1)
+- [ ] **Step 1: Replace with HTTPRoute**
 
 ```yaml
 apiVersion: gateway.networking.k8s.io/v1
@@ -651,16 +641,16 @@ spec:
             value: /
       backendRefs:
         - name: n8n
-          port: 5678
+          port: 80
 ```
 
-- [ ] **Step 3: Validate YAML syntax**
+- [ ] **Step 2: Validate YAML syntax**
 
 ```bash
 kubectl apply -f apps-old/n8n/base/ingress.yaml --dry-run=client
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add apps-old/n8n/base/ingress.yaml
@@ -724,13 +714,7 @@ git commit -m "feat: convert prometheus ingress to cilium httproute"
 **Files:**
 - Modify: `apps-old/uptime-kuma/base/ingress.yaml`
 
-- [ ] **Step 1: Read the file to extract exact service name and port**
-
-```bash
-cat apps-old/uptime-kuma/base/ingress.yaml
-```
-
-- [ ] **Step 2: Replace with HTTPRoute** (adjust service/port from step 1)
+- [ ] **Step 1: Replace with HTTPRoute**
 
 ```yaml
 apiVersion: gateway.networking.k8s.io/v1
@@ -743,7 +727,7 @@ spec:
     - name: homelab-gateway
       namespace: ingress
   hostnames:
-    - uptime-kuma.elposhox.dev
+    - uptime.elposhox.dev
   rules:
     - matches:
         - path:
@@ -751,16 +735,18 @@ spec:
             value: /
       backendRefs:
         - name: uptime-kuma
-          port: 3001
+          port: 80
 ```
 
-- [ ] **Step 3: Validate YAML syntax**
+Note: Hostname is `uptime.elposhox.dev` (not `uptime-kuma.elposhox.dev`)
+
+- [ ] **Step 2: Validate YAML syntax**
 
 ```bash
 kubectl apply -f apps-old/uptime-kuma/base/ingress.yaml --dry-run=client
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add apps-old/uptime-kuma/base/ingress.yaml
@@ -793,8 +779,10 @@ Expected output: `0`
 - [ ] **Step 3: Verify all HTTPRoutes reference homelab-gateway**
 
 ```bash
-grep -r "homelab-gateway" . --include="*.yaml" | grep -c "parentRefs" || echo "All gateway refs verified"
+grep -r "homelab-gateway" . --include="*.yaml" | wc -l
 ```
+
+Expected output: `13` (one per HTTPRoute)
 
 - [ ] **Step 4: Summary commit**
 
