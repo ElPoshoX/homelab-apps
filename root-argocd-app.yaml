@@ -4,7 +4,7 @@ metadata:
   name: homelab-apps
   namespace: argocd
 spec:
-  project: platform
+  project: homelab
   source:
     repoURL: https://github.com/ElPoshoX/homelab-apps.git
     targetRevision: HEAD
