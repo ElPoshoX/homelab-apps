@@ -11,6 +11,8 @@ commonLabels:
 namespace: oneuptime
 
 # Helm chart as a resource
+# NOTE: ArgoCD will fetch this from https://charts.oneuptime.com when deploying to cluster
+# Local kustomize build requires internet access to fetch the Helm chart
 helmCharts:
   - name: oneuptime
     repo: https://charts.oneuptime.com
