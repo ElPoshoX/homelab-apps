@@ -1,0 +1,45 @@
+# Metrics Server Helm Chart Values
+
+# Image configuration
+image:
+  repository: registry.k8s.io/metrics-server/metrics-server
+  tag: v0.6.4
+  pullPolicy: IfNotPresent
+
+# Replica configuration
+replicas: 1
+
+# Args for metrics-server
+# Talos uses self-signed kubelet certificates, so we need to skip verification
+args:
+  - --kubelet-insecure-tls
+  - --kubelet-preferred-address-types=InternalIP
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Node affinity (optional - for homelab)
+affinity: {}
+
+# Tolerations (optional)
+tolerations: []
+
+# Pod Security Context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+# Container Security Context
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
