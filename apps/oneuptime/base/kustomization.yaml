@@ -19,6 +19,7 @@ helmCharts:
     version: "10.0.34"
     valuesFile: values.yaml
     namespace: oneuptime
+    skipTests: true
 
 # Additional Kubernetes resources (non-Helm)
 resources:
@@ -26,3 +27,67 @@ resources:
   - pvc.yaml
   - ingress.yaml
   - secret.yaml
+
+# Remove commonLabels from KEDA CRDs to prevent annotation size overflow
+# KEDA CRDs have very large OpenAPI schemas; adding labels pushes them over 262KB limit
+patchesJson6902:
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: scaledjobs.keda.sh
+    patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1part-of
+      - op: remove
+        path: /metadata/labels/homelab.local~1OwnedBy
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: scaledobjects.keda.sh
+    patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1part-of
+      - op: remove
+        path: /metadata/labels/homelab.local~1OwnedBy
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: triggerauthentications.keda.sh
+    patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1part-of
+      - op: remove
+        path: /metadata/labels/homelab.local~1OwnedBy
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: clustertriggerauthentications.keda.sh
+    patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1part-of
+      - op: remove
+        path: /metadata/labels/homelab.local~1OwnedBy
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+      name: cloudeventsources.eventing.keda.sh
+    patch: |-
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1managed-by
+      - op: remove
+        path: /metadata/labels/app.kubernetes.io~1part-of
+      - op: remove
+        path: /metadata/labels/homelab.local~1OwnedBy
