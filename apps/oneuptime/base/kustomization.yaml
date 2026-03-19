@@ -1,11 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Apply labels to all resources
-commonLabels:
-  app.kubernetes.io/managed-by: kustomize
-  app.kubernetes.io/part-of: oneuptime
-  homelab.local/OwnedBy: ElPoshoX
+# Apply labels to all resources except CRDs
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: oneuptime
+      homelab.local/OwnedBy: ElPoshoX
 
 # Namespace for all resources
 namespace: oneuptime
@@ -28,66 +30,5 @@ resources:
   - ingress.yaml
   - secret.yaml
 
-# Remove commonLabels from KEDA CRDs to prevent annotation size overflow
-# KEDA CRDs have very large OpenAPI schemas; adding labels pushes them over 262KB limit
-patchesJson6902:
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: scaledjobs.keda.sh
-    patch: |-
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1managed-by
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1part-of
-      - op: remove
-        path: /metadata/labels/homelab.local~1OwnedBy
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: scaledobjects.keda.sh
-    patch: |-
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1managed-by
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1part-of
-      - op: remove
-        path: /metadata/labels/homelab.local~1OwnedBy
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: triggerauthentications.keda.sh
-    patch: |-
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1managed-by
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1part-of
-      - op: remove
-        path: /metadata/labels/homelab.local~1OwnedBy
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: clustertriggerauthentications.keda.sh
-    patch: |-
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1managed-by
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1part-of
-      - op: remove
-        path: /metadata/labels/homelab.local~1OwnedBy
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: cloudeventsources.eventing.keda.sh
-    patch: |-
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1managed-by
-      - op: remove
-        path: /metadata/labels/app.kubernetes.io~1part-of
-      - op: remove
-        path: /metadata/labels/homelab.local~1OwnedBy
+# Note: The new labels API doesn't apply labels to CustomResourceDefinitions by default,
+# preventing the annotation overflow issue with KEDA CRDs that have large OpenAPI schemas
