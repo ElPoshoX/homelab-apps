@@ -1,69 +1,94 @@
-# OneUptime Helm Chart Values - External Database Configuration
+# OneUptime Helm Chart Configuration
+# Using external databases on TrueNAS
 
-# Disable internal PostgreSQL - use external on TrueNAS
+global:
+  storageClass: longhorn
+  clusterDomain: cluster.local
+
+# Deployment Configuration
+host: uptime.elposhox.dev
+httpProtocol: https
+ssl: true
+
+# Image registry
+image:
+  registry: docker.io
+  pullPolicy: IfNotPresent
+
+# Deployment replicas
+deployment:
+  replicaCount: 1
+
+# Disable internal databases - use external on TrueNAS
 postgresql:
   enabled: false
 
-# Disable internal Redis - use external on TrueNAS
 redis:
   enabled: false
 
-# Disable internal ClickHouse - use external on TrueNAS
 clickhouse:
   enabled: false
 
-# OneUptime Application Configuration
-oneuptime:
+# External PostgreSQL Configuration
+externalPostgres:
+  host: oneuptime-postgres.elposhox.dev
+  port: 30200
+  username: poshox
+  # Password from SOPS secret
+  database: oneuptime
 
-  # Environment variables from secret
-  envFrom:
-    - secretRef:
-        name: oneuptime-secret
+# External Redis Configuration
+externalRedis:
+  host: oneuptime-redis.elposhox.dev
+  port: 30201
+  # Password from SOPS secret
 
-  # Pod security and resource constraints
-  securityContext:
-    fsGroup: 1000
+# External ClickHouse Configuration
+externalClickhouse:
+  host: oneuptime-clickhouse.elposhox.dev
+  port: 8123
+  username: poshox
+  # Password from SOPS secret
+  protocol: https
 
-  containerSecurityContext:
-    runAsNonRoot: false
-    allowPrivilegeEscalation: false
-
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "250m"
-    limits:
-      memory: "2Gi"
-      cpu: "1000m"
-
-# Storage configuration
-persistence:
-  enabled: true
-  storageClassName: longhorn
-  size: 40Gi
-  mountPath: /app/data
-
-# Service configuration
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 3000
-
-# Disable Helm ingress - use Cilium Gateway HTTPRoute instead
-ingress:
+# Disable internal nginx - we use Cilium Gateway HTTPRoute
+nginx:
   enabled: false
 
-# Replica configuration
-replicaCount: 1
+# Core Services
+home:
+  enabled: true
+  replicaCount: 1
 
-# Image configuration
-image:
-  repository: oneuptime/oneuptime
-  tag: "10.0.34"
-  pullPolicy: IfNotPresent
+app:
+  enabled: true
+  replicaCount: 1
 
-# Node affinity (optional - for homelab)
+worker:
+  enabled: true
+  replicaCount: 1
+
+telemetry:
+  enabled: true
+  replicaCount: 1
+
+# Optional services - disable for minimal homelab setup
+testServer:
+  enabled: false
+
+aiAgent:
+  enabled: false
+
+# Monitoring and alerting
+incidents:
+  enabled: true
+
+alerts:
+  enabled: true
+
+statusPage:
+  enabled: true
+
+# Node affinity and tolerations
 affinity: {}
-
-# Tolerations (optional)
 tolerations: []
