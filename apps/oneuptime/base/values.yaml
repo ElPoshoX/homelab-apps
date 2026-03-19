@@ -34,22 +34,28 @@ externalPostgres:
   host: oneuptime-postgres.elposhox.dev
   port: 30200
   username: poshox
-  # Password from SOPS secret
   database: oneuptime
+  existingSecret:
+    name: oneuptime-secret
+    passwordKey: POSTGRES_PASSWORD
 
 # External Redis Configuration
 externalRedis:
   host: oneuptime-redis.elposhox.dev
   port: 30201
-  # Password from SOPS secret
+  existingSecret:
+    name: oneuptime-secret
+    passwordKey: REDIS_PASSWORD
 
 # External ClickHouse Configuration
 externalClickhouse:
   host: oneuptime-clickhouse.elposhox.dev
   port: 8123
   username: poshox
-  # Password from SOPS secret
   protocol: https
+  existingSecret:
+    name: oneuptime-secret
+    passwordKey: CLICKHOUSE_PASSWORD
 
 # Disable internal nginx - we use Cilium Gateway HTTPRoute
 nginx:
