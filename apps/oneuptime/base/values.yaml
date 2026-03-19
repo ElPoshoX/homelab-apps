@@ -1,0 +1,69 @@
+# OneUptime Helm Chart Values - External Database Configuration
+
+# Disable internal PostgreSQL - use external on TrueNAS
+postgresql:
+  enabled: false
+
+# Disable internal Redis - use external on TrueNAS
+redis:
+  enabled: false
+
+# Disable internal ClickHouse - use external on TrueNAS
+clickhouse:
+  enabled: false
+
+# OneUptime Application Configuration
+oneuptime:
+
+  # Environment variables from secret
+  envFrom:
+    - secretRef:
+        name: oneuptime-secret
+
+  # Pod security and resource constraints
+  securityContext:
+    fsGroup: 1000
+
+  containerSecurityContext:
+    runAsNonRoot: false
+    allowPrivilegeEscalation: false
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+# Storage configuration
+persistence:
+  enabled: true
+  storageClassName: longhorn
+  size: 40Gi
+  mountPath: /app/data
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+# Disable Helm ingress - use Cilium Gateway HTTPRoute instead
+ingress:
+  enabled: false
+
+# Replica configuration
+replicaCount: 1
+
+# Image configuration
+image:
+  repository: oneuptime/oneuptime
+  tag: "10.0.34"
+  pullPolicy: IfNotPresent
+
+# Node affinity (optional - for homelab)
+affinity: {}
+
+# Tolerations (optional)
+tolerations: []
