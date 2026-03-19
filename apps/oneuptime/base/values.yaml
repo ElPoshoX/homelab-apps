@@ -51,6 +51,7 @@ externalClickhouse:
   host: oneuptime-clickhouse.elposhox.dev
   port: 443
   username: poshox
+  isHostHttps: true
   existingSecret:
     name: oneuptime-secret
     passwordKey: CLICKHOUSE_PASSWORD
