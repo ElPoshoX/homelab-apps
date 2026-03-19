@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(curl -s https://github.com/longhorn/longhorn/releases/download/v1.11.1/longhorn.yaml)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "WebFetch(domain:artifacthub.io)",
+      "WebSearch",
+      "Bash(git commit:*)"
     ]
   }
 }
