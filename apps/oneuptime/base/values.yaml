@@ -49,7 +49,7 @@ externalRedis:
 # External ClickHouse Configuration
 externalClickhouse:
   host: oneuptime-clickhouse.elposhox.dev
-  port: 8123
+  port: 443
   username: poshox
   existingSecret:
     name: oneuptime-secret

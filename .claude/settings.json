@@ -5,7 +5,14 @@
       "Bash(git mv:*)",
       "WebFetch(domain:artifacthub.io)",
       "WebSearch",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep -r \"commonLabels\\\\|^bases:\\\\|patchesJson6902\" apps/*/*/kustomization.yaml)",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(echo \"=== $f ===\")",
+      "Read(//Users/az/Git-Repos/homelab-apps/**)",
+      "Bash(done)",
+      "Bash(grep -r \"commonAnnotations\\\\|namePrefix\\\\|nameSuffix\" apps/*/base/kustomization.yaml)"
     ]
   }
 }
