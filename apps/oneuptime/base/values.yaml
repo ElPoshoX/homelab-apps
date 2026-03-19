@@ -8,7 +8,6 @@ global:
 # Deployment Configuration
 host: uptime.elposhox.dev
 httpProtocol: https
-ssl: true
 
 # Image registry
 image:
@@ -52,7 +51,6 @@ externalClickhouse:
   host: oneuptime-clickhouse.elposhox.dev
   port: 8123
   username: poshox
-  protocol: https
   existingSecret:
     name: oneuptime-secret
     passwordKey: CLICKHOUSE_PASSWORD
@@ -84,16 +82,6 @@ testServer:
 
 aiAgent:
   enabled: false
-
-# Monitoring and alerting
-incidents:
-  enabled: true
-
-alerts:
-  enabled: true
-
-statusPage:
-  enabled: true
 
 # Node affinity and tolerations
 affinity: {}
