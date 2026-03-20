@@ -19,7 +19,8 @@
       "Bash(do echo:*)",
       "Bash(helm repo:*)",
       "Bash(helm template:*)",
-      "Bash(helm show:*)"
+      "Bash(helm show:*)",
+      "Read(//Users/az/Git-Repos/homelab-apps/apps/$app/base/**)"
     ]
   }
 }
