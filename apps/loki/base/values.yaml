@@ -40,10 +40,10 @@ loki:
       secret_access_key: ${AWS_SECRET_ACCESS_KEY}
       s3forcepathstyle: true
       insecure: true
-      bucketNames:
-        chunks: loki-chunks
-        ruler: loki-ruler
-        admin: loki-admin
+    bucketNames:
+      chunks: loki-chunks
+      ruler: loki-ruler
+      admin: loki-admin
     index_cache_validity: 5m
 
   # Server configuration

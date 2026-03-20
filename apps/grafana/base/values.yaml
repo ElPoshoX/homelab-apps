@@ -31,10 +31,8 @@ ingress:
   enabled: true
   ingressClassName: cilium
   hosts:
-    - host: grafana.elposhox.dev
-      paths:
-        - path: /
-          pathType: Prefix
+    - grafana.elposhox.dev
+  pathType: Prefix
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 
