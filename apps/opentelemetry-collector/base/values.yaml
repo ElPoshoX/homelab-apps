@@ -12,9 +12,7 @@ image:
 
 # DaemonSet specific settings
 presets:
-  kubeAPIServer:
-    enabled: false
-  kubelet:
+  kubeletMetrics:
     enabled: true
   hostMetrics:
     enabled: true
@@ -174,8 +172,8 @@ podSecurityContext:
   runAsUser: 1000
   fsGroup: 1000
 
-# Container Security Context
-containerSecurityContext:
+# Security Context
+securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
   capabilities:
@@ -216,21 +214,14 @@ readinessProbe:
   initialDelaySeconds: 5
   periodSeconds: 5
 
-# Health check extension port
-healthCheckPort: 13133
-
-# No persistence (in-memory buffer only)
-persistence:
-  enabled: false
-
 # Ingress for monitoring (optional)
 ingress:
   enabled: false
   hosts:
-    - host: otel-collector.elposhox.dev
-      paths:
+    - paths:
         - path: /
           pathType: Prefix
+          port: 4317
   tls:
     - secretName: otel-collector-tls
       hosts:

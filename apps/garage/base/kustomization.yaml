@@ -12,7 +12,7 @@ namespace: garage
 
 helmCharts:
   - name: garage
-    repo: https://garagehq.deuxfleurs.fr/charts
+    repo: https://datahub-local.github.io/garage-helm
     releaseName: garage
     version: ""  # Latest version
     valuesFile: values.yaml
