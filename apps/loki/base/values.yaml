@@ -1,0 +1,149 @@
+# Loki Helm Chart Configuration
+# Monolithic log aggregation for homelab observability stack
+
+# Monolithic mode - single pod deployment
+loki:
+  # Authentication and tenancy disabled for internal use
+  auth_enabled: false
+
+  # Log retention policy
+  limits_config:
+    retention_period: 360h  # 15 days
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    ingestion_rate_mb: 10
+    ingestion_burst_size_mb: 20
+    max_cache_freshness_per_query: 10m
+    split_queries_by_line: false
+
+  # Chunk encoding and storage
+  chunk_store_config:
+    max_look_back_period: 0s
+
+  schema_config:
+    configs:
+      - from: 2024-01-01
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+  # S3 storage backend (Garage)
+  storage_config:
+    aws:
+      s3: s3://loki-bucket
+      endpoint: garage:9000
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+      s3forcepathstyle: true
+      insecure: true
+    index_cache_validity: 5m
+
+  # Server configuration
+  server:
+    http_listen_port: 3100
+    log_level: info
+    log_format: json
+
+# Deployment strategy - monolithic single pod
+deploymentMode: SingleBinary
+
+# Single pod replica
+replicas: 1
+
+# Image configuration
+image:
+  repository: grafana/loki
+  pullPolicy: IfNotPresent
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 3100
+  targetPort: 3100
+
+# Ingress configuration
+ingress:
+  enabled: true
+  ingressClassName: cilium
+  hosts:
+    - host: loki.elposhox.dev
+      paths:
+        - path: /
+          pathType: Prefix
+
+# Persistence - 30GB Longhorn PVC for logs
+persistence:
+  enabled: true
+  storageClassName: longhorn
+  size: 30Gi
+  accessModes:
+    - ReadWriteOnce
+
+# Resource management
+resources:
+  requests:
+    cpu: 300m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+# Node affinity - prefer worker nodes, avoid control-plane
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/worker
+              operator: In
+              values:
+                - "true"
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: NotIn
+              values:
+                - "true"
+            - key: kubernetes.io/hostname
+              operator: NotIn
+              values:
+                - cp2
+
+# Pod disruption budget
+podDisruptionBudget:
+  minAvailable: 1
+
+# Service monitoring for Prometheus
+serviceMonitor:
+  enabled: false
+
+# Security context
+podSecurityContext:
+  fsGroup: 10001
+  runAsNonRoot: true
+  runAsUser: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+
+# Backend configuration for distributed/HA setup (optional future use)
+backend:
+  replicas: 1
+
+# Read replicas for distributed setup (optional future use)
+read:
+  replicas: 1
+
+# Write replicas for distributed setup (optional future use)
+write:
+  replicas: 1

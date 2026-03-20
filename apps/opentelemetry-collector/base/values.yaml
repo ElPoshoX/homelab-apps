@@ -1,0 +1,246 @@
+# OpenTelemetry Collector Helm Chart Values
+# Configuration for DaemonSet mode with no persistent storage
+
+# Mode: daemonset (runs on all nodes)
+mode: daemonset
+
+# Image configuration
+image:
+  repository: otel/opentelemetry-collector-k8s
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# DaemonSet specific settings
+presets:
+  kubeAPIServer:
+    enabled: false
+  kubelet:
+    enabled: true
+  hostMetrics:
+    enabled: true
+
+# OpenTelemetry Collector configuration
+config:
+  # Receivers - accept telemetry data
+  receivers:
+    # OTLP gRPC receiver (default port 4317)
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+    # Prometheus receiver (scrape metrics)
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: otel-collector
+            static_configs:
+              - targets:
+                  - localhost:8888
+
+    # Kubelet metrics receiver (part of hostMetrics)
+    kubeletstats:
+      collection_interval: 30s
+      endpoint: https://kubelet:10250
+      auth_type: serviceAccount
+      insecure_skip_verify: true
+
+    # Host metrics receiver
+    hostmetrics:
+      collection_interval: 30s
+      scrapers:
+        - cpu
+        - disk
+        - filesystem
+        - load
+        - memory
+        - network
+        - paging
+        - processes
+
+  # Processors - process telemetry data
+  processors:
+    # Batch processor for better throughput
+    batch:
+      send_batch_size: 1024
+      timeout: 10s
+
+    # Memory limiter to prevent out-of-memory
+    memory_limiter:
+      check_interval: 1s
+      limit_mib: 512
+      spike_limit_mib: 128
+
+    # Attributes processor for adding metadata
+    attributes:
+      actions:
+        - key: cluster.name
+          value: homelab
+          action: insert
+        - key: deployment.environment
+          value: homelab
+          action: insert
+
+    # Resource detection
+    resourcedetection:
+      detectors:
+        - system
+        - env
+        - docker
+
+  # Exporters - send telemetry data to backends
+  exporters:
+    # OTLP exporter to Tempo (traces)
+    otlp:
+      endpoint: tempo:4317
+      tls:
+        insecure: true
+
+    # Prometheus Remote Write exporter to Mimir (metrics)
+    prometheusremotewrite:
+      endpoint: http://mimir:9009/api/prom/push
+      tls:
+        insecure: true
+
+    # Logging exporter to Loki (logs)
+    logging:
+      loglevel: debug
+
+    # Jaeger exporter to Tempo (traces via Jaeger protocol)
+    jaeger:
+      endpoint: tempo:14250
+      tls:
+        insecure: true
+
+  # Service - defines which processors and exporters are active
+  service:
+    pipelines:
+      # Traces pipeline
+      traces:
+        receivers:
+          - otlp
+        processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - attributes
+        exporters:
+          - otlp
+          - jaeger
+          - logging
+
+      # Metrics pipeline
+      metrics:
+        receivers:
+          - otlp
+          - prometheus
+          - hostmetrics
+          - kubeletstats
+        processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - attributes
+        exporters:
+          - prometheusremotewrite
+          - logging
+
+      # Logs pipeline
+      logs:
+        receivers:
+          - otlp
+        processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - attributes
+        exporters:
+          - logging
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Pod Security Context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+# Container Security Context
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Affinity - DaemonSet runs on all nodes
+affinity: {}
+
+# Tolerations - allow DaemonSet to run on all nodes including tainted ones
+tolerations:
+  - operator: Exists
+
+# Service Account
+serviceAccount:
+  create: true
+  name: otel-collector
+
+# Pod Annotations for monitoring
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8888"
+  prometheus.io/path: "/metrics"
+
+# Liveness probe
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 13133
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+# Readiness probe
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 13133
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+# Health check extension port
+healthCheckPort: 13133
+
+# No persistence (in-memory buffer only)
+persistence:
+  enabled: false
+
+# Ingress for monitoring (optional)
+ingress:
+  enabled: false
+  hosts:
+    - host: otel-collector.elposhox.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: otel-collector-tls
+      hosts:
+        - otel-collector.elposhox.dev
+
+# Pod Disruption Budget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+# Horizontal Pod Autoscaler (not applicable for DaemonSet)
+autoscaling:
+  enabled: false

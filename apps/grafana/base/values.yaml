@@ -1,0 +1,161 @@
+# Grafana Helm Chart Configuration
+# Production-ready observability frontend for homelab stack
+
+# Global configuration
+replicas: 2
+image:
+  repository: grafana/grafana
+  pullPolicy: IfNotPresent
+
+# Admin user configuration
+admin:
+  existingSecret: grafana-admin-secret
+  passwordKey: password
+
+# Persistence configuration (5GB Longhorn PVC for dashboards/datasources)
+persistence:
+  enabled: true
+  type: pvc
+  storageClassName: longhorn
+  size: 5Gi
+  accessModes:
+    - ReadWriteOnce
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 3000
+
+# Ingress configuration
+ingress:
+  enabled: true
+  ingressClassName: cilium
+  hosts:
+    - host: grafana.elposhox.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+# Datasources configuration
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      # Mimir (Metrics)
+      - name: Mimir
+        type: prometheus
+        url: http://mimir:8009
+        isDefault: true
+        access: proxy
+        editable: true
+        jsonData:
+          timeInterval: 1m
+      # Loki (Logs)
+      - name: Loki
+        type: loki
+        url: http://loki:3100
+        access: proxy
+        editable: true
+      # Tempo (Traces)
+      - name: Tempo
+        type: tempo
+        url: http://tempo:3100
+        access: proxy
+        editable: true
+        jsonData:
+          tracesToMetrics:
+            datasourceUid: 'prometheus'
+          tracesToLogsV2:
+            datasourceUid: 'loki'
+          serviceMap:
+            datasourceUid: 'prometheus'
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Node affinity - prefer worker nodes, avoid CP2
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/worker
+              operator: In
+              values:
+                - "true"
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: NotIn
+              values:
+                - "true"
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: NotIn
+              values:
+                - CP2
+
+# Pod security context
+podSecurityContext:
+  fsGroup: 472
+  runAsUser: 472
+  runAsNonRoot: true
+
+# Security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Environment variables
+env:
+  GF_SECURITY_ADMIN_USER: admin
+  GF_USERS_ALLOW_SIGN_UP: "false"
+  GF_AUTH_DISABLE_LOGIN_FORM: "false"
+  GF_FEATURE_TOGGLES_ENABLE: "nestedFolders,publicDashboards"
+
+# Liveness and readiness probes
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Pod disruption budget for HA
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Network policy (optional)
+networkPolicy:
+  enabled: false
+
+# RBAC
+rbac:
+  pspEnabled: false

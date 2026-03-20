@@ -1,0 +1,132 @@
+# Alertmanager Helm Chart Configuration
+# Alert routing and notification management for homelab observability stack
+
+# Global configuration
+replicaCount: 1
+image:
+  repository: prom/alertmanager
+  pullPolicy: IfNotPresent
+  tag: latest
+
+# Pod security context
+podSecurityContext:
+  runAsUser: 65534
+  runAsNonRoot: true
+  fsGroup: 65534
+
+# Security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Persistence configuration (5GB Longhorn PVC for config/templates)
+persistence:
+  enabled: true
+  type: pvc
+  storageClassName: longhorn
+  size: 5Gi
+  accessModes:
+    - ReadWriteOnce
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 9093
+
+# Alertmanager configuration with Telegram webhook
+config:
+  global:
+    resolve_timeout: 5m
+  route:
+    receiver: 'default'
+    continue: true
+    routes:
+      - receiver: 'telegram'
+        match_re:
+          severity: '.*'
+  receivers:
+    - name: 'default'
+      webhook_configs: []
+    - name: 'telegram'
+      webhook_configs:
+        - url: 'https://api.telegram.org/bot{{ .TelegramToken }}/sendMessage'
+          send_resolved: true
+          http_sd_configs:
+            - targets:
+                - 'alertmanager:9093'
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Node affinity - prefer worker nodes, avoid CP2
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/worker
+              operator: In
+              values:
+                - "true"
+      - weight: 50
+        preference:
+          matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: NotIn
+              values:
+                - "true"
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: NotIn
+              values:
+                - CP2
+
+# Ingress configuration (internal DNS)
+ingress:
+  enabled: false
+  ingressClassName: cilium
+  annotations: {}
+  hosts:
+    - host: alertmanager.elposhox.dev
+      paths:
+        - path: /
+          pathType: Prefix
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+
+# RBAC configuration
+rbac:
+  create: true
+  pspEnabled: false
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: alertmanager
+
+# Environment variables
+env: {}
+  # TELEGRAM_TOKEN: Use secret reference instead
+
+# Secrets for Telegram integration
+# Note: Create a secret named "telegram-token" with the key "token" in the alertmanager namespace
+secretEnv:
+  - name: TELEGRAM_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: telegram-token
+        key: token

@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Apply labels to all resources
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: opentelemetry-collector
+      homelab.local/OwnedBy: ElPoshoX
+
+# Namespace for all resources
+namespace: otel-collector
+
+# Helm chart as a resource
+# Official OpenTelemetry Collector Helm repository: https://open-telemetry.github.io/opentelemetry-helm-charts/
+helmCharts:
+  - name: opentelemetry-collector
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    releaseName: opentelemetry-collector
+    valuesFile: values.yaml
+    namespace: otel-collector
+
+# Additional Kubernetes resources
+resources:
+  - namespace.yaml

@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: pyroscope
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: pyroscope
+
+helmCharts:
+  - name: pyroscope
+    repo: https://grafana.github.io/helm-charts
+    releaseName: pyroscope
+    valuesFile: values.yaml
+    namespace: pyroscope
+
+resources:
+  - namespace.yaml

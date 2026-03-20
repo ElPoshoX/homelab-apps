@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Apply labels to all resources
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: alertmanager
+      homelab.local/OwnedBy: ElPoshoX
+
+# Namespace for all resources
+namespace: alertmanager
+
+# Helm chart as a resource
+# Official Alertmanager Helm repository: https://prometheus-community.github.io/helm-charts
+helmCharts:
+  - name: alertmanager
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: alertmanager
+    valuesFile: values.yaml
+    namespace: alertmanager
+
+# Additional Kubernetes resources
+resources:
+  - namespace.yaml

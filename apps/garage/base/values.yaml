@@ -1,0 +1,171 @@
+# Garage S3 Helm Chart Configuration
+# Distributed S3 object storage backend for homelab observability stack
+# StatefulSet mode with 3 replicas (1 per worker node)
+
+# Image configuration
+image:
+  repository: dxkite/garage
+  pullPolicy: IfNotPresent
+  tag: ""  # Uses latest from Helm chart
+
+# Garage configuration
+garage:
+  # RPC secret for inter-node communication
+  rpcSecret: ""  # Set from k8s secret
+
+  # Admin API endpoint internal DNS
+  admin:
+    api:
+      host: garage.elposhox.dev
+      port: 3900
+
+  # S3 API endpoint
+  s3:
+    port: 9000
+
+# StatefulSet configuration
+replicaCount: 3
+
+# Service configuration
+service:
+  type: ClusterIP
+  s3:
+    port: 9000
+  rpc:
+    port: 3901
+  admin:
+    port: 3900
+
+# Storage configuration - distributed 17GB per replica (50GB total)
+# Each replica on separate worker node with Longhorn PVC
+persistence:
+  enabled: true
+  storageClassName: longhorn
+  size: 17Gi
+  accessModes:
+    - ReadWriteOnce
+
+  # Mount path for data
+  mountPath: /mnt/garage/data
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Pod affinity - ONLY worker nodes (W1, W2, W3), no control plane
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kubernetes.io/worker
+              operator: In
+              values:
+                - "true"
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - W1
+                - W2
+                - W3
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - garage
+        topologyKey: kubernetes.io/hostname
+
+# Tolerations - allow scheduling on any node
+tolerations: []
+
+# S3 admin credentials from secret
+s3Auth:
+  secretName: garage-s3-credentials
+  accessKeyField: accessKey
+  secretKeyField: secretKey
+
+# RPC secret from k8s secret
+rpcAuth:
+  secretName: garage-rpc-secret
+  field: rpcSecret
+
+# Garage node configuration
+node:
+  # Cluster bootstrap (enabled for initial setup)
+  bootstrap: false
+
+  # Per-replica configuration for distributed setup
+  layout:
+    redundancy: 2  # Data replicated across 2 zones
+    capacity: 17000  # Per replica in MB (approx 17GB)
+
+# S3 buckets to create
+buckets:
+  - name: mimir-bucket
+    quota: null  # Unlimited
+    description: "Mimir metrics storage"
+  - name: loki-bucket
+    quota: null
+    description: "Loki logs storage"
+  - name: tempo-bucket
+    quota: null
+    description: "Tempo traces storage"
+
+# Security context
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Liveness and readiness probes
+livenessProbe:
+  tcpSocket:
+    port: 3900
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  tcpSocket:
+    port: 3900
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# RBAC
+rbac:
+  create: true
+  pspEnabled: false
+
+# Service account
+serviceAccount:
+  create: true
+  name: garage
+  annotations: {}
+
+# Ingress (disabled, admin API on internal DNS)
+ingress:
+  enabled: false
