@@ -21,7 +21,7 @@ loki:
   chunk_store_config:
     max_look_back_period: 0s
 
-  schema_config:
+  schemaConfig:
     configs:
       - from: 2024-01-01
         store: tsdb
@@ -40,11 +40,14 @@ loki:
       secret_access_key: ${AWS_SECRET_ACCESS_KEY}
       s3forcepathstyle: true
       insecure: true
+    index_cache_validity: 5m
+
+  # Storage bucket configuration for S3 backend
+  storage:
     bucketNames:
       chunks: loki-chunks
       ruler: loki-ruler
       admin: loki-admin
-    index_cache_validity: 5m
 
   # Server configuration
   server:
@@ -74,10 +77,7 @@ ingress:
   enabled: true
   ingressClassName: cilium
   hosts:
-    - host: loki.elposhox.dev
-      paths:
-        - path: /
-          pathType: Prefix
+    - loki.elposhox.dev
 
 # Persistence - 30GB Longhorn PVC for logs
 persistence:

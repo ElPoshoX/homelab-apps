@@ -1,0 +1,121 @@
+{{- if .Values.clusterConfig.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "garage.fullname" . }}-configure
+  labels:
+    {{- include "garage.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "argocd.argoproj.io/hook": PostSync
+    "argocd.argoproj.io/hook-delete-policy": BeforeHookCreation,HookSucceeded
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "garage.labels" . | nindent 8 }}
+      {{- with .Values.clusterConfig.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ include "garage.serviceAccountName" . }}
+      {{- with .Values.clusterConfig.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.clusterConfig.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: get-busybox-tools
+          image: busybox:musl
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 50m
+              memory: 50Mi
+          command: ["/bin/sh", "-c", "cp /bin/busybox /tools/busybox && chmod +x /tools/busybox"]
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+        - name: get-garage-bin
+          image: "{{ .Values.clusterConfig.image.repository | default .Values.image.repository }}:{{ .Values.clusterConfig.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.clusterConfig.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 50m
+              memory: 50Mi
+          command: ["/tools/busybox", "sh", "-c", "/tools/busybox cp /garage /shared/garage"]
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+            - name: garage-bin
+              mountPath: /shared
+      containers:
+        - name: configure
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .Values.clusterConfig.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.clusterConfig.securityContext | nindent 12 }}
+          env:
+            - name: GARAGE_RPC_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "garage.secretName" . }}
+                  key: rpcSecret
+            - name: GARAGE_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "garage.secretName" . }}
+                  key: adminToken
+            {{- range $name, $key := .Values.clusterConfig.keys }}
+            {{- if $key.secretName }}
+            - name: KEY_ID_{{ $name | replace "-" "_" | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key.secretName }}
+                  key: {{ $key.keyId }}
+            - name: SECRET_KEY_{{ $name | replace "-" "_" | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $key.secretName }}
+                  key: {{ $key.secretKey }}
+            {{- end }}
+            {{- end }}
+          command: ["/bin/sh", "/scripts/configure.sh"]
+          volumeMounts:
+            - name: garage-bin
+              mountPath: /shared
+            - name: configure-script
+              mountPath: /scripts
+      volumes:
+        - name: tools
+          emptyDir: {}
+        - name: garage-bin
+          emptyDir: {}
+        - name: configure-script
+          secret:
+            secretName: {{ include "garage.fullname" . }}-configure-script
+            defaultMode: 0755
+      {{- with .Values.clusterConfig.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.clusterConfig.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.clusterConfig.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

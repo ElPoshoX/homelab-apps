@@ -1,0 +1,34 @@
+# Base configuration with persistent volumes and initial buckets/keys
+garage:
+  replicationFactor: "1"
+  s3:
+    api:
+      rootDomain: ".s3.homelab.test"
+    web:
+      rootDomain: ".web.homelab.test"
+
+persistence:
+  enabled: true
+  data:
+    storageClass: garage-data-hdd
+    size: 10Gi
+  meta:
+    storageClass: garage-meta-ssd
+    size: 500Mi
+
+clusterConfig:
+  enabled: true
+  layout:
+    enabled: true
+    zone: dc1
+  buckets:
+    - name: backups
+    - name: media
+      public: true
+  keys:
+    my-key:
+      keyId: GK0123456789ABCDEF01234567
+      secretKey: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      buckets:
+        - backups
+        - media

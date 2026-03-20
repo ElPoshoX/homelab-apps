@@ -12,7 +12,14 @@
       "Bash(echo \"=== $f ===\")",
       "Read(//Users/az/Git-Repos/homelab-apps/**)",
       "Bash(done)",
-      "Bash(grep -r \"commonAnnotations\\\\|namePrefix\\\\|nameSuffix\" apps/*/base/kustomization.yaml)"
+      "Bash(grep -r \"commonAnnotations\\\\|namePrefix\\\\|nameSuffix\" apps/*/base/kustomization.yaml)",
+      "Bash(for app:*)",
+      "Bash(do mkdir:*)",
+      "Bash(kustomize build:*)",
+      "Bash(do echo:*)",
+      "Bash(helm repo:*)",
+      "Bash(helm template:*)",
+      "Bash(helm show:*)"
     ]
   }
 }
