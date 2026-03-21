@@ -4,9 +4,9 @@
 
 # Image configuration
 image:
-  repository: ghcr.io/deuxfleurs/garage
+  repository: ghcr.io/deuxfleurs-org/garage
   pullPolicy: IfNotPresent
-  tag: v0.10.0
+  tag: v2.2.0
 
 # Garage configuration
 garage:
