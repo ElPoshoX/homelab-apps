@@ -135,6 +135,11 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 1
 
+# Environment variables from Kubernetes Secrets
+extraEnvFrom:
+  - secretRef:
+      name: tempo-s3-credentials
+
 # RBAC
 rbac:
   pspEnabled: false
