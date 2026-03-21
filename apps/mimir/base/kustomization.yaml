@@ -19,3 +19,4 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - secret.yaml

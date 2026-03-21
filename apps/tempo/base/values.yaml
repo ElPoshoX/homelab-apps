@@ -78,8 +78,8 @@ tempo:
         bucket: tempo-bucket
         endpoint: garage.garage.svc.cluster.local:3900
         insecure: true
-        access_key: Eo83;WtO)C;2WnEl%s)MGR)T
-        secret_key: KZWxNHlm<EeN~dI3I`Qk=W!79b[Am+Zu
+        access_key: ${TEMPO_S3_ACCESS_KEY}
+        secret_key: ${TEMPO_S3_SECRET_KEY}
 
   # Metrics generation
   metricsGenerator:
