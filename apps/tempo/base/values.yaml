@@ -14,6 +14,14 @@ mode: monolithic
 # Replicas for monolithic mode
 replicas: 1
 
+# StatefulSet configuration
+statefulSet:
+  revisionHistoryLimit: 10
+  podManagementPolicy: OrderedReady
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+
 # Service configuration
 service:
   type: ClusterIP
@@ -27,6 +35,53 @@ persistence:
   size: 30Gi
   accessModes:
     - ReadWriteMany
+
+# Container ports configuration
+containerPorts:
+  prom:
+    name: prom-metrics
+    containerPort: 3200
+    protocol: TCP
+  jaegerThriftCompact:
+    name: jaeger-thrift-c
+    containerPort: 6831
+    protocol: UDP
+  jaegerThriftBinary:
+    name: jaeger-thrift-b
+    containerPort: 6832
+    protocol: UDP
+  jaegerThriftHttp:
+    name: jaeger-thrift-h
+    containerPort: 14268
+    protocol: TCP
+  jaegerGrpc:
+    name: jaeger-grpc
+    containerPort: 14250
+    protocol: TCP
+  zipkin:
+    name: zipkin
+    containerPort: 9411
+    protocol: TCP
+  otlpLegacy:
+    name: otlp-legacy
+    containerPort: 55680
+    protocol: TCP
+  otlpGrpc:
+    name: otlp-grpc
+    containerPort: 4317
+    protocol: TCP
+  otlpHttpLegacy:
+    name: otlp-httplegacy
+    containerPort: 55681
+    protocol: TCP
+  otlpHttp:
+    name: otlp-http
+    containerPort: 4318
+    protocol: TCP
+  opencensus:
+    name: opencensus
+    containerPort: 55678
+    protocol: TCP
 
 # Resource requests and limits
 resources:
@@ -110,21 +165,25 @@ tempo:
 # Liveness and readiness probes
 livenessProbe:
   httpGet:
-    path: /status
-    port: 3100
+    path: /ready
+    port: 3200
+    scheme: HTTP
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+  successThreshold: 1
 
 readinessProbe:
   httpGet:
-    path: /status
-    port: 3100
-  initialDelaySeconds: 10
-  periodSeconds: 5
+    path: /ready
+    port: 3200
+    scheme: HTTP
+  initialDelaySeconds: 20
+  periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
+  successThreshold: 1
 
 # Pod security context
 podSecurityContext:
