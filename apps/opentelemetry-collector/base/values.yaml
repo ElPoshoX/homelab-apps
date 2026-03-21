@@ -181,8 +181,6 @@ securityContext:
       - ALL
 
 # Affinity - DaemonSet runs on all nodes
-affinity: {}
-
 # Tolerations - allow DaemonSet to run on all nodes including tainted ones
 tolerations:
   - operator: Exists

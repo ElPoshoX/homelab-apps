@@ -96,29 +96,6 @@ resources:
     cpu: 500m
     memory: 1Gi
 
-# Node affinity - prefer worker nodes, avoid control-plane
-affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        preference:
-          matchExpressions:
-            - key: node-role.kubernetes.io/worker
-              operator: In
-              values:
-                - "true"
-      - weight: 50
-        preference:
-          matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: NotIn
-              values:
-                - "true"
-            - key: kubernetes.io/hostname
-              operator: NotIn
-              values:
-                - cp2
-
 # Pod disruption budget
 podDisruptionBudget:
   minAvailable: 1

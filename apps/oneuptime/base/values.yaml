@@ -84,6 +84,5 @@ testServer:
 aiAgent:
   enabled: false
 
-# Node affinity and tolerations
 affinity: {}
 tolerations: []

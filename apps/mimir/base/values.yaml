@@ -80,31 +80,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
   distributor:
     enabled: true
     replicas: 1
@@ -115,31 +90,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
   ingester:
     enabled: true
     replicas: 1
@@ -154,31 +104,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
   querier:
     enabled: true
     replicas: 1
@@ -189,31 +114,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
   query_frontend:
     enabled: true
     replicas: 1
@@ -224,31 +124,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
   ruler:
     enabled: false
 
@@ -269,31 +144,6 @@ mimir-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
-    affinity:
-      nodeAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/worker
-                  operator: In
-                  values:
-                    - "true"
-          - weight: 50
-            preference:
-              matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values:
-                    - CP2
-
 # Service configuration
 service:
   type: ClusterIP

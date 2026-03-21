@@ -58,32 +58,6 @@ resources:
     memory: 512Mi
 
 # Pod affinity - ONLY worker nodes (W1, W2, W3), no control plane
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: node-role.kubernetes.io/worker
-              operator: In
-              values:
-                - "true"
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - W1
-                - W2
-                - W3
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - garage
-        topologyKey: kubernetes.io/hostname
-
 # Tolerations - allow scheduling on any node
 tolerations: []
 

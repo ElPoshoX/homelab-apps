@@ -116,32 +116,6 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 3
 
-# Node affinity - prefer worker nodes, avoid CP2
-affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        preference:
-          matchExpressions:
-            - key: node-role.kubernetes.io/worker
-              operator: In
-              values:
-                - "true"
-      - weight: 50
-        preference:
-          matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: NotIn
-              values:
-                - "true"
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: NotIn
-              values:
-                - CP2
-
 # Pod security context
 podSecurityContext:
   fsGroup: 472

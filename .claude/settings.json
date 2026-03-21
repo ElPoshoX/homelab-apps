@@ -20,7 +20,13 @@
       "Bash(helm repo:*)",
       "Bash(helm template:*)",
       "Bash(helm show:*)",
-      "Read(//Users/az/Git-Repos/homelab-apps/apps/$app/base/**)"
+      "Read(//Users/az/Git-Repos/homelab-apps/apps/$app/base/**)",
+      "Bash(find apps/*/envs/homelab -name \"kustomization.yaml\")",
+      "Bash(grep -n \"# Node affinity\\\\|# node affinity\" apps/*/base/values.yaml)",
+      "Bash(file=\"apps/$app/base/values.yaml\")",
+      "Bash(echo \"Processing $app...\")",
+      "Bash(python3:*)",
+      "Bash(grep \"# Node affinity\" apps/*/base/values.yaml)"
     ]
   }
 }

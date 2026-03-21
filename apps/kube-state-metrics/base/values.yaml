@@ -32,17 +32,6 @@ securityContext:
     drop:
       - ALL
 
-# Node affinity - ONLY CP2 (control plane node, 12GB)
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - CP2
-
 # Service Monitor configuration for Prometheus scrape
 serviceMonitor:
   enabled: true

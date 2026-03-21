@@ -24,7 +24,6 @@ resources:
     cpu: 200m
     memory: 256Mi
 
-# Node affinity (optional - for homelab)
 affinity: {}
 
 # Tolerations (optional)

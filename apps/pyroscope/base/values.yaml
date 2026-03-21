@@ -58,32 +58,6 @@ pyroscope:
       drop:
         - ALL
 
-  # Node affinity - prefer worker nodes, avoid CP2
-  affinity:
-    nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 100
-          preference:
-            matchExpressions:
-              - key: node-role.kubernetes.io/worker
-                operator: In
-                values:
-                  - "true"
-        - weight: 50
-          preference:
-            matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: NotIn
-                values:
-                  - "true"
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: NotIn
-                values:
-                  - CP2
-
   # Liveness and readiness probes
   livenessProbe:
     httpGet:
