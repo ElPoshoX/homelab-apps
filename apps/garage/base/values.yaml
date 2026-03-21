@@ -10,8 +10,15 @@ image:
 
 # Garage configuration
 garage:
-  # RPC secret for inter-node communication
-  rpcSecret: ""  # Set from k8s secret
+  secret:
+    # Do not create secret - using SOPS-encrypted garage-rpc-secret
+    create: false
+    # Name of the existing Kubernetes secret containing rpcSecret
+    # This comes from the SOPS-encrypted secret.yaml
+    name: garage-rpc-secret
+    # These are read from the secret, leave empty
+    rpcSecret: ""
+    adminToken: "default-admin-token"
 
   # Admin API endpoint internal DNS
   admin:
@@ -60,17 +67,6 @@ resources:
 # Pod affinity - ONLY worker nodes (W1, W2, W3), no control plane
 # Tolerations - allow scheduling on any node
 tolerations: []
-
-# S3 admin credentials from secret
-s3Auth:
-  secretName: garage-s3-credentials
-  accessKeyField: accessKey
-  secretKeyField: secretKey
-
-# RPC secret from k8s secret
-rpcAuth:
-  secretName: garage-rpc-secret
-  field: rpcSecret
 
 # Garage node configuration
 node:
