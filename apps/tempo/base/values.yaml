@@ -128,17 +128,18 @@ readinessProbe:
 
 # Pod security context
 podSecurityContext:
-  fsGroup: 472
-  runAsUser: 472
+  fsGroup: 10001
+  runAsUser: 10001
+  runAsGroup: 10001
   runAsNonRoot: true
 
 # Security context
 securityContext:
-  allowPrivilegeEscalation: false
+  fsGroup: 10001
+  runAsUser: 10001
+  runAsGroup: 10001
+  runAsNonRoot: true
   readOnlyRootFilesystem: false
-  capabilities:
-    drop:
-      - ALL
 
 # Pod disruption budget
 podDisruptionBudget:
