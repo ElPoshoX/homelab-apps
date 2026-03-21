@@ -25,15 +25,3 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
-
-# Patches to fix Helm chart issues
-patches:
-  - target:
-      group: policy
-      version: v1
-      kind: PodDisruptionBudget
-      name: alertmanager
-    patch: |-
-      - op: replace
-        path: /spec/minAvailable
-        value: 0
