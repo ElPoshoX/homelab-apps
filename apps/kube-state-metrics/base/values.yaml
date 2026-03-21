@@ -47,6 +47,9 @@ service:
   targetPort: 8080
   annotations: {}
 
+# Namespace creation control
+namespaceCreate: false
+
 # RBAC configuration
 rbac:
   create: true

@@ -35,6 +35,9 @@ podSecurityContext:
   runAsUser: 1000
   fsGroup: 1000
 
+# Namespace creation control (kube-system is managed by cluster, not by Helm)
+namespaceCreate: false
+
 # Container Security Context
 containerSecurityContext:
   readOnlyRootFilesystem: true
