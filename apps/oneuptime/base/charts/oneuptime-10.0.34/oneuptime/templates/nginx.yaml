@@ -1,0 +1,219 @@
+{{- if $.Values.nginx.enabled }}
+
+# OneUptime nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+    {{- if $.Values.deployment.includeTimestampLabel }}
+    date: "{{ now | unixEpoch }}"
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  {{- if $.Values.nginx.replicaCount }}
+  replicas: {{ $.Values.nginx.replicaCount }}
+  {{- else }}
+  {{- if or (not $.Values.autoscaling.enabled) ($.Values.nginx.disableAutoscaler) }}
+  replicas: {{ $.Values.deployment.replicaCount }}
+  {{- end }}
+  {{- end }}
+  strategy: {{- toYaml $.Values.deployment.updateStrategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+        {{- if $.Values.deployment.includeTimestampLabel }}
+        date: "{{ now | unixEpoch }}"
+        {{- end }}
+        appname: oneuptime
+    spec:
+      volumes:
+        - name: status-page-certs
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: server-certs
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: cache
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: conf
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: run
+          emptyDir:
+            sizeLimit: "1Gi"
+      {{- if $.Values.nginx.podSecurityContext }}
+      securityContext:
+        {{- toYaml $.Values.nginx.podSecurityContext | nindent 8 }}
+      {{- else if $.Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml $.Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.affinity }}
+      affinity: {{- $.Values.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.tolerations }}
+      tolerations: {{- $.Values.tolerations | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.nginx.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $.Values.nginx.nodeSelector | nindent 8 }}
+      {{- else if $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $.Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+        - image: {{ include "oneuptime.image" (dict "Values" $.Values "ServiceName" "nginx") }}
+          name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+          {{- if $.Values.startupProbe.enabled }}
+          # Startup probe
+          startupProbe:
+            httpGet:
+              path: /status/live
+              port: 7851
+            periodSeconds: {{ $.Values.startupProbe.periodSeconds }}
+            failureThreshold: {{ $.Values.startupProbe.failureThreshold }}
+          {{- end }}
+          {{- if $.Values.livenessProbe.enabled }}
+          # Liveness probe
+          livenessProbe:
+            httpGet:
+              path: /status/live
+              port: 7851
+            periodSeconds: {{ $.Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ $.Values.livenessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ $.Values.livenessProbe.initialDelaySeconds }}
+          {{- end }}
+          {{- if $.Values.readinessProbe.enabled }}
+          # Readyness Probe
+          readinessProbe:
+            httpGet:
+              path: /status/ready
+              port: 7851
+            periodSeconds: {{ $.Values.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ $.Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $.Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          volumeMounts:
+            - name: status-page-certs
+              mountPath: /etc/nginx/certs/StatusPageCerts
+            - name: server-certs
+              mountPath: /etc/nginx/certs/ServerCerts
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: conf
+              mountPath: /etc/nginx/conf.d
+            - name: run
+              mountPath: /var/run
+          {{- if $.Values.nginx.containerSecurityContext }}
+          securityContext:
+            {{- toYaml $.Values.nginx.containerSecurityContext | nindent 12 }}
+          {{- else if $.Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            {{- include "oneuptime.env.common" . | nindent 12 }}
+            {{- include "oneuptime.env.runtime" (dict "Values" $.Values "Release" $.Release) | nindent 12 }}
+            - name: NGINX_LISTEN_ADDRESS
+              value: {{ $.Values.nginx.listenAddress | quote }}
+            - name: NGINX_LISTEN_OPTIONS
+              value: {{ $.Values.nginx.listenOptions | quote }}
+            {{- if $.Values.nginx.serverNamesHash.bucketSize }}
+            - name: SERVER_NAMES_HASH_BUCKET_SIZE
+              value: {{ $.Values.nginx.serverNamesHash.bucketSize | quote }}
+            {{- end }}
+            {{- if $.Values.nginx.serverNamesHash.maxSize }}
+            - name: SERVER_NAMES_HASH_MAX_SIZE
+              value: {{ $.Values.nginx.serverNamesHash.maxSize | quote }}
+            {{- end }}
+            - name: ONEUPTIME_HTTP_PORT
+              value: {{ $.Values.nginx.ports.http | quote }}
+            - name: PORT
+              value: "7851" # Port for the nodejs server for live and ready status
+            - name: DISABLE_TELEMETRY
+              value: {{ $.Values.nginx.disableTelemetryCollection | quote }}
+          ports:
+            - containerPort: 7849
+              protocol: TCP
+              name: oneuptime-http
+              # If you are connecting Status Pages to custom domains, then this will be the port where the status page will be hosted on.
+            - containerPort: 7850
+              protocol: TCP
+              name: statuspage-ssl
+          {{- if $.Values.nginx.resources }}
+          resources:
+            {{- toYaml $.Values.nginx.resources | nindent 12 }}
+          {{- end }}
+      restartPolicy: {{ $.Values.image.restartPolicy }}
+
+---
+
+# OneUptime nginx autoscaler
+{{- if not $.Values.nginx.disableAutoscaler }}
+{{- $nginxAutoScalerArgs := dict "ServiceName" "nginx" "Release" $.Release "Values" $.Values -}}
+{{- include "oneuptime.autoscaler" $nginxAutoScalerArgs }}
+{{- end }}
+---
+
+{{- end }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+  name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+  {{- if $.Values.metalLb.enabled }}
+    metallb.universe.tf/address-pool: {{ printf "%s-%s" $.Release.Name "metallb-address-pool"  }}
+  {{- end }}
+  {{- if $.Values.nginx.service.annotations }}
+  {{- toYaml $.Values.nginx.service.annotations | trim | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if $.Values.nginx.service.loadBalancerClass }}
+  loadBalancerClass: {{ $.Values.nginx.service.loadBalancerClass }}
+  {{- end }}
+  {{- if $.Values.nginx.service.loadBalancerIP }}
+  loadBalancerIP: {{ $.Values.nginx.service.loadBalancerIP }}
+  {{- end }}
+  {{- if $.Values.nginx.service.externalIPs }}
+  externalIPs:
+    {{- range $key, $val := $.Values.nginx.service.externalIPs }}
+    - {{ $val }}
+    {{- end }}
+  {{- end }}
+  ports:
+    - port: {{ $.Values.nginx.ports.http }}
+      targetPort: 7849
+      name: oneuptime-http
+    - port: {{ $.Values.nginx.ports.https }}
+      targetPort: 7850
+      name: statuspage-ssl
+  selector:
+      app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  {{- if $.Values.nginx.service.type }}
+  type: {{ $.Values.nginx.service.type }}
+  {{- else }}
+  type: ClusterIP
+  {{- end }}
+---

@@ -1,0 +1,135 @@
+{{- if $.Values.home.enabled }}
+# OneUptime Home Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name "home"  }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name "home"  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+    {{- if $.Values.deployment.includeTimestampLabel }}
+    date: "{{ now | unixEpoch }}"
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ printf "%s-%s" $.Release.Name "home"  }}
+  {{- if $.Values.home.replicaCount }}
+  replicas: {{ $.Values.home.replicaCount }}
+  {{- else }}
+  {{- if or (not $.Values.autoscaling.enabled) ($.Values.home.disableAutoscaler) }}
+  replicas: {{ $.Values.deployment.replicaCount }}
+  {{- end }}
+  {{- end }}
+  strategy: {{- toYaml $.Values.deployment.updateStrategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "%s-%s" $.Release.Name "home"  }}
+        {{- if $.Values.deployment.includeTimestampLabel }}
+        date: "{{ now | unixEpoch }}"
+        {{- end }}
+        appname: oneuptime
+    spec:
+      {{- if $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml $.Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.home.podSecurityContext }}
+      securityContext:
+        {{- toYaml $.Values.home.podSecurityContext | nindent 8 }}
+      {{- else if $.Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.affinity }}
+      affinity: {{- $.Values.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.tolerations }}
+      tolerations: {{- $.Values.tolerations | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.home.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $.Values.home.nodeSelector | nindent 8 }}
+      {{- else if $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $.Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+        - image: {{ include "oneuptime.image" (dict "Values" $.Values "ServiceName" "home") }}
+          name: {{ printf "%s-%s" $.Release.Name "home"  }}
+          {{- if $.Values.startupProbe.enabled }}
+          # Startup probe
+          startupProbe:
+            httpGet:
+              path: /status/live
+              port: {{ $.Values.home.ports.http }}
+            periodSeconds: {{ $.Values.startupProbe.periodSeconds }}
+            failureThreshold: {{ $.Values.startupProbe.failureThreshold }}
+          {{- end }}
+          {{- if $.Values.livenessProbe.enabled }}
+          # Liveness probe
+          livenessProbe:
+            httpGet:
+              path: /status/live
+              port: {{ $.Values.home.ports.http }}
+            periodSeconds: {{ $.Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ $.Values.livenessProbe.timeoutSeconds }}
+            initialDelaySeconds: {{ $.Values.livenessProbe.initialDelaySeconds }}
+          {{- end }}
+          {{- if $.Values.readinessProbe.enabled }}
+          # Readyness Probe
+          readinessProbe:
+            httpGet:
+              path: /status/ready
+              port: {{ $.Values.home.ports.http }}
+            periodSeconds: {{ $.Values.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ $.Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ $.Values.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if $.Values.home.containerSecurityContext }}
+          securityContext:
+            {{- toYaml $.Values.home.containerSecurityContext | nindent 12 }}
+          {{- else if $.Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            {{- include "oneuptime.env.common" . | nindent 12 }}
+            {{- include "oneuptime.env.runtime" (dict "Values" $.Values "Release" $.Release) | nindent 12 }}
+            - name: PORT
+              value: {{ $.Values.home.ports.http | quote }}
+            - name: DISABLE_TELEMETRY
+              value: {{ $.Values.home.disableTelemetryCollection | quote }}
+          ports:
+            - containerPort: {{ $.Values.home.ports.http }}
+              protocol: TCP
+              name: http
+          {{- if $.Values.home.resources }}
+          resources:
+            {{- toYaml $.Values.home.resources | nindent 12 }}
+          {{- end }}
+      restartPolicy: {{ $.Values.image.restartPolicy }}
+
+---
+
+# OneUptime home autoscaler
+{{- if not $.Values.home.disableAutoscaler }}
+{{- $homeAutoScalerArgs := dict "ServiceName" "home" "Release" $.Release "Values" $.Values -}}
+{{- include "oneuptime.autoscaler" $homeAutoScalerArgs }}
+{{- end }}
+---
+
+{{- end }}
+
+{{- if $.Values.home.enabled }}
+# OneUptime home Service
+{{- $homePorts := $.Values.home.ports -}}
+{{- $homeServiceArgs := dict "ServiceName" "home" "Ports" $homePorts "Release" $.Release "Values" $.Values -}}
+{{- include "oneuptime.service" $homeServiceArgs }}
+---
+{{- end }}

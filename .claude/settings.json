@@ -26,7 +26,11 @@
       "Bash(file=\"apps/$app/base/values.yaml\")",
       "Bash(echo \"Processing $app...\")",
       "Bash(python3:*)",
-      "Bash(grep \"# Node affinity\" apps/*/base/values.yaml)"
+      "Bash(grep \"# Node affinity\" apps/*/base/values.yaml)",
+      "Bash(git push:*)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }
