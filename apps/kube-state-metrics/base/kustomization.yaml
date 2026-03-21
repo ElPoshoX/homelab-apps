@@ -21,6 +21,4 @@ helmCharts:
     valuesFile: values.yaml
     namespace: kube-system
 
-# Additional Kubernetes resources
-resources:
-  - namespace.yaml
+# No additional resources needed (kube-system is a system namespace)
