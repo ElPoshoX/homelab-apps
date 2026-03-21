@@ -110,39 +110,35 @@ tempo:
 # Liveness and readiness probes
 livenessProbe:
   httpGet:
-    path: /ready
-    port: 3200
-    scheme: HTTP
+    path: /status
+    port: 3100
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-  successThreshold: 1
 
 readinessProbe:
   httpGet:
-    path: /ready
-    port: 3200
-    scheme: HTTP
-  initialDelaySeconds: 20
-  periodSeconds: 10
+    path: /status
+    port: 3100
+  initialDelaySeconds: 10
+  periodSeconds: 5
   timeoutSeconds: 5
   failureThreshold: 3
-  successThreshold: 1
 
 # Pod security context
 podSecurityContext:
-  fsGroup: 10001
-  runAsUser: 10001
-  runAsGroup: 10001
+  fsGroup: 472
+  runAsUser: 472
   runAsNonRoot: true
 
-# Security context - matches grafana-community chart defaults
+# Security context
 securityContext:
-  runAsUser: 10001
-  runAsGroup: 10001
-  fsGroup: 10001
-  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
 
 # Pod disruption budget
 podDisruptionBudget:

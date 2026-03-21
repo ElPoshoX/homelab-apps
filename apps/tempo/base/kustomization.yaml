@@ -12,7 +12,7 @@ namespace: tempo
 
 helmCharts:
   - name: tempo
-    repo: https://grafana-community.github.io/helm-charts
+    repo: https://grafana.github.io/helm-charts
     releaseName: tempo
     valuesFile: values.yaml
     namespace: tempo
@@ -20,41 +20,3 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
-
-patches:
-  - target:
-      kind: StatefulSet
-      name: tempo
-    patch: |-
-      - op: add
-        path: /spec/revisionHistoryLimit
-        value: 10
-      - op: add
-        path: /spec/podManagementPolicy
-        value: OrderedReady
-      - op: add
-        path: /spec/persistentVolumeClaimRetentionPolicy
-        value:
-          whenDeleted: Retain
-          whenScaled: Retain
-      - op: replace
-        path: /spec/template/spec/dnsPolicy
-        value: ClusterFirst
-      - op: replace
-        path: /spec/template/spec/restartPolicy
-        value: Always
-      - op: add
-        path: /spec/template/spec/terminationGracePeriodSeconds
-        value: 30
-      - op: add
-        path: /spec/template/spec/schedulerName
-        value: default-scheduler
-      - op: replace
-        path: /spec/template/spec/containers/0/terminationMessagePath
-        value: /dev/termination-log
-      - op: add
-        path: /spec/template/spec/containers/0/terminationMessagePolicy
-        value: File
-      - op: replace
-        path: /spec/template/spec/volumes/0/configMap/defaultMode
-        value: 420
