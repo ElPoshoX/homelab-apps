@@ -12,10 +12,6 @@ labels:
 # Namespace for all resources
 namespace: kube-system
 
-# Explicit namespace with ArgoCD prune protection
-resources:
-  - namespace.yaml
-
 # Helm chart as a resource
 # Official Kube State Metrics Helm repository: https://prometheus-community.github.io/helm-charts
 helmCharts:
