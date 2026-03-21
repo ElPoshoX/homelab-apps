@@ -76,7 +76,7 @@ tempo:
       backend: s3
       s3:
         bucket: tempo-bucket
-        endpoint: garage:9000
+        endpoint: garage.garage.svc.cluster.local:9000
         insecure: true
         access_key: ${S3_ACCESS_KEY}
         secret_key: ${S3_SECRET_KEY}
@@ -84,7 +84,7 @@ tempo:
   # Metrics generation
   metricsGenerator:
     enabled: true
-    remoteWriteUrl: http://mimir:9009/api/prom/push
+    remoteWriteUrl: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
     ring:
       kvstore:
         store: inmemory

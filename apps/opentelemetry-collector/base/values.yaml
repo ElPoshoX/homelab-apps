@@ -98,7 +98,7 @@ config:
 
     # Prometheus Remote Write exporter to Mimir (metrics)
     prometheusremotewrite:
-      endpoint: http://mimir:9009/api/prom/push
+      endpoint: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
       tls:
         insecure: true
 

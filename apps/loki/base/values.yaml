@@ -35,7 +35,7 @@ loki:
   storage_config:
     aws:
       s3: s3://loki-bucket
-      endpoint: garage:9000
+      endpoint: garage.garage.svc.cluster.local:9000
       access_key_id: ${AWS_ACCESS_KEY_ID}
       secret_access_key: ${AWS_SECRET_ACCESS_KEY}
       s3forcepathstyle: true
