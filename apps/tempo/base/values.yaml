@@ -1,35 +1,26 @@
-# Tempo Helm Chart Configuration (grafana-community)
-# Distributed tracing backend for homelab observability stack
-# Monolithic deployment mode (single pod with S3 Garage backend)
+global:
+  commonLabels: {}
+  imageRegistry: null
 
-# Global settings
+nameOverride: ""
+fullnameOverride: ""
+
 replicas: 1
 
-# Image configuration
+labels:
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/part-of: tempo
+  homelab.local/OwnedBy: ElPoshoX
+
+annotations: {}
+
 tempo:
   registry: docker.io
   repository: grafana/tempo
+  tag: ""
   pullPolicy: IfNotPresent
 
-  # Memory ballast for reducing GC pressure
-  memBallastSizeMbs: 1024
-
-  # Multitenancy disabled for single-tenant homelab
-  multitenancyEnabled: false
-
-  # Reporting disabled for privacy
-  reportingEnabled: false
-
-  # Metrics generator - send metrics to Mimir
-  metricsGenerator:
-    enabled: true
-    remoteWriteUrl: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
-    storage:
-      path: /var/tempo/metrics
-    traces_storage:
-      path: /var/tempo/traces
-
-  # Resource requests and limits
+  updateStrategy: RollingUpdate
   resources:
     requests:
       cpu: 300m
@@ -38,11 +29,36 @@ tempo:
       cpu: 500m
       memory: 1Gi
 
-  # HTTP server configuration
+  memBallastSizeMbs: 1024
+  multitenancyEnabled: false
+  reportingEnabled: false
+
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://mimir.mimir.svc.cluster.local:9009/api/prom/push"
+    processor: {}
+    registry: {}
+    storage:
+      path: "/var/tempo/metrics"
+      remote_write: []
+    traces_storage:
+      path: "/var/tempo/traces"
+
+  ingester: {}
+  querier:
+    max_concurrent_queries: 20
+  queryFrontend: {}
+
+  retention: 168h
+
+  overrides:
+    defaults: {}
+    per_tenant_override_config: /conf/overrides.yaml
+  per_tenant_overrides: {}
+
   server:
     http_listen_port: 3200
 
-  # Liveness probe - checks if pod is alive
   livenessProbe:
     httpGet:
       path: /ready
@@ -51,8 +67,8 @@ tempo:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
+    successThreshold: 1
 
-  # Readiness probe - checks if pod is ready to accept traffic
   readinessProbe:
     httpGet:
       path: /ready
@@ -61,8 +77,8 @@ tempo:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
+    successThreshold: 1
 
-  # Storage configuration - S3 Garage backend with environment variable expansion
   storage:
     trace:
       backend: s3
@@ -75,7 +91,6 @@ tempo:
       wal:
         path: /var/tempo/wal
 
-  # Receivers for all tracing protocols
   receivers:
     jaeger:
       protocols:
@@ -91,93 +106,158 @@ tempo:
     otlp:
       protocols:
         grpc:
-          endpoint: 0.0.0.0:4317
+          endpoint: "0.0.0.0:4317"
         http:
-          endpoint: 0.0.0.0:4318
+          endpoint: "0.0.0.0:4318"
     zipkin:
       endpoint: 0.0.0.0:9411
 
-  # Querier configuration
-  querier:
-    max_concurrent_queries: 20
+  securityContext: {}
 
-  # Query frontend configuration
-  queryFrontend:
-    max_cache_freshness_ms: 300000
-
-  # Distributor configuration - rate limiting
-  distributor:
-    rate_limit_bytes: 10485760  # 10MB/s
-    log_received_traces: false
-
-  # Retention policy - 7 days
-  retention: 168h
-
-  # Enable environment variable expansion in configuration
   extraArgs:
     config.expand-env: "true"
 
-  # Environment variables from Kubernetes Secrets
+  extraEnv: []
+
   extraEnvFrom:
     - secretRef:
         name: tempo-s3-credentials
 
-  # Container security context - minimal restrictions per chart defaults
+  extraVolumeMounts: []
+
+config: |
+  memberlist:
+    cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
+  multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
+  usage_report:
+    reporting_enabled: {{ .Values.tempo.reportingEnabled }}
+  compactor:
+    compaction:
+      block_retention: {{ .Values.tempo.retention }}
+  distributor:
+    receivers:
+      {{- toYaml .Values.tempo.receivers | nindent 8 }}
+  ingester:
+    {{- toYaml .Values.tempo.ingester | nindent 6 }}
+  server:
+    {{- toYaml .Values.tempo.server | nindent 6 }}
+  storage:
+    {{- toYaml .Values.tempo.storage | nindent 6 }}
+  querier:
+    {{- toYaml .Values.tempo.querier | nindent 6 }}
+  query_frontend:
+    {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
+  overrides:
+    {{- toYaml .Values.tempo.overrides | nindent 6 }}
+    {{- if .Values.tempo.metricsGenerator.enabled }}
+  metrics_generator:
+    {{- if .Values.tempo.metricsGenerator.processor }}
+    processor:
+      {{- toYaml .Values.tempo.metricsGenerator.processor | nindent 8 }}
+    {{- end }}
+    {{- if .Values.tempo.metricsGenerator.registry }}
+    registry:
+      {{- toYaml .Values.tempo.metricsGenerator.registry | nindent 8 }}
+    {{- end }}
+    storage:
+      path: {{ .Values.tempo.metricsGenerator.storage.path | quote }}
+      {{- if .Values.tempo.metricsGenerator.storage.remote_write }}
+      remote_write:
+        {{- toYaml .Values.tempo.metricsGenerator.storage.remote_write | nindent 10 }}
+      {{- else }}
+      remote_write:
+        - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
+      {{- end }}
+    traces_storage:
+      path: {{ .Values.tempo.metricsGenerator.traces_storage.path | quote }}
+    {{- end }}
+
+tempoQuery:
+  repository: grafana/tempo-query
+  tag: null
+  pullPolicy: IfNotPresent
+  enabled: false
+  service:
+    port: 16686
+  ingress:
+    enabled: false
+    annotations: {}
+    labels: {}
+    path: /
+    pathType: Prefix
+    hosts:
+      - query.tempo.example.com
+    extraPaths: []
+    tls: []
+  resources: {}
+  extraArgs: {}
+  extraEnv: []
+  extraVolumeMounts: []
   securityContext: {}
 
-# Service account configuration
-serviceAccount:
-  create: true
-  name: tempo
-
-# Service configuration
-service:
-  type: ClusterIP
-  protocol: TCP
-  annotations: {}
-
-# Persistence configuration - 30GB PVC for traces on Longhorn
-persistence:
-  enabled: true
-  storageClassName: longhorn
-  size: 30Gi
-  accessModes:
-    - ReadWriteMany
-
-# Pod security context
-podSecurityContext:
-  fsGroup: 10001
+securityContext:
   runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
   runAsNonRoot: true
 
-# Pod disruption budget
+serviceAccount:
+  create: true
+  name: null
+  imagePullSecrets: []
+  annotations: {}
+  labels: {}
+  automountServiceAccountToken: true
+
+service:
+  type: ClusterIP
+  clusterIP: ""
+  loadBalancerIP: null
+  protocol: "TCP"
+  annotations: {}
+  labels: {}
+  targetPort: ""
+
+serviceMonitor:
+  enabled: false
+  interval: ""
+  additionalLabels: {}
+  annotations: {}
+
+persistence:
+  enabled: true
+  enableStatefulSetAutoDeletePVC: false
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
+  size: 30Gi
+
+podAnnotations: {}
+podLabels: {}
+extraLabels: {}
+extraVolumes: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+priorityClassName: null
+hostAliases: []
+
+networkPolicy:
+  enabled: false
+  ingress: true
+  allowExternal: true
+  explicitNamespacesSelector: {}
+  egress:
+    enabled: false
+    blockDNSResolution: false
+    ports: []
+    to: []
+
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
 
-# RBAC configuration
 rbac:
   create: true
-  pspEnabled: false
-
-# Labels for all resources
-labels:
-  app.kubernetes.io/managed-by: kustomize
-  app.kubernetes.io/part-of: tempo
-  homelab.local/OwnedBy: ElPoshoX
-
-# Annotations for StatefulSet
-annotations: {}
-
-# Node selector for pod placement
-nodeSelector: {}
-
-# Tolerations for pod placement
-tolerations: []
-
-# Affinity rules for pod placement
-affinity: {}
-
-# Ingress disabled - using Cilium Gateway HTTPRoute instead
-ingress:
-  enabled: false
