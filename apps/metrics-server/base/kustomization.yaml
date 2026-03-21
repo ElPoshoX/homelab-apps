@@ -12,6 +12,10 @@ labels:
 # Namespace for all resources
 namespace: kube-system
 
+# Explicit namespace with ArgoCD prune protection
+resources:
+  - namespace.yaml
+
 # Helm chart as a resource
 # Official Metrics Server Helm repository: https://kubernetes-sigs.github.io/metrics-server/
 helmCharts:
@@ -20,5 +24,3 @@ helmCharts:
     releaseName: metrics-server
     valuesFile: values.yaml
     namespace: kube-system
-
-# No additional resources needed (kube-system is a system namespace)

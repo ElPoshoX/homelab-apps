@@ -6,3 +6,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/part-of: kube-state-metrics
     homelab.local/OwnedBy: ElPoshoX
+  annotations:
+    argocd.argoproj.io/compare-result: "skip"
+    argocd.argoproj.io/sync-options: "Prune=false"
