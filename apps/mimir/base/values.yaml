@@ -20,8 +20,8 @@ mimir:
       s3:
         endpoint: garage.garage.svc.cluster.local:3900
         bucket_name: mimir-bucket
-        access_key_id: garage
-        secret_access_key: garage
+        access_key_id: Eo83;WtO)C;2WnEl%s)MGR)T
+        secret_access_key: KZWxNHlm<EeN~dI3I`Qk=W!79b[Am+Zu
         insecure: true
       tsdb:
         dir: /mimir-data/tsdb
@@ -61,8 +61,8 @@ mimir:
       s3:
         endpoint: garage.garage.svc.cluster.local:3900
         bucket_name: mimir-bucket
-        access_key_id: garage
-        secret_access_key: garage
+        access_key_id: Eo83;WtO)C;2WnEl%s)MGR)T
+        secret_access_key: KZWxNHlm<EeN~dI3I`Qk=W!79b[Am+Zu
         insecure: true
 
 # Deployment mode - monolithic
