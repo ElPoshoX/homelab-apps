@@ -20,3 +20,20 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
+
+patches:
+  - target:
+      kind: StatefulSet
+      name: tempo
+    patch: |-
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 10
+      - op: add
+        path: /spec/podManagementPolicy
+        value: OrderedReady
+      - op: add
+        path: /spec/persistentVolumeClaimRetentionPolicy
+        value:
+          whenDeleted: Retain
+          whenScaled: Retain

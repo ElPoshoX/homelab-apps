@@ -27,7 +27,10 @@
       "Bash(echo \"Processing $app...\")",
       "Bash(python3:*)",
       "Bash(grep \"# Node affinity\" apps/*/base/values.yaml)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(kubectl get:*)",
+      "Bash(kubectl patch:*)",
+      "WebFetch(domain:community.grafana.com)"
     ],
     "additionalDirectories": [
       "/tmp"
