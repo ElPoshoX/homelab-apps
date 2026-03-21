@@ -37,3 +37,24 @@ patches:
         value:
           whenDeleted: Retain
           whenScaled: Retain
+      - op: replace
+        path: /spec/template/spec/dnsPolicy
+        value: ClusterFirst
+      - op: replace
+        path: /spec/template/spec/restartPolicy
+        value: Always
+      - op: add
+        path: /spec/template/spec/terminationGracePeriodSeconds
+        value: 30
+      - op: add
+        path: /spec/template/spec/schedulerName
+        value: default-scheduler
+      - op: replace
+        path: /spec/template/spec/containers/0/terminationMessagePath
+        value: /dev/termination-log
+      - op: add
+        path: /spec/template/spec/containers/0/terminationMessagePolicy
+        value: File
+      - op: replace
+        path: /spec/template/spec/volumes/0/configMap/defaultMode
+        value: 420
