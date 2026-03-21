@@ -3,6 +3,15 @@
 
 # Monolithic mode - single pod deployment
 loki:
+  # Enable environment variable expansion in configuration
+  extraArgs:
+    - "-config.expand-env=true"
+
+  # Environment variables from Kubernetes Secrets
+  extraEnvFrom:
+    - secretRef:
+        name: loki-s3-credentials
+
   # Authentication and tenancy disabled for internal use
   auth_enabled: false
 
@@ -40,6 +49,7 @@ loki:
       secret_access_key: ${LOKI_S3_SECRET_ACCESS_KEY}
       s3forcepathstyle: true
       insecure: true
+      region: garage
     index_cache_validity: 5m
 
   # Storage bucket configuration for S3 backend
