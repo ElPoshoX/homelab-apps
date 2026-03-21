@@ -74,9 +74,8 @@ ingress:
         - path: /
           pathType: Prefix
 
-# Pod disruption budget - disabled for single replica
-podDisruptionBudget:
-  enabled: false
+# Pod disruption budget - empty object to disable
+podDisruptionBudget: {}
 
 # RBAC configuration
 rbac:
