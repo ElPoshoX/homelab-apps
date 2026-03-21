@@ -20,3 +20,18 @@ helmCharts:
 
 resources:
   - namespace.yaml
+  - secret.yaml
+
+# Patch to add S3 API port 9000 to Service
+patches:
+  - target:
+      kind: Service
+      name: garage
+    patch: |-
+      - op: add
+        path: /spec/ports/-
+        value:
+          name: s3
+          port: 9000
+          protocol: TCP
+          targetPort: 9000

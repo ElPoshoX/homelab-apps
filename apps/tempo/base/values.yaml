@@ -76,7 +76,7 @@ tempo:
       backend: s3
       s3:
         bucket: tempo-bucket
-        endpoint: garage.garage.svc.cluster.local:9000
+        endpoint: garage.garage.svc.cluster.local:3900
         insecure: true
         access_key: ${S3_ACCESS_KEY}
         secret_key: ${S3_SECRET_KEY}
