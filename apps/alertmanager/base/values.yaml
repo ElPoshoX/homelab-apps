@@ -42,7 +42,6 @@ config:
     resolve_timeout: 5m
   route:
     receiver: 'default'
-    continue: true
     routes:
       - receiver: 'telegram'
         match_re:
