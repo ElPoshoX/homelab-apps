@@ -52,7 +52,7 @@ config:
       webhook_configs: []
     - name: 'telegram'
       webhook_configs:
-        - url: 'https://api.telegram.org/botYOUR_TOKEN_HERE/sendMessage'
+        - url: 'https://api.telegram.org/bot{{ .Env.TELEGRAM_BOT_TOKEN }}/sendMessage'
           send_resolved: true
 
 # Resource requests and limits
@@ -89,15 +89,13 @@ serviceAccount:
   create: true
   name: alertmanager
 
-# Environment variables
-env: {}
-  # TELEGRAM_TOKEN: Use secret reference instead
-
-# Secrets for Telegram integration
-# Note: Create a secret named "telegram-token" with the key "token" in the alertmanager namespace
-secretEnv:
-  - name: TELEGRAM_TOKEN
+# Environment variables - load Telegram token from secret
+env:
+  TELEGRAM_BOT_TOKEN:
     valueFrom:
       secretKeyRef:
         name: telegram-token
         key: token
+
+# Telegram token is loaded from SopsSecret (apps/alertmanager/base/secret.yaml)
+# The secret is automatically created and injected into the pod environment

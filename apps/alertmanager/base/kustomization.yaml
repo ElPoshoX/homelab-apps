@@ -24,3 +24,4 @@ helmCharts:
 # Additional Kubernetes resources
 resources:
   - namespace.yaml
+  - secret.yaml
