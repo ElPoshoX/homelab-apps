@@ -5,7 +5,8 @@
 loki:
   # Enable environment variable expansion in configuration
   extraArgs:
-    - "-config.expand-env=true"
+    - "-config.expand-env"
+    - "true"
 
   # Environment variables from Kubernetes Secrets
   extraEnvFrom:

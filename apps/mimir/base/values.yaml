@@ -73,7 +73,8 @@ mimir-distributed:
   # Enable environment variable expansion for all components
   global:
     extraArgs:
-      - "-config.expand-env=true"
+      - "-config.expand-env"
+      - "true"
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-credentials
