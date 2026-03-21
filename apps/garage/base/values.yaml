@@ -4,9 +4,9 @@
 
 # Image configuration
 image:
-  repository: dxkite/garage
+  repository: ghcr.io/deuxfleurs/garage
   pullPolicy: IfNotPresent
-  tag: ""  # Uses latest from Helm chart
+  tag: v0.10.0
 
 # Garage configuration
 garage:
