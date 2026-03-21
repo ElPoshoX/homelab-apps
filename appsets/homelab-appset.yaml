@@ -30,6 +30,26 @@ spec:
         name: in-cluster
         namespace: '{{index .path.segments 1}}'
 
+      # Ignore Kubernetes auto-generated fields that drift from Helm charts
+      ignoreDifferences:
+      - group: apps
+        kind: StatefulSet
+        jsonPointers:
+        - /metadata/annotations/deployment.kubernetes.io~1revision
+        - /metadata/generation
+        - /metadata/managedFields
+        - /metadata/resourceVersion
+        - /metadata/uid
+        - /spec/revisionHistoryLimit
+        - /spec/podManagementPolicy
+        - /spec/persistentVolumeClaimRetentionPolicy
+        - /spec/template/spec/dnsPolicy
+        - /spec/template/spec/restartPolicy
+        - /spec/template/spec/terminationGracePeriodSeconds
+        - /spec/template/spec/schedulerName
+        - /spec/template/spec/serviceAccountName
+        - /status
+
       # Sync policy
       syncPolicy:
         syncOptions:
