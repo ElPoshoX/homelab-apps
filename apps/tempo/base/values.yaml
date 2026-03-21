@@ -1,53 +1,93 @@
-# Tempo Helm Chart Configuration
+# Tempo Helm Chart Configuration (grafana-community)
 # Distributed tracing backend for homelab observability stack
-# Monolithic deployment mode (single pod)
-# Configured with S3 Garage backend and secure credential injection via SOPS
+# Monolithic deployment mode (single pod with S3 Garage backend)
+
+# Global settings
+replicas: 1
 
 # Image configuration
-image:
+tempo:
+  registry: docker.io
   repository: grafana/tempo
   pullPolicy: IfNotPresent
 
-# Tempo mode - monolithic for simple single-pod deployment
-mode: monolithic
+  # Memory ballast for reducing GC pressure
+  memBallastSizeMbs: 1024
 
-# Replicas for monolithic mode
-replicas: 1
+  # Multitenancy disabled for single-tenant homelab
+  multitenancyEnabled: false
 
-# Service configuration
-service:
-  type: ClusterIP
-  port: 3100
-  annotations: {}
+  # Reporting disabled for privacy
+  reportingEnabled: false
 
-# Persistence configuration (30GB Longhorn PVC for traces)
-persistence:
-  enabled: true
-  storageClassName: longhorn
-  size: 30Gi
-  accessModes:
-    - ReadWriteMany
+  # Metrics generator - send metrics to Mimir
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
+    storage:
+      path: /var/tempo/metrics
+    traces_storage:
+      path: /var/tempo/traces
 
-# Resource requests and limits
-resources:
-  requests:
-    cpu: 300m
-    memory: 512Mi
-  limits:
-    cpu: 500m
-    memory: 1Gi
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
 
-# Ingress configuration
-ingress:
-  enabled: false
+  # HTTP server configuration
+  server:
+    http_listen_port: 3200
 
-# DNS hostname for internal communication
-hostname: tempo.elposhox.dev
+  # Liveness probe - checks if pod is alive
+  livenessProbe:
+    httpGet:
+      path: /ready
+      port: 3200
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
-# Tempo configuration
-tempo:
-  # Receiver configuration for OTLP protocol
+  # Readiness probe - checks if pod is ready to accept traffic
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 3200
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # Storage configuration - S3 Garage backend with environment variable expansion
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: tempo-bucket
+        endpoint: garage.garage.svc.cluster.local:3900
+        access_key: ${TEMPO_S3_ACCESS_KEY_ID}
+        secret_key: ${TEMPO_S3_SECRET_ACCESS_KEY}
+        insecure: true
+      wal:
+        path: /var/tempo/wal
+
+  # Receivers for all tracing protocols
   receivers:
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:14250
+        thrift_binary:
+          endpoint: 0.0.0.0:6832
+        thrift_compact:
+          endpoint: 0.0.0.0:6831
+        thrift_http:
+          endpoint: 0.0.0.0:14268
+    opencensus:
     otlp:
       protocols:
         grpc:
@@ -56,47 +96,22 @@ tempo:
           endpoint: 0.0.0.0:4318
     zipkin:
       endpoint: 0.0.0.0:9411
-    jaeger:
-      protocols:
-        grpc:
-          endpoint: 0.0.0.0:14250
-        thrift_http:
-          endpoint: 0.0.0.0:14268
 
   # Querier configuration
   querier:
     max_concurrent_queries: 20
 
   # Query frontend configuration
-  query_frontend:
+  queryFrontend:
     max_cache_freshness_ms: 300000
 
-  # Storage configuration - S3 backend (Garage)
-  storage:
-    trace:
-      backend: s3
-      s3:
-        bucket: tempo-bucket
-        endpoint: garage.garage.svc.cluster.local:3900
-        insecure: true
-        access_key: ${TEMPO_S3_ACCESS_KEY_ID}
-        secret_key: ${TEMPO_S3_SECRET_ACCESS_KEY}
-
-  # Metrics generation
-  metricsGenerator:
-    enabled: true
-    remoteWriteUrl: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
-    ring:
-      kvstore:
-        store: inmemory
-
-  # Trace retention - 7 days
-  retention: 168h
-
-  # Distributor configuration
+  # Distributor configuration - rate limiting
   distributor:
     rate_limit_bytes: 10485760  # 10MB/s
     log_received_traces: false
+
+  # Retention policy - 7 days
+  retention: 168h
 
   # Enable environment variable expansion in configuration
   extraArgs:
@@ -107,49 +122,62 @@ tempo:
     - secretRef:
         name: tempo-s3-credentials
 
-# Liveness and readiness probes
-livenessProbe:
-  httpGet:
-    path: /status
-    port: 3100
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
+  # Container security context - minimal restrictions per chart defaults
+  securityContext: {}
 
-readinessProbe:
-  httpGet:
-    path: /status
-    port: 3100
-  initialDelaySeconds: 10
-  periodSeconds: 5
-  timeoutSeconds: 5
-  failureThreshold: 3
+# Service account configuration
+serviceAccount:
+  create: true
+  name: tempo
+
+# Service configuration
+service:
+  type: ClusterIP
+  protocol: TCP
+  annotations: {}
+
+# Persistence configuration - 30GB PVC for traces on Longhorn
+persistence:
+  enabled: true
+  storageClassName: longhorn
+  size: 30Gi
+  accessModes:
+    - ReadWriteMany
 
 # Pod security context
 podSecurityContext:
-  fsGroup: 472
-  runAsUser: 472
+  fsGroup: 10001
+  runAsUser: 10001
   runAsNonRoot: true
-
-# Security context
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
 
 # Pod disruption budget
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
 
-# RBAC
+# RBAC configuration
 rbac:
+  create: true
   pspEnabled: false
 
-# Service account
-serviceAccount:
-  create: true
-  name: tempo
-  annotations: {}
+# Labels for all resources
+labels:
+  app.kubernetes.io/managed-by: kustomize
+  app.kubernetes.io/part-of: tempo
+  homelab.local/OwnedBy: ElPoshoX
+
+# Annotations for StatefulSet
+annotations: {}
+
+# Node selector for pod placement
+nodeSelector: {}
+
+# Tolerations for pod placement
+tolerations: []
+
+# Affinity rules for pod placement
+affinity: {}
+
+# Ingress disabled - using Cilium Gateway HTTPRoute instead
+ingress:
+  enabled: false
