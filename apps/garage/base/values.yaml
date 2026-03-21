@@ -143,3 +143,28 @@ serviceAccount:
 # Ingress (disabled, admin API on internal DNS)
 ingress:
   enabled: false
+
+# Garage cluster configuration - create buckets and S3 access keys
+clusterConfig:
+  enabled: true
+  layout:
+    enabled: true
+    zone: dc1
+    capacity: "17000"  # Per replica in MB
+
+  # S3 buckets for observability stack
+  buckets:
+    - name: mimir-bucket
+    - name: loki-bucket
+    - name: tempo-bucket
+
+  # S3 access keys - reference existing Kubernetes secret with encrypted credentials
+  keys:
+    observability-stack:
+      secretName: garage-s3-credentials
+      keyId: accessKey
+      secretKey: secretKey
+      buckets:
+        - mimir-bucket
+        - loki-bucket
+        - tempo-bucket
