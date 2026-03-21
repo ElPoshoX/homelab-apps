@@ -133,12 +133,11 @@ podSecurityContext:
   runAsGroup: 10001
   runAsNonRoot: true
 
-# Security context
+# Security context - matches grafana-community chart defaults
 securityContext:
-  fsGroup: 10001
-  readOnlyRootFilesystem: false
   runAsUser: 10001
   runAsGroup: 10001
+  fsGroup: 10001
   runAsNonRoot: true
 
 # Pod disruption budget
