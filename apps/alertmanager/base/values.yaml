@@ -77,8 +77,6 @@ ingress:
 # Pod disruption budget - disabled for single replica
 podDisruptionBudget:
   enabled: false
-  minAvailable: null
-  maxUnavailable: null
 
 # RBAC configuration
 rbac:
