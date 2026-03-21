@@ -30,7 +30,8 @@
       "Bash(git push:*)",
       "Bash(kubectl get:*)",
       "Bash(kubectl patch:*)",
-      "WebFetch(domain:community.grafana.com)"
+      "WebFetch(domain:community.grafana.com)",
+      "Bash(curl -s https://raw.githubusercontent.com/grafana-community/helm-charts/main/charts/tempo/values.yaml)"
     ],
     "additionalDirectories": [
       "/tmp"
