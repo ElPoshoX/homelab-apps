@@ -1,6 +1,7 @@
 # Tempo Helm Chart Configuration
 # Distributed tracing backend for homelab observability stack
 # Monolithic deployment mode (single pod)
+# Configured with S3 Garage backend and secure credential injection via SOPS
 
 # Image configuration
 image:
