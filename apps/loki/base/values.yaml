@@ -3,16 +3,6 @@
 
 # Monolithic mode - single pod deployment
 loki:
-  # Enable environment variable expansion in configuration
-  extraArgs:
-    - "-config.expand-env"
-    - "true"
-
-  # Environment variables from Kubernetes Secrets
-  extraEnvFrom:
-    - secretRef:
-        name: loki-s3-credentials
-
   # Authentication and tenancy disabled for internal use
   auth_enabled: false
 
@@ -127,6 +117,17 @@ securityContext:
     drop:
       - ALL
   readOnlyRootFilesystem: true
+
+# Single binary configuration
+singleBinary:
+  # Enable environment variable expansion in configuration
+  extraArgs:
+    - "-config.expand-env"
+    - "true"
+  # Environment variables from Kubernetes Secrets
+  extraEnvFrom:
+    - secretRef:
+        name: loki-s3-credentials
 
 # Backend configuration for distributed/HA setup (optional future use)
 backend:
