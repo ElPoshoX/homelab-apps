@@ -139,7 +139,6 @@ securityContext:
   runAsUser: 10001
   runAsGroup: 10001
   runAsNonRoot: true
-  readOnlyRootFilesystem: false
 
 # Pod disruption budget
 podDisruptionBudget:
