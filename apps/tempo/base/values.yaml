@@ -97,6 +97,11 @@ tempo:
     rate_limit_bytes: 10485760  # 10MB/s
     log_received_traces: false
 
+  # Environment variables from Kubernetes Secrets
+  extraEnvFrom:
+    - secretRef:
+        name: tempo-s3-credentials
+
 # Liveness and readiness probes
 livenessProbe:
   httpGet:
@@ -134,11 +139,6 @@ securityContext:
 podDisruptionBudget:
   enabled: true
   minAvailable: 1
-
-# Environment variables from Kubernetes Secrets
-extraEnvFrom:
-  - secretRef:
-      name: tempo-s3-credentials
 
 # RBAC
 rbac:
