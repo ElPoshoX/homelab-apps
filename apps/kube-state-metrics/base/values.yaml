@@ -26,11 +26,14 @@ podSecurityContext:
 
 # Container security context
 securityContext:
-  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
     drop:
       - ALL
+  readOnlyRootFilesystem: true
+
+# Host network configuration
+hostNetwork: false
 
 # Service Monitor configuration for Prometheus scrape
 serviceMonitor:
@@ -61,6 +64,5 @@ serviceAccount:
 # Tolerations (optional)
 tolerations: []
 
-# Pod Disruption Budget
-podDisruptionBudget:
-  enabled: false
+# Pod Disruption Budget (disabled)
+podDisruptionBudget: {}

@@ -38,10 +38,17 @@ podSecurityContext:
 # Namespace creation control (kube-system is managed by cluster, not by Helm)
 namespaceCreate: false
 
+# Host network configuration
+hostNetwork:
+  enabled: false
+
 # Container Security Context
 containerSecurityContext:
-  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
     drop:
       - ALL
+  readOnlyRootFilesystem: true
+
+# Pod Disruption Budget (disabled)
+podDisruptionBudget: {}
