@@ -43,7 +43,7 @@ persistence:
   storageClassName: longhorn
   size: 17Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 
   # Mount path for data
   mountPath: /mnt/garage/data

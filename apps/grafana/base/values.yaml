@@ -19,7 +19,7 @@ persistence:
   storageClassName: longhorn
   size: 5Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 
 # Service configuration
 service:

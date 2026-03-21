@@ -42,7 +42,7 @@ pyroscope:
     storageClassName: longhorn
     size: 20Gi
     accessModes:
-      - ReadWriteOnce
+      - ReadWriteMany
 
   # Pod security context
   podSecurityContext:

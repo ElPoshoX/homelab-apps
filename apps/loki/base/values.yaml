@@ -85,7 +85,7 @@ persistence:
   storageClassName: longhorn
   size: 30Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 
 # Resource management
 resources:
