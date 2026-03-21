@@ -20,3 +20,22 @@ helmCharts:
     releaseName: kube-state-metrics
     valuesFile: values.yaml
     namespace: kube-system
+
+# Override chart defaults to match existing cluster state
+patches:
+  - target:
+      kind: Deployment
+      name: kube-state-metrics
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext
+      - op: replace
+        path: /spec/template/spec/hostNetwork
+        value: false
+      - op: replace
+        path: /spec/template/spec/securityContext
+        value:
+          fsGroup: 65534
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534

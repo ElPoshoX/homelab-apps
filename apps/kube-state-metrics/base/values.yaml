@@ -18,23 +18,6 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-# Pod security context (non-root)
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 65534
-  fsGroup: 65534
-
-# Container security context
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-
-# Host network configuration
-hostNetwork: false
-
 # Service Monitor configuration for Prometheus scrape
 serviceMonitor:
   enabled: true

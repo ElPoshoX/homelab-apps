@@ -20,3 +20,12 @@ helmCharts:
     releaseName: metrics-server
     valuesFile: values.yaml
     namespace: kube-system
+
+# Override chart defaults to match existing cluster state
+patches:
+  - target:
+      kind: Deployment
+      name: metrics-server
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/containers/0/securityContext
