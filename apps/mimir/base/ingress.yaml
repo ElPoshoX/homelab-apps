@@ -15,5 +15,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: mimir-nginx
-          port: 80
+        - name: mimir
+          port: 8009
