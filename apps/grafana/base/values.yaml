@@ -59,7 +59,7 @@ datasources:
       # Tempo (Traces)
       - name: Tempo
         type: tempo
-        url: http://tempo:3100
+        url: http://tempo:3200
         access: proxy
         editable: true
         jsonData:
@@ -80,18 +80,21 @@ resources:
     memory: 512Mi
 
 # Pod security context
-podSecurityContext:
-  fsGroup: 472
-  runAsUser: 472
-  runAsNonRoot: true
-
-# Security context
 securityContext:
+  runAsNonRoot: true
+  runAsUser: 472
+  runAsGroup: 472
+  fsGroup: 472
+
+# Container security context
+containerSecurityContext:
   allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: false
+  privileged: false
   capabilities:
     drop:
       - ALL
+  seccompProfile:
+    type: RuntimeDefault
 
 # Environment variables
 env:
