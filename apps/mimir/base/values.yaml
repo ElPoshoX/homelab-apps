@@ -11,8 +11,7 @@ mimir:
       grpc_listen_port: 9009
 
     # Ingester configuration
-    ingester:
-      chunk_encoding: snappy
+    ingester: {}
 
     # Blocks storage configuration with S3 backend
     blocks_storage:
@@ -43,17 +42,12 @@ mimir:
     querier:
       max_concurrent: 20
 
-    # Query frontend configuration
-    query_frontend:
-      compression: snappy
-
     # Limits configuration
     limits:
       max_global_series_per_user: 100000
       max_global_series_per_metric: 10000
       ingestion_rate: 100000
       ingestion_burst_size: 200000
-      max_cache_freshness_per_query: 10m
 
     # Storage retention
     ruler_storage:
