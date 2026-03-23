@@ -33,7 +33,8 @@
       "WebFetch(domain:community.grafana.com)",
       "Bash(curl -s https://raw.githubusercontent.com/grafana-community/helm-charts/main/charts/tempo/values.yaml)",
       "Bash(curl -s https://prometheus-community.github.io/helm-charts/kube-prometheus-stack-latest.tgz)",
-      "Bash(tar xzO kube-prometheus-stack/values.yaml)"
+      "Bash(tar xzO kube-prometheus-stack/values.yaml)",
+      "WebFetch(domain:api.github.com)"
     ],
     "additionalDirectories": [
       "/tmp",
