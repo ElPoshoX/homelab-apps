@@ -26,15 +26,19 @@ service:
   type: ClusterIP
   port: 3000
 
-# Ingress configuration
+# Ingress configuration (disabled - using HTTPRoute instead)
 ingress:
-  enabled: true
-  ingressClassName: cilium
-  hosts:
-    - grafana.elposhox.dev
-  pathType: Prefix
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  enabled: false
+
+# Gateway API HTTPRoute configuration
+route:
+  main:
+    enabled: true
+    hostnames:
+      - grafana.elposhox.dev
+    parentRefs:
+      - name: homelab-gateway
+        namespace: ingress
 
 # Datasources configuration
 datasources:

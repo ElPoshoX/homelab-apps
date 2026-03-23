@@ -75,10 +75,7 @@ service:
 
 # Ingress configuration
 ingress:
-  enabled: true
-  ingressClassName: cilium
-  hosts:
-    - loki.elposhox.dev
+  enabled: false
 
 # Persistence - 30GB Longhorn PVC for logs
 persistence:

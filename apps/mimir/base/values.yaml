@@ -160,25 +160,7 @@ service:
 
 # Ingress configuration
 ingress:
-  enabled: true
-  ingressClassName: cilium
-  hosts:
-    - mimir.elposhox.dev
-  paths:
-    query-frontend:
-      - path: /prometheus
-        pathType: Prefix
-      - path: /api/v1/status/buildinfo
-        pathType: Prefix
-    distributor:
-      - path: /distributor
-        pathType: Prefix
-      - path: /api/v1/push
-        pathType: Prefix
-      - path: /otlp/v1/metrics
-        pathType: Prefix
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  enabled: false
 
 # Pod security context
 podSecurityContext:
