@@ -8,7 +8,7 @@ mimir-distributed:
 
   # Mimir blocks storage configuration
   mimir:
-    config: |
+    structuredConfig:
       auth_enabled: false
 
       server:
