@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: prometheus
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: prometheus
+
+helmCharts:
+  - name: prometheus
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: prometheus
+    valuesFile: values.yaml
+    namespace: prometheus
+
+resources:
+  - namespace.yaml
+  - secret.yaml
+  - ingress.yaml

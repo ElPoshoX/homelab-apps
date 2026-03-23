@@ -31,10 +31,13 @@
       "Bash(kubectl get:*)",
       "Bash(kubectl patch:*)",
       "WebFetch(domain:community.grafana.com)",
-      "Bash(curl -s https://raw.githubusercontent.com/grafana-community/helm-charts/main/charts/tempo/values.yaml)"
+      "Bash(curl -s https://raw.githubusercontent.com/grafana-community/helm-charts/main/charts/tempo/values.yaml)",
+      "Bash(curl -s https://prometheus-community.github.io/helm-charts/kube-prometheus-stack-latest.tgz)",
+      "Bash(tar xzO kube-prometheus-stack/values.yaml)"
     ],
     "additionalDirectories": [
-      "/tmp"
+      "/tmp",
+      "/Users/az/Git-Repos/homelab-apps/apps/prometheus"
     ]
   }
 }

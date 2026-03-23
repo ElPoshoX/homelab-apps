@@ -35,7 +35,7 @@ tempo:
 
   metricsGenerator:
     enabled: true
-    remoteWriteUrl: "http://mimir.mimir.svc.cluster.local:9009/api/prom/push"
+    remoteWriteUrl: "http://prometheus:9090/api/v1/write"
     processor: {}
     registry: {}
     storage:
