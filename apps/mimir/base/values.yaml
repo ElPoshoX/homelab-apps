@@ -1,98 +1,32 @@
 # Mimir Helm Chart Configuration
 # Metrics storage backend for homelab observability stack
-# Monolithic mode deployment with S3 backend
+# Distributed deployment with S3 backend
 
-# Mimir monolithic mode - single pod deployment
-mimir:
-  structuredConfig:
-    # Server configuration
-    server:
-      http_listen_port: 8009
-      grpc_listen_port: 9009
-
-    # Ingester configuration
-    ingester: {}
-
-    # Blocks storage configuration with S3 backend
-    blocks_storage:
-      backend: s3
-      s3:
-        endpoint: garage.garage.svc.cluster.local:3900
-        bucket_name: mimir-bucket
-        access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
-        secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
-        insecure: true
-      tsdb:
-        dir: /mimir-data/tsdb
-
-    # Compactor configuration
-    compactor:
-      data_dir: /mimir-data/compactor
-      sharding_ring:
-        kvstore:
-          store: inmemory
-
-    # Distributor configuration
-    distributor:
-      ring:
-        kvstore:
-          store: inmemory
-
-    # Querier configuration
-    querier:
-      max_concurrent: 20
-
-    # Limits configuration
-    limits:
-      max_global_series_per_user: 100000
-      max_global_series_per_metric: 10000
-      ingestion_rate: 100000
-      ingestion_burst_size: 200000
-
-    # Storage retention
-    ruler_storage:
-      backend: s3
-      s3:
-        endpoint: garage.garage.svc.cluster.local:3900
-        bucket_name: mimir-bucket
-        access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
-        secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
-        insecure: true
-
-# Deployment mode - monolithic
 mimir-distributed:
   minio:
     enabled: false
 
-  # Enable environment variable expansion for all components
+  # Global configuration
   global:
     extraArgs:
-      - "-config.expand-env"
-      - "true"
+      - "-config.expand-env=true"
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-credentials
 
-  compactor:
-    enabled: true
-    replicas: 1
-    resources:
-      requests:
-        cpu: 500m
-        memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+  # Distributor - handles incoming metrics
   distributor:
     enabled: true
     replicas: 1
     resources:
       requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
         cpu: 500m
         memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+
+  # Ingester - stores metrics in memory before flushing to blocks
   ingester:
     enabled: true
     replicas: 1
@@ -102,37 +36,49 @@ mimir-distributed:
       storageClassName: longhorn
     resources:
       requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
         cpu: 500m
         memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+
+  # Querier - retrieves metrics from blocks
   querier:
     enabled: true
     replicas: 1
     resources:
       requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
         cpu: 500m
         memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+
+  # Query frontend - caches and parallelizes queries
   query_frontend:
     enabled: true
     replicas: 1
     resources:
       requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+  # Compactor - compacts blocks to reduce storage
+  compactor:
+    enabled: true
+    replicas: 1
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
         cpu: 500m
         memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
-  ruler:
-    enabled: false
 
-  alertmanager:
-    enabled: false
-
+  # Store Gateway - serves blocks to queriers
   store_gateway:
     enabled: true
     replicas: 1
@@ -142,17 +88,26 @@ mimir-distributed:
       storageClassName: longhorn
     resources:
       requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
         cpu: 500m
         memory: 1Gi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+
+  # Ruler - evaluates alert rules
+  ruler:
+    enabled: false
+
+  # Alertmanager
+  alertmanager:
+    enabled: false
+
 # Service configuration
 service:
   type: ClusterIP
   port: 8009
 
-# Ingress configuration
+# Ingress disabled - using HTTPRoute
 ingress:
   enabled: false
 
@@ -162,10 +117,80 @@ podSecurityContext:
   runAsUser: 472
   fsGroup: 472
 
-# Security context
+# Container security context
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
   capabilities:
     drop:
       - ALL
+
+# Mimir configuration via ConfigMap
+mimir:
+  # Use compact structured config instead of full YAML
+  auth_enabled: false
+
+  # Define the blocks storage backend
+  blocks_storage:
+    backend: s3
+    s3:
+      endpoint: garage.garage.svc.cluster.local:3900
+      bucket_name: mimir-bucket
+      access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+      secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+      insecure: true
+    tsdb:
+      dir: /mimir-data/tsdb
+    bucket_index:
+      enabled: true
+
+  # Define ruler storage backend
+  ruler_storage:
+    backend: s3
+    s3:
+      endpoint: garage.garage.svc.cluster.local:3900
+      bucket_name: mimir-bucket
+      access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+      secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+      insecure: true
+
+  # Server configuration
+  server:
+    http_listen_port: 8009
+    log_level: info
+
+  # Limits
+  limits:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    ingestion_rate_mb: 100
+    ingestion_burst_size_mb: 200
+
+  # Distributor ring
+  distributor:
+    ring:
+      kvstore:
+        store: inmemory
+
+  # Ingester ring
+  ingester:
+    ring:
+      kvstore:
+        store: inmemory
+      heartbeat_timeout: 5m
+
+  # Compactor
+  compactor:
+    data_dir: /mimir-data/compactor
+    sharding_ring:
+      enabled: true
+      kvstore:
+        store: inmemory
+
+  # Store Gateway
+  store_gateway:
+    sharding_ring:
+      enabled: true
+      kvstore:
+        store: inmemory
