@@ -6,6 +6,37 @@ mimir-distributed:
   minio:
     enabled: false
 
+  # Mimir blocks storage configuration
+  mimir:
+    config: |
+      auth_enabled: false
+
+      server:
+        http_listen_port: 8009
+        log_level: info
+
+      blocks_storage:
+        backend: s3
+        s3:
+          endpoint: garage.garage.svc.cluster.local:3900
+          bucket_name: mimir-bucket
+          access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+          secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+          insecure: true
+        tsdb:
+          dir: /mimir-data/tsdb
+        bucket_index:
+          enabled: true
+
+      ruler_storage:
+        backend: s3
+        s3:
+          endpoint: garage.garage.svc.cluster.local:3900
+          bucket_name: mimir-bucket
+          access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+          secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+          insecure: true
+
   # Global configuration
   global:
     extraArgs:
