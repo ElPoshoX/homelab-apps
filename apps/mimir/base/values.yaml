@@ -2,257 +2,233 @@
 # Metrics storage backend for homelab observability stack
 # Distributed deployment with S3 backend
 
-mimir-distributed:
-  minio:
-    enabled: false
-
-  # Kafka ingest storage - disable to use simple ingestion
-  kafka:
-    enabled: false
-
-  # Pod-level security context (applied to all pods)
-  podSecurityContext:
-    fsGroup: 10001
-    runAsUser: 10001
-    runAsNonRoot: true
-    runAsGroup: 10001
-
-  # Container-level security context (applied to all containers)
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    runAsNonRoot: true
-    runAsUser: 10001
-    runAsGroup: 10001
-    capabilities:
-      drop:
-        - ALL
-
-  # Mimir blocks storage configuration
-  mimir:
-    structuredConfig:
-      auth_enabled: false
-
-      ingest_storage:
-        enabled: false
-
-      server:
-        http_listen_port: 8009
-        log_level: info
-
-      blocks_storage:
-        backend: s3
-        s3:
-          endpoint: garage.garage.svc.cluster.local:3900
-          bucket_name: mimir-bucket
-          access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
-          secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
-          insecure: true
-        tsdb:
-          dir: /mimir-data/tsdb
-        bucket_index:
-          enabled: true
-
-      ruler_storage:
-        backend: s3
-        s3:
-          endpoint: garage.garage.svc.cluster.local:3900
-          bucket_name: mimir-bucket
-          access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
-          secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
-          insecure: true
-
-  # Global configuration
-  global:
-    extraArgs:
-      - "-config.expand-env=true"
-    extraEnvFrom:
-      - secretRef:
-          name: mimir-s3-credentials
-
-  # Distributor - handles incoming metrics
-  distributor:
-    enabled: true
-    replicas: 1
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-
-  # Ingester - stores metrics in memory before flushing to blocks
-  ingester:
-    enabled: true
-    replicas: 1
-    persistenceEnabled: true
-    persistence:
-      size: 50Gi
-      storageClassName: longhorn
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-
-  # Querier - retrieves metrics from blocks
-  querier:
-    enabled: true
-    replicas: 1
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-
-  # Query frontend - caches and parallelizes queries
-  query_frontend:
-    enabled: true
-    replicas: 1
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 256Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-
-  # Compactor - compacts blocks to reduce storage
-  compactor:
-    enabled: true
-    replicas: 1
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-
-  # Store Gateway - serves blocks to queriers
-  store_gateway:
-    enabled: true
-    replicas: 1
-    persistenceEnabled: true
-    persistence:
-      size: 10Gi
-      storageClassName: longhorn
-    securityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop:
-          - ALL
-    resources:
-      requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
-
-  # Ruler - evaluates alert rules
-  ruler:
-    enabled: false
-
-  # Alertmanager
-  alertmanager:
-    enabled: false
-
-  # Rollout operator - not needed for homelab deployment
-  rollout_operator:
-    enabled: false
-
-# Service configuration
-service:
-  type: ClusterIP
-  port: 8009
-
-# Ingress disabled - using HTTPRoute
-ingress:
+minio:
   enabled: false
 
-# Pod security context
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 472
-  fsGroup: 472
+# Kafka ingest storage - disable to use simple ingestion
+kafka:
+  enabled: false
 
-# Container security context
-securityContext:
+# Pod-level security context (applied to all pods)
+podSecurityContext:
+  fsGroup: 10001
+  runAsUser: 10001
+  runAsNonRoot: true
+  runAsGroup: 10001
+
+# Container-level security context (applied to all containers)
+containerSecurityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
   capabilities:
     drop:
       - ALL
+
+# Mimir blocks storage configuration
+mimir:
+  structuredConfig:
+    auth_enabled: false
+
+    ingest_storage:
+      enabled: false
+
+    server:
+      http_listen_port: 8009
+      log_level: info
+
+    blocks_storage:
+      backend: s3
+      s3:
+        endpoint: garage.garage.svc.cluster.local:3900
+        bucket_name: mimir-bucket
+        access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+        secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+        insecure: true
+      tsdb:
+        dir: /mimir-data/tsdb
+      bucket_index:
+        enabled: true
+
+    ruler_storage:
+      backend: s3
+      s3:
+        endpoint: garage.garage.svc.cluster.local:3900
+        bucket_name: mimir-bucket
+        access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+        secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+        insecure: true
+
+# Global configuration
+global:
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnvFrom:
+    - secretRef:
+        name: mimir-s3-credentials
+
+# Distributor - handles incoming metrics
+distributor:
+  enabled: true
+  replicas: 1
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Ingester - stores metrics in memory before flushing to blocks
+ingester:
+  enabled: true
+  replicas: 1
+  persistenceEnabled: true
+  persistence:
+    size: 50Gi
+    storageClassName: longhorn
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Querier - retrieves metrics from blocks
+querier:
+  enabled: true
+  replicas: 1
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Query frontend - caches and parallelizes queries
+query_frontend:
+  enabled: true
+  replicas: 1
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Compactor - compacts blocks to reduce storage
+compactor:
+  enabled: true
+  replicas: 1
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Store Gateway - serves blocks to queriers
+store_gateway:
+  enabled: true
+  replicas: 1
+  persistenceEnabled: true
+  persistence:
+    size: 10Gi
+    storageClassName: longhorn
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Ruler - evaluates alert rules
+ruler:
+  enabled: false
+
+# Alertmanager
+alertmanager:
+  enabled: false
+
+# Rollout operator - not needed for homelab deployment
+rollout_operator:
+  enabled: false
