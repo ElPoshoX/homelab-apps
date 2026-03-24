@@ -80,6 +80,12 @@ mimir-distributed:
       capabilities:
         drop:
           - ALL
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
     resources:
       requests:
         cpu: 250m
@@ -97,6 +103,12 @@ mimir-distributed:
       size: 50Gi
       storageClassName: longhorn
     securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
+    containerSecurityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: false
       capabilities:
@@ -120,6 +132,12 @@ mimir-distributed:
       capabilities:
         drop:
           - ALL
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
     resources:
       requests:
         cpu: 250m
@@ -133,6 +151,12 @@ mimir-distributed:
     enabled: true
     replicas: 1
     securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
+    containerSecurityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: false
       capabilities:
@@ -156,6 +180,12 @@ mimir-distributed:
       capabilities:
         drop:
           - ALL
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
     resources:
       requests:
         cpu: 250m
@@ -173,6 +203,12 @@ mimir-distributed:
       size: 10Gi
       storageClassName: longhorn
     securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop:
+          - ALL
+    containerSecurityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: false
       capabilities:
