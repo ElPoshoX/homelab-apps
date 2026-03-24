@@ -194,6 +194,10 @@ mimir-distributed:
   alertmanager:
     enabled: false
 
+  # Rollout operator - not needed for homelab deployment
+  rollout_operator:
+    enabled: false
+
 # Service configuration
 service:
   type: ClusterIP

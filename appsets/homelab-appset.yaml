@@ -49,6 +49,11 @@ spec:
         - /spec/template/spec/schedulerName
         - /spec/template/spec/serviceAccountName
         - /status
+      # Ignore webhook configuration failures for components with unavailable webhooks
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
 
       # Sync policy
       syncPolicy:
