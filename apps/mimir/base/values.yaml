@@ -6,10 +6,17 @@ mimir-distributed:
   minio:
     enabled: false
 
+  # Kafka ingest storage - disable to use simple ingestion
+  kafka:
+    enabled: false
+
   # Mimir blocks storage configuration
   mimir:
     structuredConfig:
       auth_enabled: false
+
+      ingest_storage:
+        enabled: false
 
       server:
         http_listen_port: 8009
