@@ -10,6 +10,24 @@ mimir-distributed:
   kafka:
     enabled: false
 
+  # Pod-level security context (applied to all pods)
+  podSecurityContext:
+    fsGroup: 10001
+    runAsUser: 10001
+    runAsNonRoot: true
+    runAsGroup: 10001
+
+  # Container-level security context (applied to all containers)
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    capabilities:
+      drop:
+        - ALL
+
   # Mimir blocks storage configuration
   mimir:
     structuredConfig:
