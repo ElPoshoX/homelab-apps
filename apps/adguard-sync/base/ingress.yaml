@@ -5,7 +5,9 @@ metadata:
   namespace: adguard-sync
 spec:
   parentRefs:
-    - name: homelab-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
       namespace: ingress
   hostnames:
     - adguard-sync.elposhox.dev
@@ -15,5 +17,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: adguard-sync
+        - group: ''
+          kind: Service
+          name: adguard-sync
           port: 80
+          weight: 1

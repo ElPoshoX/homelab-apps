@@ -37,7 +37,9 @@ route:
     hostnames:
       - grafana.elposhox.dev
     parentRefs:
-      - name: homelab-gateway
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: homelab-gateway
         namespace: ingress
 
 # Datasources configuration

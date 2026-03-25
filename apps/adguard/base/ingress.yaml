@@ -10,7 +10,9 @@ metadata:
   namespace: adguard
 spec:
   parentRefs:
-    - name: homelab-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
       namespace: ingress
   hostnames:
     - adguard-secondary-k8s.elposhox.dev
@@ -20,5 +22,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: adguard-home
+        - group: ''
+          kind: Service
+          name: adguard-home
           port: 3000
+          weight: 1

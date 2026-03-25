@@ -5,7 +5,9 @@ metadata:
   namespace: mimir
 spec:
   parentRefs:
-    - name: homelab-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
       namespace: ingress
   hostnames:
     - mimir.elposhox.dev
@@ -15,5 +17,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: mimir
+        - group: ''
+          kind: Service
+          name: mimir
           port: 8009
+          weight: 1
