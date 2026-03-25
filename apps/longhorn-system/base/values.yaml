@@ -1,0 +1,55 @@
+# Longhorn Helm Chart Configuration
+# Distributed block storage for Kubernetes homelab
+
+# PodSecurityPolicy - disabled (removed in k8s 1.25+)
+# Note: Pod Security Standards namespace labels (privileged) are set in namespace.yaml
+# since the Helm chart does not support configuring namespace labels
+enablePSP: false
+
+# Default storage class settings
+persistence:
+  defaultClass: true
+  defaultFsType: ext4
+  defaultClassReplicaCount: 3
+  defaultDataLocality: disabled
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  disableRevisionCounter: "true"
+
+# Network policies
+networkPolicies:
+  enabled: false
+
+# Ingress disabled - using standalone HTTPRoute in ingress.yaml
+# (chart's httpRoute template doesn't include explicit group/kind/weight fields,
+#  which causes ArgoCD drift)
+ingress:
+  enabled: false
+
+# Longhorn Manager
+longhornManager:
+  log:
+    format: plain
+  priorityClass: longhorn-critical
+  tolerations: []
+  nodeSelector: {}
+
+# Longhorn UI
+longhornUI:
+  replicas: 1
+  priorityClass: longhorn-critical
+  tolerations: []
+  nodeSelector: {}
+
+# Longhorn Driver
+longhornDriver:
+  log:
+    format: plain
+  priorityClass: longhorn-critical
+  tolerations: []
+  nodeSelector: {}
+
+# Pre-upgrade checker
+preUpgradeChecker:
+  jobEnabled: true
+  upgradeVersionCheck: true
