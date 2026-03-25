@@ -19,6 +19,6 @@ spec:
       backendRefs:
         - group: ''
           kind: Service
-          name: mimir
-          port: 8009
+          name: mimir-gateway
+          port: 80
           weight: 1
