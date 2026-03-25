@@ -69,18 +69,6 @@ global:
 distributor:
   enabled: true
   replicas: 1
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
@@ -97,18 +85,6 @@ ingester:
   persistence:
     size: 50Gi
     storageClassName: longhorn
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
@@ -121,18 +97,6 @@ ingester:
 querier:
   enabled: true
   replicas: 1
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
@@ -145,18 +109,6 @@ querier:
 query_frontend:
   enabled: true
   replicas: 1
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
@@ -169,18 +121,6 @@ query_frontend:
 compactor:
   enabled: true
   replicas: 1
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
@@ -197,18 +137,6 @@ store_gateway:
   persistence:
     size: 10Gi
     storageClassName: longhorn
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
   resources:
     requests:
       cpu: 250m
