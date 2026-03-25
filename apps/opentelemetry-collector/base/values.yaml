@@ -44,6 +44,20 @@ config:
       endpoint: https://kubelet:10250
       auth_type: serviceAccount
       insecure_skip_verify: true
+      # Disable deprecated resource attributes
+      resource_attributes:
+        aws.volume.id:
+          enabled: false
+        fs.type:
+          enabled: false
+        gce.pd.name:
+          enabled: false
+        glusterfs.endpoints.name:
+          enabled: false
+        glusterfs.path:
+          enabled: false
+        partition:
+          enabled: false
 
     # Host metrics receiver
     hostmetrics:
@@ -81,12 +95,11 @@ config:
           value: homelab
           action: insert
 
-    # Resource detection
+    # Resource detection (no docker - cluster uses containerd)
     resourcedetection:
       detectors:
         - system
         - env
-        - docker
 
   # Exporters - send telemetry data to backends
   exporters:
