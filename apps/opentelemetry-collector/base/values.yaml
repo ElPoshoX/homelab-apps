@@ -49,14 +49,14 @@ config:
     hostmetrics:
       collection_interval: 30s
       scrapers:
-        - cpu
-        - disk
-        - filesystem
-        - load
-        - memory
-        - network
-        - paging
-        - processes
+        cpu: {}
+        disk: {}
+        filesystem: {}
+        load: {}
+        memory: {}
+        network: {}
+        paging: {}
+        processes: {}
 
   # Processors - process telemetry data
   processors:
@@ -96,21 +96,15 @@ config:
       tls:
         insecure: true
 
-    # Prometheus Remote Write exporter to Mimir (metrics)
-    prometheusremotewrite:
-      endpoint: http://mimir.mimir.svc.cluster.local:9009/api/prom/push
+    # OTLP HTTP exporter to Mimir (metrics)
+    otlphttp/mimir:
+      endpoint: http://mimir.mimir.svc.cluster.local:9009/otlp
       tls:
         insecure: true
 
-    # Logging exporter to Loki (logs)
-    logging:
-      loglevel: debug
-
-    # Jaeger exporter to Tempo (traces via Jaeger protocol)
-    jaeger:
-      endpoint: tempo:14250
-      tls:
-        insecure: true
+    # Debug exporter (replaces deprecated logging exporter)
+    debug:
+      verbosity: detailed
 
   # Service - defines which processors and exporters are active
   service:
@@ -126,8 +120,7 @@ config:
           - attributes
         exporters:
           - otlp
-          - jaeger
-          - logging
+          - debug
 
       # Metrics pipeline
       metrics:
@@ -142,8 +135,8 @@ config:
           - resourcedetection
           - attributes
         exporters:
-          - prometheusremotewrite
-          - logging
+          - otlphttp/mimir
+          - debug
 
       # Logs pipeline
       logs:
@@ -155,7 +148,7 @@ config:
           - resourcedetection
           - attributes
         exporters:
-          - logging
+          - debug
 
 # Resource requests and limits
 resources:
