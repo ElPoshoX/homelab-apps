@@ -30,8 +30,6 @@ containerSecurityContext:
 # Mimir blocks storage configuration
 mimir:
   structuredConfig:
-    auth_enabled: false
-
     ingest_storage:
       enabled: false
 
@@ -49,8 +47,6 @@ mimir:
         insecure: true
       tsdb:
         dir: /mimir-data/tsdb
-      bucket_index:
-        enabled: true
 
     ruler_storage:
       backend: s3
