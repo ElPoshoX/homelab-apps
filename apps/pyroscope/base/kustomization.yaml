@@ -14,6 +14,7 @@ helmCharts:
   - name: pyroscope
     repo: https://grafana.github.io/helm-charts
     releaseName: pyroscope
+    version: "1.19.1"
     valuesFile: values.yaml
     namespace: pyroscope
 
