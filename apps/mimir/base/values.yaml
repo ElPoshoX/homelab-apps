@@ -49,7 +49,7 @@ mimir:
         secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
         insecure: true
       tsdb:
-        dir: /mimir-data/tsdb
+        dir: /data/tsdb
 
     ruler_storage:
       backend: s3
