@@ -156,11 +156,21 @@ clusterConfig:
 
   # S3 access keys - reference existing Kubernetes secret with encrypted credentials
   keys:
-    observability-stack:
+    mimir-key:
       secretName: garage-s3-credentials
       keyId: accessKey
       secretKey: secretKey
       buckets:
         - mimir-bucket
+    loki-key:
+      secretName: loki-s3-credentials
+      keyId: accessKey
+      secretKey: secretKey
+      buckets:
         - loki-bucket
+    tempo-key:
+      secretName: tempo-s3-credentials
+      keyId: accessKey
+      secretKey: secretKey
+      buckets:
         - tempo-bucket
