@@ -26,3 +26,19 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
+
+# Patches
+patches:
+  # Add apiVersion and kind to volumeClaimTemplates
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: alertmanager
+    patch: |-
+      - op: add
+        path: /spec/volumeClaimTemplates/0/apiVersion
+        value: v1
+      - op: add
+        path: /spec/volumeClaimTemplates/0/kind
+        value: PersistentVolumeClaim
