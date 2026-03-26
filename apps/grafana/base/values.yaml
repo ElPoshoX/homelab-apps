@@ -12,14 +12,14 @@ admin:
   existingSecret: grafana-admin-secret
   passwordKey: password
 
-# Persistence configuration (5GB Longhorn PVC for dashboards/datasources)
+# Persistence configuration (20Gi Longhorn PVC)
 persistence:
   enabled: true
   type: pvc
   storageClassName: longhorn
-  size: 5Gi
+  size: 20Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
 
 # Service configuration
 service:
@@ -42,7 +42,77 @@ route:
         name: homelab-gateway
         namespace: ingress
 
+# --- Sidecar ---
+# ConfigMap-based dashboard discovery across all namespaces
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: ALL
+    label: grafana_dashboard
+    labelValue: "1"
+    folderAnnotation: grafana_folder
+    provider:
+      foldersFromFilesStructure: true
+
+# --- Dashboard Providers ---
+# Define folder paths inside the Grafana container for organized dashboard loading
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: kubernetes
+        orgId: 1
+        folder: Kubernetes
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/kubernetes
+      - name: infrastructure
+        orgId: 1
+        folder: Infrastructure
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/infrastructure
+
+# --- Dashboards ---
+# Keys must match provider `name` fields above
+dashboards:
+  # dotdc/grafana-dashboards-kubernetes — loaded via raw GitHub URL (not gnetId)
+  kubernetes:
+    k8s-views-global:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+      datasource: Prometheus
+    k8s-views-namespaces:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+      datasource: Prometheus
+    k8s-views-nodes:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+      datasource: Prometheus
+    k8s-views-pods:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+      datasource: Prometheus
+    k8s-system-api-server:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+      datasource: Prometheus
+    k8s-system-coredns:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+      datasource: Prometheus
+  # gnetId-based dashboards
+  infrastructure:
+    node-exporter:
+      gnetId: 1860
+      revision: 37
+      datasource: Prometheus
+    talos-kubernetes:
+      gnetId: 22523
+      revision: 1
+      datasource: Prometheus
+
 # Datasources configuration
+# Prometheus stays explicitly defined since this is the standalone grafana chart (not kube-prometheus-stack)
 datasources:
   datasources.yaml:
     apiVersion: 1
