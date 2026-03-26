@@ -84,32 +84,48 @@ dashboards:
   kubernetes:
     k8s-views-global:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     k8s-views-namespaces:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     k8s-views-nodes:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     k8s-views-pods:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     k8s-system-api-server:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     k8s-system-coredns:
       url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
   # gnetId-based dashboards
   infrastructure:
     node-exporter:
       gnetId: 1860
       revision: 37
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
     talos-kubernetes:
       gnetId: 22523
       revision: 1
-      datasource: Prometheus
+      datasource:
+        - name: DS_PROMETHEUS
+          value: Prometheus
 
 # Datasources configuration
 # Prometheus stays explicitly defined since this is the standalone grafana chart (not kube-prometheus-stack)
