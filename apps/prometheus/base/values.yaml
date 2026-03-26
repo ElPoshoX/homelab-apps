@@ -129,7 +129,7 @@ alertmanager:
 
 ## kube-state-metrics sub-chart
 ## Disabled — standalone kube-state-metrics deployed via kube-state-metrics-homelab ArgoCD app
-kubeStateMetrics:
+kube-state-metrics:
   enabled: false
 
 ## prometheus-node-exporter sub-chart
