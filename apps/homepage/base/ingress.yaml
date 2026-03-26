@@ -5,7 +5,9 @@ metadata:
   namespace: homepage
 spec:
   parentRefs:
-    - name: homelab-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
       namespace: ingress
   hostnames:
     - home.elposhox.dev
@@ -15,5 +17,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: homepage
+        - group: ''
+          kind: Service
+          name: homepage
           port: 80
+          weight: 1
