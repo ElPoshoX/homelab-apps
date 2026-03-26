@@ -62,16 +62,19 @@ server:
   podLabels: {}
 
   ## Pod security context
-  podSecurityContext:
+  securityContext:
     runAsUser: 65534
     runAsNonRoot: true
     runAsGroup: 65534
     fsGroup: 65534
 
   ## Container security context
-  securityContext:
+  containerSecurityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
 
   ## Prometheus configuration file (ConfigMap)
   configMapOverrideName: ""
