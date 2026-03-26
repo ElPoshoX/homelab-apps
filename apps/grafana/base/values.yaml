@@ -50,7 +50,7 @@ datasources:
       # Prometheus (Metrics)
       - name: Prometheus
         type: prometheus
-        url: http://prometheus.prometheus.svc.cluster.local:9090
+        url: http://prometheus-server.prometheus.svc.cluster.local:80
         isDefault: true
         access: proxy
         editable: true
