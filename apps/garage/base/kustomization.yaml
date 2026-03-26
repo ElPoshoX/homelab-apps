@@ -22,8 +22,9 @@ resources:
   - namespace.yaml
   - secret.yaml
 
-# Patch to add S3 API port 9000 to Service
+# Patches
 patches:
+  # Add S3 API port 9000 to Service
   - target:
       kind: Service
       name: garage
@@ -35,3 +36,29 @@ patches:
           port: 9000
           protocol: TCP
           targetPort: 9000
+  # Add apiVersion and kind to volumeClaimTemplates (meta)
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: garage
+    patch: |-
+      - op: add
+        path: /spec/volumeClaimTemplates/0/apiVersion
+        value: v1
+      - op: add
+        path: /spec/volumeClaimTemplates/0/kind
+        value: PersistentVolumeClaim
+  # Add apiVersion and kind to volumeClaimTemplates (data)
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: garage
+    patch: |-
+      - op: add
+        path: /spec/volumeClaimTemplates/1/apiVersion
+        value: v1
+      - op: add
+        path: /spec/volumeClaimTemplates/1/kind
+        value: PersistentVolumeClaim
