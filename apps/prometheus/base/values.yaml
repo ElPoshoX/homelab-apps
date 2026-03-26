@@ -101,7 +101,7 @@ alerting:
   alertmanagers: []
 
 # Rules configuration - empty, will be added via PrometheusRule resources
-ruleFiles: []
+ruleFiles: {}
 
 # Environment variables for S3 backend credentials
 env:
