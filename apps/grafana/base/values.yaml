@@ -50,7 +50,7 @@ datasources:
       # Prometheus (Metrics)
       - name: Prometheus
         type: prometheus
-        url: http://prometheus:9090
+        url: http://prometheus.prometheus.svc.cluster.local:9090
         isDefault: true
         access: proxy
         editable: true
@@ -59,13 +59,13 @@ datasources:
       # Loki (Logs)
       - name: Loki
         type: loki
-        url: http://loki:3100
+        url: http://loki.loki.svc.cluster.local:3100
         access: proxy
         editable: true
       # Tempo (Traces)
       - name: Tempo
         type: tempo
-        url: http://tempo:3200
+        url: http://tempo.tempo.svc.cluster.local:3200
         access: proxy
         editable: true
         jsonData:
