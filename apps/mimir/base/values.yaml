@@ -30,6 +30,10 @@ containerSecurityContext:
 # Mimir blocks storage configuration
 mimir:
   structuredConfig:
+    # Disable phone-home — stats.grafana.org is unreachable and spams logs every 60s
+    usage_stats:
+      enabled: false
+
     ingest_storage:
       enabled: false
 

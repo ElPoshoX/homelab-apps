@@ -86,6 +86,15 @@ buckets:
   - name: loki-bucket
     quota: null
     description: "Loki logs storage"
+  - name: loki-chunks
+    quota: null
+    description: "Loki chunks storage"
+  - name: loki-ruler
+    quota: null
+    description: "Loki ruler storage"
+  - name: loki-admin
+    quota: null
+    description: "Loki admin storage"
   - name: tempo-bucket
     quota: null
     description: "Tempo traces storage"
@@ -152,6 +161,9 @@ clusterConfig:
   buckets:
     - name: mimir-bucket
     - name: loki-bucket
+    - name: loki-chunks
+    - name: loki-ruler
+    - name: loki-admin
     - name: tempo-bucket
 
   # S3 access keys - reference existing Kubernetes secret with encrypted credentials
@@ -168,9 +180,21 @@ clusterConfig:
       secretKey: secretKey
       buckets:
         - loki-bucket
+        - loki-chunks
+        - loki-ruler
+        - loki-admin
     tempo-key:
       secretName: tempo-s3-credentials
       keyId: accessKey
       secretKey: secretKey
       buckets:
         - tempo-bucket
+
+  # Grant owner permission — required by Garage v2 for ListObjectsV2 on buckets
+  extraCommands:
+    - 'bucket allow mimir-bucket --key "$KEY_ID_MIMIR_KEY" --owner || true'
+    - 'bucket allow loki-bucket --key "$KEY_ID_LOKI_KEY" --owner || true'
+    - 'bucket allow loki-chunks --key "$KEY_ID_LOKI_KEY" --owner || true'
+    - 'bucket allow loki-ruler --key "$KEY_ID_LOKI_KEY" --owner || true'
+    - 'bucket allow loki-admin --key "$KEY_ID_LOKI_KEY" --owner || true'
+    - 'bucket allow tempo-bucket --key "$KEY_ID_TEMPO_KEY" --owner || true'

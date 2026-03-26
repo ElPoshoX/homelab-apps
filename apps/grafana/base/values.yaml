@@ -113,16 +113,12 @@ dashboards:
         - name: DS_PROMETHEUS
           value: Prometheus
   # gnetId-based dashboards
+  # NOTE: gnetId 22523 removed — it shares UID k8s_views_global with dotdc k8s-views-global,
+  #       causing a UID collision that blocks both providers from writing.
   infrastructure:
     node-exporter:
       gnetId: 1860
       revision: 37
-      datasource:
-        - name: DS_PROMETHEUS
-          value: Prometheus
-    talos-kubernetes:
-      gnetId: 22523
-      revision: 1
       datasource:
         - name: DS_PROMETHEUS
           value: Prometheus
@@ -148,13 +144,14 @@ datasources:
         url: http://loki.loki.svc.cluster.local:3100
         access: proxy
         editable: true
-      # Tempo (Traces)
+      # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
         type: tempo
         url: http://tempo.tempo.svc.cluster.local:3200
         access: proxy
         editable: true
         jsonData:
+          httpMethod: GET
           tracesToMetrics:
             datasourceUid: 'prometheus'
           tracesToLogsV2:
