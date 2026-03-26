@@ -1,135 +1,144 @@
-# Prometheus Helm Chart Configuration
-# Time-series metrics collection and storage for homelab observability stack
-# Single-replica deployment with S3 (Garage) long-term storage backend
+# prometheus-community Prometheus Helm Chart v28.14.0
+# Configuration for Prometheus, Alertmanager, and related components
 
-# Global configuration
-global:
-  scrapeInterval: 15s
-  evaluationInterval: 15s
-
-# Prometheus image
-image:
-  repository: prom/prometheus
-  pullPolicy: IfNotPresent
-  tag: "" # Latest version
-
-# Replicas
-replicas: 1
-
-# Prometheus configuration
-prometheus:
-  # Pod management
-  podManagementPolicy: OrderedReady
-
-  # Retention policy - keep 15 days in local storage
-  retention: 15d
-
-  # WAL (Write-Ahead Log) configuration for reliability
-  walCompression: true
-
-  # Resource requests and limits
-  resources:
-    requests:
-      cpu: 300m
-      memory: 512Mi
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-
-# Service configuration
-service:
-  type: ClusterIP
-  port: 9090
-  targetPort: 9090
-
-# Storage configuration - persistent volume for time-series data
-persistence:
-  enabled: true
-  storageClassName: longhorn
-  size: 50Gi
-  accessModes:
-    - ReadWriteOnce
-
-# Security context
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 65534
-  fsGroup: 65534
-
-securityContext:
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop:
-      - ALL
-
-# Liveness and readiness probes
-livenessProbe:
-  httpGet:
-    path: /-/healthy
-    port: 9090
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-readinessProbe:
-  httpGet:
-    path: /-/ready
-    port: 9090
-  initialDelaySeconds: 5
-  periodSeconds: 5
-  timeoutSeconds: 5
-  failureThreshold: 3
-
-# Pod disruption budget for availability
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 1
-
-# Scrape configurations - defined via ServiceMonitor resources (not inline)
-# This allows dynamic service discovery in Kubernetes
-scrapeConfigs: []
-
-# Service Monitor selector - discover ServiceMonitor resources for scraping
-serviceMonitorSelector:
-  matchLabels:
-    prometheus: homelab
-
-# Alerting rules - empty, will be added via PrometheusRule resources
-alerting:
-  alertmanagers: []
-
-# Rules configuration - empty, will be added via PrometheusRule resources
-ruleFiles: {}
-
-# Environment variables for S3 backend credentials
-env:
-  - name: PROMETHEUS_S3_BUCKET
-    value: prometheus-bucket
-  - name: PROMETHEUS_S3_ENDPOINT
-    value: garage.garage.svc.cluster.local:9000
-  - name: PROMETHEUS_S3_INSECURE
-    value: "true"
-
-# S3 credentials from Kubernetes secret
-envFrom:
-  - secretRef:
-      name: prometheus-s3-credentials
-
-# RBAC
+## RBAC configuration
 rbac:
   create: true
 
-# Service account
-serviceAccount:
-  create: true
-  name: prometheus
+## Service accounts
+serviceAccounts:
+  server:
+    create: true
+    name: prometheus
 
-# Ingress (disabled - using HTTPRoute)
-ingress:
-  enabled: false
+## Prometheus Server Configuration
+server:
+  ## Name of the server component
+  name: server
 
-# Network policy
-networkPolicy:
-  enabled: false
+  ## Pod management policy for StatefulSet
+  statefulSetNameOverride: ""
+
+  ## Global defaults
+  global:
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    evaluation_interval: 15s
+
+  ## Prometheus data persistence
+  persistentVolume:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 50Gi
+    storageClass: longhorn
+    annotations: {}
+    labels: {}
+
+  ## Retention settings
+  retention: "15d"
+
+  ## Resource configuration
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 300m
+      memory: 512Mi
+
+  ## Service configuration
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    externalPort: 80
+    internalPort: 9090
+    type: ClusterIP
+    # httpPort: 80
+
+  ## Pod annotations and labels
+  podAnnotations: {}
+  podLabels: {}
+
+  ## Pod security context
+  podSecurityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
+
+  ## Container security context
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+
+  ## Prometheus configuration file (ConfigMap)
+  configMapOverrideName: ""
+  logLevel: info
+
+  ## Server replicas (for HA setup, typically 1)
+  replicaCount: 1
+
+## AlertManager Configuration
+alertmanager:
+  ## Enable AlertManager
+  enabled: true
+
+  ## AlertManager persistence
+  persistence:
+    enabled: true
+    storageClass: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
+    annotations: {}
+    labels: {}
+
+  ## AlertManager pod security context
+  podSecurityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
+
+  ## AlertManager resource configuration
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  ## AlertManager service
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    externalPort: 80
+    internalPort: 9093
+    type: ClusterIP
+
+  ## AlertManager pod annotations
+  podAnnotations: {}
+  podLabels: {}
+
+## kube-state-metrics sub-chart
+kubeStateMetrics:
+  enabled: true
+
+## prometheus-node-exporter sub-chart
+nodeExporter:
+  enabled: true
+
+## prometheus-pushgateway sub-chart
+pushgateway:
+  enabled: true
+
+## Service Monitor configuration (for Prometheus Operator)
+serviceMonitorsSelector: {}
+# Uncomment to use:
+# serviceMonitorsSelector:
+#   matchLabels:
+#     prometheus: homelab
