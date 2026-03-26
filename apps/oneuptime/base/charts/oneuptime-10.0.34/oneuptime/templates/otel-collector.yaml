@@ -1,1 +1,0 @@
-{{- /* OTel Collector has been removed. Telemetry ingestion (gRPC + HTTP) is now handled directly by the telemetry service. */ -}}

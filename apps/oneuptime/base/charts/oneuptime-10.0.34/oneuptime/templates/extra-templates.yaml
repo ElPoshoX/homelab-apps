@@ -1,5 +1,0 @@
-{{- range $.Values.extraTemplates }}
----
-{{ include "oneuptime.renderTemplate" (dict "value" . "context" $) }}
----
-{{- end }}
