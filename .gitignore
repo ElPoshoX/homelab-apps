@@ -1,1 +1,3 @@
-.sops.yamlcharts/
+.sops.yaml
+charts/
+apps/*/base/charts/
