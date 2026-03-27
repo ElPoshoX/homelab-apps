@@ -34,6 +34,7 @@
                 url: https://portainer.elposhox.dev
                 env: 3
                 key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
+                container: ix-portainer-portainer-1
                 
       - ArgoCD:
             icon: argo-cd.png
