@@ -26,7 +26,8 @@
 - Containers:
       - Portainer:
             icon: portainer.png
-            href: https://portainer.elposhox.dev/#!/home
+            href: https://portainer.elposhox.dev
+            siteMonitor: https://portainer.elposhox.dev
             widget:
                 type: portainer
                 url: https://portainer.elposhox.dev
