@@ -20,6 +20,7 @@
       - Secondary AdGuard (K8S):
             icon: adguard-home.png
             href: https://adguard-secondary-k8s.elposhox.dev/
+            siteMonitor: https://adguard-secondary-k8s.elposhox.dev/
             widget:
                 type: adguard
                 url: https://adguard-secondary-k8s.elposhox.dev/
