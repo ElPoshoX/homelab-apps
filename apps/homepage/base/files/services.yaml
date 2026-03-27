@@ -3,6 +3,7 @@
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
             siteMonitor: https://adguard-primary.elposhox.dev
+            statusStyle: "dot"
             widget:
                 type: adguard
                 url: https://adguard-primary.elposhox.dev
@@ -12,6 +13,7 @@
             icon: adguard-home.png
             href: https://adguard-secondary-truenas.elposhox.dev/
             siteMonitor: https://adguard-secondary-truenas.elposhox.dev/
+            statusStyle: "dot"
             widget:
                 type: adguard
                 url: https://adguard-secondary-truenas.elposhox.dev/
@@ -20,8 +22,9 @@
       - Secondary AdGuard (K8S):
             icon: adguard-home.png
             href: https://adguard-secondary-k8s.elposhox.dev
-            app: aadguard-home
+            app: adguard-home
             namespace: adguard
+            statusStyle: "dot"
             widget:
                 type: adguard
                 url: https://adguard-secondary-k8s.elposhox.dev
@@ -32,6 +35,7 @@
             icon: portainer.png
             href: https://portainer.elposhox.dev
             siteMonitor: https://portainer.elposhox.dev
+            statusStyle: "dot"
             widget:
                 type: portainer
                 url: https://portainer.elposhox.dev
@@ -44,6 +48,7 @@
             href: https://argocd.elposhox.dev
             app: argocd-server
             namespace: argocd
+            statusStyle: "dot"
             widget:
                 type: argocd
                 url: https://argocd.elposhox.dev
@@ -53,6 +58,7 @@
             icon: truenas-scale.png
             href: https://truenas.elposhox.dev
             siteMonitor: https://truenas.elposhox.dev
+            statusStyle: "dot"
             widget:
                 type: truenas
                 url: https://truenas.elposhox.dev
@@ -64,6 +70,7 @@
             href: https://longhorn.elposhox.dev
             app: longhorn-ui
             namespace: longhorn-system
+            statusStyle: "dot"
 
       - Proxmox:
             icon: proxmox.png
@@ -78,6 +85,8 @@
       - Jellyseerr:
             icon: jellyseerr.png
             href: https://jellyseerr.elposhox.dev
+            siteMonitor: https://jellyseerr.elposhox.dev
+            statusStyle: "dot"
             widget:
                 type: jellyseerr
                 url: https://jellyseerr.elposhox.dev
@@ -85,21 +94,23 @@
       - Jellyfin:
             icon: jellyfin.png
             href: https://jellyfin.elposhox.dev
+            siteMonitor: https://jellyfin.elposhox.dev
+            statusStyle: "dot"
             widget:
                 type: jellyfin
                 url: https://jellyfin.elposhox.dev
                 key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
 - Personal:
-      - Home Assistant:
-            icon: home-assistant.png
-            href: https://home-assistant.elposhox.dev
-            app: home-assistant
-            namespace: home-assistant
-            widget:
-                type: homeassistant
-                url: https://home-assistant.elposhox.dev
-                key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
+    #   - Home Assistant:
+    #         icon: home-assistant.png
+    #         href: https://home-assistant.elposhox.dev
+    #         app: home-assistant
+    #         namespace: home-assistant
+    #         widget:
+    #             type: homeassistant
+    #             url: https://home-assistant.elposhox.dev
+    #             key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
 
       - Immich:
             icon: immich.png
@@ -134,6 +145,7 @@
             href: https://speedtest.elposhox.dev
             app: myspeed
             namespace: myspeed
+            statusStyle: "dot"
             widget:
                 type: myspeed
                 url: https://speedtest.elposhox.dev
@@ -143,6 +155,7 @@
             href: https://grafana.elposhox.dev
             app: grafana
             namespace: grafana
+            statusStyle: "dot"
             widget:
                 type: grafana
                 version: 2 # optional, default is 1
@@ -156,6 +169,7 @@
             href: https://prometheus.elposhox.dev
             namespace: prometheus
             app: prometheus
+            statusStyle: "dot"
             widget:
                 type: prometheus
                 url: https://prometheus.elposhox.dev
