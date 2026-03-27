@@ -2,6 +2,7 @@
       - Primary AdGuard (Pi Zero 2 W):
             icon: adguard-home.png
             href: https://adguard-primary.elposhox.dev
+            siteMonitor: https://adguard-primary.elposhox.dev
             widget:
                 type: adguard
                 url: https://adguard-primary.elposhox.dev
@@ -10,6 +11,7 @@
       - Secondary AdGuard (TrueNas Scale):
             icon: adguard-home.png
             href: https://adguard-secondary-truenas.elposhox.dev/
+            siteMonitor: https://adguard-secondary-truenas.elposhox.dev/
             widget:
                 type: adguard
                 url: https://adguard-secondary-truenas.elposhox.dev/
@@ -48,6 +50,7 @@
       - TrueNas:
             icon: truenas-scale.png
             href: https://truenas.elposhox.dev
+            siteMonitor: https://truenas.elposhox.dev
             widget:
                 type: truenas
                 url: https://truenas.elposhox.dev
@@ -63,6 +66,7 @@
       - Proxmox:
             icon: proxmox.png
             href: https://proxmox.elposhox.dev
+            siteMonitor: https://proxmox.elposhox.dev
             widget:
                 type: proxmox
                 url: https://proxmox.elposhox.dev
