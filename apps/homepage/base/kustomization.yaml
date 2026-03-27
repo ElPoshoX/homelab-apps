@@ -7,12 +7,23 @@ labels:
     app.kubernetes.io/part-of: homepage
     homelab.local/OwnedBy: ElPoshoX
 
+configMapGenerator:
+- name: homepage
+  files:
+  - files/custom.js
+  - files/custom.css
+  - files/bookmarks.yaml
+  - files/docker.yaml
+  - files/kubernetes.yaml
+  - files/services.yaml
+  - files/settings.yaml
+  - files/widgets.yaml
+
 resources:
 - namespace.yaml
 - service.yaml
 - deployment.yaml
 - ingress.yaml
-- cm.yaml
 - cluster-role.yaml
 - cluster-role-binding.yaml
 - sa.yaml

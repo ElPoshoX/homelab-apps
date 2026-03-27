@@ -1,0 +1,11 @@
+title: ElPoshoX's Homepage
+theme: dark
+headerStyle: boxed
+language: es-MX
+target: _blank
+showStats: true
+statusStyle: "dot"
+useEqualHeights: true
+providers:
+  longhorn:
+    url: https://longhorn.elposhox.dev
