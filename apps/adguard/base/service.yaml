@@ -4,7 +4,8 @@ metadata:
   name: adguard-home
   namespace: adguard
 spec:
-  type: ClusterIP
+  type: LoadBalancer
+  loadBalancerIP: 192.168.5.10
   selector:
     app: adguard-home
   ports:
