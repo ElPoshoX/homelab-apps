@@ -9,3 +9,11 @@ useEqualHeights: true
 providers:
   longhorn:
     url: https://longhorn.elposhox.dev
+
+layout:
+    DNS:
+        style: row
+        columns: 3
+    Containers:
+        style: row
+        columns: 2
