@@ -59,6 +59,8 @@ externalClickhouse:
 # Enable nginx frontend server
 nginx:
   enabled: true
+  service:
+    type: ClusterIP
 
 # Core Services
 home:
