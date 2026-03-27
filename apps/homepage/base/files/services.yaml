@@ -20,7 +20,8 @@
       - Secondary AdGuard (K8S):
             icon: adguard-home.png
             href: https://adguard-secondary-k8s.elposhox.dev/
-            siteMonitor: https://adguard-secondary-k8s.elposhox.dev/
+            app: adguard-homelab
+            namespace: adguard
             widget:
                 type: adguard
                 url: https://adguard-secondary-k8s.elposhox.dev/
@@ -140,6 +141,8 @@
       - Grafana:
             icon: grafana.png
             href: https://grafana.elposhox.dev
+            app: grafana-homelab
+            namespace: grafana
             widget:
                 type: grafana
                 version: 2 # optional, default is 1
@@ -151,6 +154,8 @@
       - Prometheus:
             icon: prometheus.png
             href: https://prometheus.elposhox.dev
+            namespace: prometheus
+            app: prometheus-homelab
             widget:
                 type: prometheus
                 url: https://prometheus.elposhox.dev
