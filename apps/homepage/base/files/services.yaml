@@ -140,6 +140,13 @@
       - Grafana:
             icon: grafana.png
             href: https://grafana.elposhox.dev
+            widget:
+                type: grafana
+                version: 2 # optional, default is 1
+                alerts: alertmanager # optional, default is grafana
+                url: https://grafana.elposhox.dev
+                username: "{{HOMEPAGE_VAR_GRAFANA_USER}}"
+                password: "{{HOMEPAGE_VAR_GRAFANA_PASS}}"
 
       - Prometheus:
             icon: prometheus.png
@@ -148,9 +155,9 @@
                 type: prometheus
                 url: https://prometheus.elposhox.dev
 
-    #   - Promtail:
-    #         icon: loki.png
-    #         href: https://promtail.elposhox.dev
+      #   - Promtail:
+      #         icon: loki.png
+      #         href: https://promtail.elposhox.dev
 
 - Media:
       - Jellyfin:
