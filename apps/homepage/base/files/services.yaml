@@ -32,8 +32,9 @@
             widget:
                 type: portainer
                 url: https://portainer.elposhox.dev
-                username: "{{HOMEPAGE_VAR_PORTAINER_USER}}"
-                password: "{{HOMEPAGE_VAR_PORTAINER_PASS}}"
+                env: 1
+                key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
+                
       - ArgoCD:
             icon: argo-cd.png
             href: https://argocd.elposhox.dev
@@ -93,15 +94,7 @@
                 type: homeassistant
                 url: https://home-assistant.elposhox.dev
                 key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
-                # custom:
-                #   - state: sensor.total_power
-                #   - state: sensor.total_energy_today
-                #     label: energy today
-                #   - template: "{{ states.switch|selectattr('state','equalto','on')|list|length }}"
-                #     label: switches on
-                #   - state: weather.forecast_home
-                #     label: wind speed
-                #     value: "{attributes.wind_speed} {attributes.wind_speed_unit}"
+
       - Immich:
             icon: immich.png
             href: https://immich.elposhox.dev
@@ -130,7 +123,7 @@
                 url: https://uptime.elposhox.dev
                 slug: home-lab
 
-      - My Speed:
+      - Speed Test:
             icon: myspeed.png
             href: https://speedtest.elposhox.dev
             app: myspeed
@@ -138,10 +131,6 @@
             widget:
                 type: myspeed
                 url: https://speedtest.elposhox.dev
-
-      # - ChangeDetection:
-      #     icon: changedetection.png
-      #     href: https://change-detection.elposhox.dev
 
       - Grafana:
             icon: grafana.png
