@@ -16,9 +16,12 @@ garage:
     # Name of the existing Kubernetes secret containing rpcSecret and adminToken
     # This comes from the SOPS-encrypted secret.yaml
     name: garage-secrets
-    # These are read from the secret, leave empty
-    rpcSecret: ""
-    adminToken: ""
+    # Static placeholders to stabilize the checksum/secret annotation.
+    # The actual values come from the SOPS secret, but the Helm chart
+    # uses these to compute a checksum. If left empty, the chart generates
+    # random values on each render, causing ArgoCD to restart pods every sync.
+    rpcSecret: "placeholder-managed-by-sops"
+    adminToken: "placeholder-managed-by-sops"
 
   # Admin API endpoint internal DNS
   admin:
