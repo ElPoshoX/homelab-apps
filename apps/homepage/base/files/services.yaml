@@ -86,9 +86,9 @@
           #     label: wind speed
           #     value: "{attributes.wind_speed} {attributes.wind_speed_unit}"
 
-    - Bookstack:
-        icon: bookstack.png
-        href: https://bookstack.elposhox.dev
+    # - Bookstack:
+    #     icon: bookstack.png
+    #     href: https://bookstack.elposhox.dev
 
     # - N8N:
     #     icon: n8n.png
@@ -105,9 +105,9 @@
             key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
             version: 2
 
-    - Octoprint:
-        icon: octoprint.png
-        href: https://octoprint.elposhox.dev
+    # - Octoprint:
+    #     icon: octoprint.png
+    #     href: https://octoprint.elposhox.dev
 
     - Actual Budget:
         icon: actual-budget.png
@@ -133,9 +133,9 @@
           type: myspeed
           url: https://speedtest.elposhox.dev
 
-    - ChangeDetection:
-        icon: changedetection.png
-        href: https://change-detection.elposhox.dev
+    # - ChangeDetection:
+    #     icon: changedetection.png
+    #     href: https://change-detection.elposhox.dev
 
     - Grafana:
         icon: grafana.png
