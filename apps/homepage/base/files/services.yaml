@@ -32,7 +32,7 @@
             widget:
                 type: portainer
                 url: https://portainer.elposhox.dev
-                env: 3
+                env: 4
                 key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
                 container: ix-portainer-portainer-1
                 
