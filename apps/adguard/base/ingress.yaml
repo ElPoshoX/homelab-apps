@@ -24,6 +24,6 @@ spec:
       backendRefs:
         - group: ''
           kind: Service
-          name: adguard-home
+          name: adguard-home-tcp
           port: 3000
           weight: 1

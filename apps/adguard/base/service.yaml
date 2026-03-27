@@ -1,8 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: adguard-home
+  name: adguard-home-tcp
   namespace: adguard
+  annotations:
+    lbipam.cilium.io/sharing-key: adguard-dns
 spec:
   type: LoadBalancer
   loadBalancerIP: 192.168.5.11
@@ -17,11 +19,25 @@ spec:
       targetPort: 53
       protocol: TCP
       name: dns-tcp
-    - port: 53
-      targetPort: 53
-      protocol: UDP
-      name: dns-udp
     - port: 80
       targetPort: 80
       protocol: TCP
       name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-home-udp
+  namespace: adguard
+  annotations:
+    lbipam.cilium.io/sharing-key: adguard-dns
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.5.11
+  selector:
+    app: adguard-home
+  ports:
+    - port: 53
+      targetPort: 53
+      protocol: UDP
+      name: dns-udp
