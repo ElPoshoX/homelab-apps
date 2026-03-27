@@ -19,12 +19,12 @@
                 password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
       - Secondary AdGuard (K8S):
             icon: adguard-home.png
-            href: https://adguard-secondary-k8s.elposhox.dev/
+            href: https://adguard-secondary-k8s.elposhox.dev
             app: adguard-homelab
             namespace: adguard
             widget:
                 type: adguard
-                url: https://adguard-secondary-k8s.elposhox.dev/
+                url: https://adguard-secondary-k8s.elposhox.dev
                 username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
                 password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
 - Containers:
