@@ -17,3 +17,6 @@ layout:
     Containers:
         style: row
         columns: 2
+    Administration:
+        style: row
+        columns: 3

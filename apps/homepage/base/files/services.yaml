@@ -67,6 +67,21 @@
                 url: https://proxmox.elposhox.dev
                 username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
                 password: "{{HOMEPAGE_VAR_PROXMOX_PASS}}"
+- Media:
+      - Jellyseerr:
+            icon: jellyseerr.png
+            href: https://jellyseerr.elposhox.dev
+            widget:
+                type: jellyseerr
+                url: https://jellyseerr.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+      - Jellyfin:
+            icon: jellyfin.png
+            href: https://jellyfin.elposhox.dev
+            widget:
+                type: jellyfin
+                url: https://jellyfin.elposhox.dev
+                key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
 - Personal:
       - Home Assistant:
@@ -87,17 +102,6 @@
                 #   - state: weather.forecast_home
                 #     label: wind speed
                 #     value: "{attributes.wind_speed} {attributes.wind_speed_unit}"
-
-      # - Bookstack:
-      #     icon: bookstack.png
-      #     href: https://bookstack.elposhox.dev
-
-      # - N8N:
-      #     icon: n8n.png
-      #     href: https://n8n.elposhox.dev
-      #     app: n8n
-      #     namespace: n8n
-
       - Immich:
             icon: immich.png
             href: https://immich.elposhox.dev
@@ -161,22 +165,7 @@
       #         icon: loki.png
       #         href: https://promtail.elposhox.dev
 
-- Media:
-      - Jellyfin:
-            icon: jellyfin.png
-            href: https://jellyfin.elposhox.dev
-            widget:
-                type: jellyfin
-                url: https://jellyfin.elposhox.dev
-                key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
-
-      - Jellyseerr:
-            icon: jellyseerr.png
-            href: https://jellyseerr.elposhox.dev
-            widget:
-                type: jellyseerr
-                url: https://jellyseerr.elposhox.dev
-                key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+- Media Tools:
 
       - Sonarr:
             icon: sonarr.png
