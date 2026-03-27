@@ -57,6 +57,15 @@
         app: longhorn-ui
         namespace: longhorn-system
 
+    - Proxmox:
+        icon: proxmox.png
+        href: https://proxmox.elposhox.dev
+        widget:
+            type: proxmox
+            url: https://proxmox.elposhox.dev
+            username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_PASS}}"
+
 - Personal:
     - Home Assistant:
         icon: home-assistant.png
