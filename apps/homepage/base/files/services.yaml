@@ -27,8 +27,6 @@
       - Portainer:
             icon: portainer.png
             href: https://portainer.elposhox.dev/#!/home
-            app: portainer
-            namespace: portainer
             widget:
                 type: portainer
                 url: https://portainer.elposhox.dev
