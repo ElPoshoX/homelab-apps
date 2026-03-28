@@ -23,6 +23,6 @@ layout:
     Media:
         style: row
         columns: 2
-    Obseravbility:
+    Observability:
         style: row
         columns: 4
