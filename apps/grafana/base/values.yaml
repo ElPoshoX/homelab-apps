@@ -152,6 +152,7 @@ datasources:
         editable: true
         jsonData:
           implementation: prometheus
+          handleGrafanaManagedAlerts: true
       # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
         type: tempo
