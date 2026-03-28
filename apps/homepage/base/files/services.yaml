@@ -126,15 +126,11 @@
             href: "{{HOMEPAGE_VAR_ACTUAL_BUDGET_URL}}"
 
 - Observability:
-      - Uptime Kuma:
-            icon: uptime-kuma.png
+      - One Uptime:
+            icon: oneuptime.png
             href: "{{HOMEPAGE_VAR_UPTIME_URL}}"
-            app: uptime-kuma
-            namespace: uptime-kuma
-            widget:
-                type: uptimekuma
-                url: "{{HOMEPAGE_VAR_UPTIME_URL}}"
-                slug: home-lab
+            siteMonitor: "{{HOMEPAGE_VAR_UPTIME_URL}}"
+            statusStyle: "dot"
 
       - Speed Test:
             icon: myspeed.png
@@ -169,10 +165,6 @@
             widget:
                 type: prometheus
                 url: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}"
-
-      #   - Promtail:
-      #         icon: loki.png
-      #         href: https://promtail.elposhox.dev
 
 - Media Tools:
 
