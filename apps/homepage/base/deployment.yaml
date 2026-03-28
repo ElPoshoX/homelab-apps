@@ -38,6 +38,8 @@ spec:
           envFrom:
             - secretRef:
                 name: homepage-secret
+            - configMapRef:
+                name: homepage-urls
           ports:
             - containerPort: 3000
               name: http

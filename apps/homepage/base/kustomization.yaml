@@ -20,6 +20,7 @@ configMapGenerator:
   - files/widgets.yaml
 
 resources:
+- urls-configmap.yaml
 - namespace.yaml
 - service.yaml
 - deployment.yaml

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-urls
+  namespace: homepage
+data:
+  HOMEPAGE_VAR_ADGUARD_PRIMARY_URL: "https://adguard-primary.elposhox.dev"
+  HOMEPAGE_VAR_ADGUARD_SECONDARY_TRUENAS_URL: "https://adguard-secondary-truenas.elposhox.dev"
+  HOMEPAGE_VAR_ADGUARD_SECONDARY_K8S_URL: "https://adguard-secondary-k8s.elposhox.dev"
+  HOMEPAGE_VAR_PORTAINER_URL: "https://portainer.elposhox.dev"
+  HOMEPAGE_VAR_ARGOCD_URL: "https://argocd.elposhox.dev"
+  HOMEPAGE_VAR_TRUENAS_URL: "https://truenas.elposhox.dev"
+  HOMEPAGE_VAR_LONGHORN_URL: "https://longhorn.elposhox.dev"
+  HOMEPAGE_VAR_PROXMOX_URL: "https://proxmox.elposhox.dev"
+  HOMEPAGE_VAR_JELLYSEERR_URL: "https://jellyseerr.elposhox.dev"
+  HOMEPAGE_VAR_JELLYFIN_URL: "https://jellyfin.elposhox.dev"
+  HOMEPAGE_VAR_IMMICH_URL: "https://immich.elposhox.dev"
+  HOMEPAGE_VAR_ACTUAL_BUDGET_URL: "https://actual-budget.elposhox.dev"
+  HOMEPAGE_VAR_UPTIME_URL: "https://uptime.elposhox.dev"
+  HOMEPAGE_VAR_SPEEDTEST_URL: "https://speedtest.elposhox.dev"
+  HOMEPAGE_VAR_GRAFANA_URL: "https://grafana.elposhox.dev"
+  HOMEPAGE_VAR_PROMETHEUS_URL: "https://prometheus.elposhox.dev"
+  HOMEPAGE_VAR_SONARR_URL: "https://sonarr.elposhox.dev"
+  HOMEPAGE_VAR_RADARR_URL: "https://radarr.elposhox.dev"
+  HOMEPAGE_VAR_BAZARR_URL: "https://bazarr.elposhox.dev"
+  HOMEPAGE_VAR_PROWLARR_URL: "https://prowlarr.elposhox.dev"

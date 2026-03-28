@@ -1,104 +1,100 @@
 - DNS:
       - Primary AdGuard (Pi Zero 2 W):
             icon: adguard-home.png
-            href: https://adguard-primary.elposhox.dev
-            siteMonitor: https://adguard-primary.elposhox.dev
+            href: "{{HOMEPAGE_VAR_ADGUARD_PRIMARY_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_ADGUARD_PRIMARY_URL}}"
             statusStyle: "dot"
             widget:
                 type: adguard
-                url: https://adguard-primary.elposhox.dev
+                url: "{{HOMEPAGE_VAR_ADGUARD_PRIMARY_URL}}"
                 username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
                 password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
       - Secondary AdGuard (TrueNas Scale):
             icon: adguard-home.png
-            href: https://adguard-secondary-truenas.elposhox.dev/
-            siteMonitor: https://adguard-secondary-truenas.elposhox.dev/
+            href: "{{HOMEPAGE_VAR_ADGUARD_SECONDARY_TRUENAS_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_ADGUARD_SECONDARY_TRUENAS_URL}}"
             statusStyle: "dot"
             widget:
                 type: adguard
-                url: https://adguard-secondary-truenas.elposhox.dev/
+                url: "{{HOMEPAGE_VAR_ADGUARD_SECONDARY_TRUENAS_URL}}"
                 username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
                 password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
       - Secondary AdGuard (K8S):
             icon: adguard-home.png
-            href: https://adguard-secondary-k8s.elposhox.dev
-            app: adguard-home
-            namespace: adguard
+            siteMonitor: "{{HOMEPAGE_VAR_ADGUARD_SECONDARY_K8S_URL}}"
             statusStyle: "dot"
             widget:
                 type: adguard
-                url: https://adguard-secondary-k8s.elposhox.dev
+                url: "{{HOMEPAGE_VAR_ADGUARD_SECONDARY_K8S_URL}}"
                 username: "{{HOMEPAGE_VAR_ADGUARD_USER}}"
                 password: "{{HOMEPAGE_VAR_ADGUARD_PASS}}"
 - Containers:
       - Portainer:
             icon: portainer.png
-            href: https://portainer.elposhox.dev
-            siteMonitor: https://portainer.elposhox.dev
+            href: "{{HOMEPAGE_VAR_PORTAINER_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_PORTAINER_URL}}"
             statusStyle: "dot"
             widget:
                 type: portainer
-                url: https://portainer.elposhox.dev
+                url: "{{HOMEPAGE_VAR_PORTAINER_URL}}"
                 env: 4
                 key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
                 container: ix-portainer-portainer-1
-                
+
       - ArgoCD:
             icon: argo-cd.png
-            href: https://argocd.elposhox.dev
-            app: argocd-server
-            namespace: argocd
+            href: "{{HOMEPAGE_VAR_ARGOCD_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_ARGOCD_URL}}"
             statusStyle: "dot"
             widget:
                 type: argocd
-                url: https://argocd.elposhox.dev
+                url: "{{HOMEPAGE_VAR_ARGOCD_URL}}"
                 key: "{{HOMEPAGE_VAR_ARGOCD_KEY}}"
 - Administration:
       - TrueNas:
             icon: truenas-scale.png
-            href: https://truenas.elposhox.dev
-            siteMonitor: https://truenas.elposhox.dev
+            href: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
             statusStyle: "dot"
             widget:
                 type: truenas
-                url: https://truenas.elposhox.dev
+                url: "{{HOMEPAGE_VAR_TRUENAS_URL}}"
                 key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
                 enablePools: true
 
       - Longhorn:
             icon: longhorn.png
-            href: https://longhorn.elposhox.dev
-            app: longhorn-ui
-            namespace: longhorn-system
+            href: "{{HOMEPAGE_VAR_LONGHORN_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_LONGHORN_URL}}"
             statusStyle: "dot"
 
       - Proxmox:
             icon: proxmox.png
-            href: https://proxmox.elposhox.dev
-            siteMonitor: https://proxmox.elposhox.dev
+            href: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
             widget:
                 type: proxmox
-                url: https://proxmox.elposhox.dev
+                url: "{{HOMEPAGE_VAR_PROXMOX_URL}}"
                 username: "{{HOMEPAGE_VAR_PROXMOX_USER}}"
                 password: "{{HOMEPAGE_VAR_PROXMOX_PASS}}"
 - Media:
       - Jellyseerr:
             icon: jellyseerr.png
-            href: https://jellyseerr.elposhox.dev
-            siteMonitor: https://jellyseerr.elposhox.dev
+            href: "{{HOMEPAGE_VAR_JELLYSEERR_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_JELLYSEERR_URL}}"
             statusStyle: "dot"
             widget:
                 type: jellyseerr
-                url: https://jellyseerr.elposhox.dev
+                url: "{{HOMEPAGE_VAR_JELLYSEERR_URL}}"
                 key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
       - Jellyfin:
             icon: jellyfin.png
-            href: https://jellyfin.elposhox.dev
-            siteMonitor: https://jellyfin.elposhox.dev
+            href: "{{HOMEPAGE_VAR_JELLYFIN_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_JELLYFIN_URL}}"
             statusStyle: "dot"
             widget:
                 type: jellyfin
-                url: https://jellyfin.elposhox.dev
+                url: "{{HOMEPAGE_VAR_JELLYFIN_URL}}"
                 key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
 - Personal:
@@ -114,10 +110,10 @@
 
       - Immich:
             icon: immich.png
-            href: https://immich.elposhox.dev
+            href: "{{HOMEPAGE_VAR_IMMICH_URL}}"
             widget:
                 type: immich
-                url: https://immich.elposhox.dev
+                url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
                 key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
                 version: 2
 
@@ -127,32 +123,32 @@
 
       - Actual Budget:
             icon: actual-budget.png
-            href: https://actual-budget.elposhox.dev
+            href: "{{HOMEPAGE_VAR_ACTUAL_BUDGET_URL}}"
 
 - Observability:
       - Uptime Kuma:
             icon: uptime-kuma.png
-            href: https://uptime.elposhox.dev
+            href: "{{HOMEPAGE_VAR_UPTIME_URL}}"
             app: uptime-kuma
             namespace: uptime-kuma
             widget:
                 type: uptimekuma
-                url: https://uptime.elposhox.dev
+                url: "{{HOMEPAGE_VAR_UPTIME_URL}}"
                 slug: home-lab
 
       - Speed Test:
             icon: myspeed.png
-            href: https://speedtest.elposhox.dev
+            href: "{{HOMEPAGE_VAR_SPEEDTEST_URL}}"
             app: myspeed
             namespace: myspeed
             statusStyle: "dot"
             widget:
                 type: myspeed
-                url: https://speedtest.elposhox.dev
+                url: "{{HOMEPAGE_VAR_SPEEDTEST_URL}}"
 
       - Grafana:
             icon: grafana.png
-            href: https://grafana.elposhox.dev
+            href: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
             app: grafana
             namespace: grafana
             statusStyle: "dot"
@@ -160,19 +156,19 @@
                 type: grafana
                 version: 2 # optional, default is 1
                 alerts: alertmanager # optional, default is grafana
-                url: https://grafana.elposhox.dev
+                url: "{{HOMEPAGE_VAR_GRAFANA_URL}}"
                 username: "{{HOMEPAGE_VAR_GRAFANA_USER}}"
                 password: "{{HOMEPAGE_VAR_GRAFANA_PASS}}"
 
       - Prometheus:
             icon: prometheus.png
-            href: https://prometheus.elposhox.dev
+            href: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}"
             namespace: prometheus
             app: prometheus
             statusStyle: "dot"
             widget:
                 type: prometheus
-                url: https://prometheus.elposhox.dev
+                url: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}"
 
       #   - Promtail:
       #         icon: loki.png
@@ -182,40 +178,52 @@
 
       - Sonarr:
             icon: sonarr.png
-            href: https://sonarr.elposhox.dev
+            href: "{{HOMEPAGE_VAR_SONARR_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_SONARR_URL}}"
+            statusStyle: "dot"
             widget:
                 type: sonarr
-                url: https://sonarr.elposhox.dev
+                url: "{{HOMEPAGE_VAR_SONARR_URL}}"
                 key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
                 enableQueue: true
 
       - Radarr:
             icon: radarr.png
-            href: https://radarr.elposhox.dev
+            href: "{{HOMEPAGE_VAR_RADARR_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_RADARR_URL}}"
+            statusStyle: "dot"
             widget:
                 type: radarr
-                url: https://radarr.elposhox.dev
+                url: "{{HOMEPAGE_VAR_RADARR_URL}}"
                 key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
                 enableQueue: true
 
       - Bazarr:
             icon: bazarr.png
-            href: https://bazarr.elposhox.dev
+            href: "{{HOMEPAGE_VAR_BAZARR_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_BAZARR_URL}}"
+            statusStyle: "dot"
             widget:
                 type: bazarr
-                url: https://bazarr.elposhox.dev
+                url: "{{HOMEPAGE_VAR_BAZARR_URL}}"
                 key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
 
-      - Jackett:
-            icon: jackett.png
-            href: https://jackett.elposhox.dev
+      # - Jackett:
+      #       icon: jackett.png
+      #       href: https://jackett.elposhox.dev
+      #       siteMonitor: https://jackett.elposhox.dev
+      #       statusStyle: "dot"
+      #       widget:
+      #             type: jackett
+      #             url: https://jackett.elposhox.dev
+      #             password: jackettadminpassword # optiona
 
       - Prowlarr:
             icon: prowlarr.png
-            href: https://prowlarr.elposhox.dev
+            href: "{{HOMEPAGE_VAR_PROWLARR_URL}}"
             widget:
                 type: prowlarr
-                url: https://prowlarr.elposhox.dev
+                url: "{{HOMEPAGE_VAR_PROWLARR_URL}}"
                 key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
 
       # - Kavita:
