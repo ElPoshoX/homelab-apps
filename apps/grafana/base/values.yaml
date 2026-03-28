@@ -145,7 +145,7 @@ datasources:
         access: proxy
         editable: true
       # Alertmanager
-      - name: Alertmanager
+      - name: alertmanager
         type: alertmanager
         url: http://alertmanager.alertmanager.svc.cluster.local:9093
         access: proxy
