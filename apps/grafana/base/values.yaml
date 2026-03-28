@@ -144,6 +144,14 @@ datasources:
         url: http://loki.loki.svc.cluster.local:3100
         access: proxy
         editable: true
+      # Alertmanager
+      - name: Alertmanager
+        type: alertmanager
+        url: http://alertmanager.alertmanager.svc.cluster.local:9093
+        access: proxy
+        editable: true
+        jsonData:
+          implementation: prometheus
       # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
         type: tempo
