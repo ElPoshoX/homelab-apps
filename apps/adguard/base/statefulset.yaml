@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: adguard-home
+        app.kubernetes.io/name: adguard-home
     spec:
       affinity:
         podAntiAffinity:
