@@ -176,7 +176,7 @@
                 type: sonarr
                 url: "{{HOMEPAGE_VAR_SONARR_URL}}"
                 key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
-                enableQueue: true
+                enableQueue: false
 
       - Radarr:
             icon: radarr.png
