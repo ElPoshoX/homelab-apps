@@ -24,3 +24,4 @@ data:
   HOMEPAGE_VAR_RADARR_URL: "https://radarr.elposhox.dev"
   HOMEPAGE_VAR_BAZARR_URL: "https://bazarr.elposhox.dev"
   HOMEPAGE_VAR_PROWLARR_URL: "https://prowlarr.elposhox.dev"
+  HOMEPAGE_VAR_QBITTORRENT_URL: "https://qbittorrent.elposhox.dev"

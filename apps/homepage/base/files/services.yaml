@@ -199,16 +199,6 @@
                 url: "{{HOMEPAGE_VAR_BAZARR_URL}}"
                 key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
 
-      # - Jackett:
-      #       icon: jackett.png
-      #       href: https://jackett.elposhox.dev
-      #       siteMonitor: https://jackett.elposhox.dev
-      #       statusStyle: "dot"
-      #       widget:
-      #             type: jackett
-      #             url: https://jackett.elposhox.dev
-      #             password: jackettadminpassword # optiona
-
       - Prowlarr:
             icon: prowlarr.png
             href: "{{HOMEPAGE_VAR_PROWLARR_URL}}"
@@ -217,10 +207,16 @@
                 url: "{{HOMEPAGE_VAR_PROWLARR_URL}}"
                 key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
 
-      # - Kavita:
-      #     icon: kavita.png
-      #     href: https://kavita.elposhox.dev
+      - qBittorrent:
+            icon: qbittorrent.png
+            href: "{{HOMEPAGE_VAR_QBITTORRENT_URL}}"
+            siteMonitor: "{{HOMEPAGE_VAR_QBITTORRENT_URL}}"
+            statusStyle: "dot"
+            widget:
+                type: qbittorrent
+                url: "{{HOMEPAGE_VAR_QBITTORRENT_URL}}"
+                username: "{{HOMEPAGE_VAR_QBITTORRENT_USER}}"
+                password: "{{HOMEPAGE_VAR_QBITTORRENT_PASS}}"
+                enableLeechProgress: true # optional, defaults to false
+                enableLeechSize: true # optional, defaults to false
 
-      # - Suwayomi:
-      #     icon: suwayomi.png
-      #     href: https://suwayomi.elposhox.dev
