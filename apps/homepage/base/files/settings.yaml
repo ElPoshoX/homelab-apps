@@ -26,3 +26,9 @@ layout:
     Observability:
         style: row
         columns: 4
+    Personal:
+        style: row
+        columns: 3
+    Media Tools:
+        style: row
+        columns: 4

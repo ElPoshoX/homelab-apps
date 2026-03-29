@@ -97,34 +97,6 @@
                 url: "{{HOMEPAGE_VAR_JELLYFIN_URL}}"
                 key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
-- Personal:
-    #   - Home Assistant:
-    #         icon: home-assistant.png
-    #         href: https://home-assistant.elposhox.dev
-    #         app: home-assistant
-    #         namespace: home-assistant
-    #         widget:
-    #             type: homeassistant
-    #             url: https://home-assistant.elposhox.dev
-    #             key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
-
-      - Immich:
-            icon: immich.png
-            href: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-            widget:
-                type: immich
-                url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
-                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-                version: 2
-
-      # - Octoprint:
-      #     icon: octoprint.png
-      #     href: https://octoprint.elposhox.dev
-
-      - Actual Budget:
-            icon: actual-budget.png
-            href: "{{HOMEPAGE_VAR_ACTUAL_BUDGET_URL}}"
-
 - Observability:
       - One Uptime:
             icon: oneuptime.png
@@ -166,8 +138,35 @@
                 type: prometheus
                 url: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}"
 
-- Media Tools:
+- Personal:
+    #   - Home Assistant:
+    #         icon: home-assistant.png
+    #         href: https://home-assistant.elposhox.dev
+    #         app: home-assistant
+    #         namespace: home-assistant
+    #         widget:
+    #             type: homeassistant
+    #             url: https://home-assistant.elposhox.dev
+    #             key: "{{HOMEPAGE_VAR_HOMEASSISTANT_KEY}}"
 
+      - Immich:
+            icon: immich.png
+            href: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+            widget:
+                type: immich
+                url: "{{HOMEPAGE_VAR_IMMICH_URL}}"
+                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+                version: 2
+
+      # - Octoprint:
+      #     icon: octoprint.png
+      #     href: https://octoprint.elposhox.dev
+
+      - Actual Budget:
+            icon: actual-budget.png
+            href: "{{HOMEPAGE_VAR_ACTUAL_BUDGET_URL}}"
+
+- Media Tools:
       - Sonarr:
             icon: sonarr.png
             href: "{{HOMEPAGE_VAR_SONARR_URL}}"
