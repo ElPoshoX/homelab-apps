@@ -43,3 +43,6 @@ patches:
       - op: add
         path: /spec/volumeClaimTemplates/0/kind
         value: PersistentVolumeClaim
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1

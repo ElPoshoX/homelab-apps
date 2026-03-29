@@ -6,6 +6,7 @@ metadata:
 spec:
   serviceName: "adguard"
   replicas: 1  # Number of replicas
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: adguard-home

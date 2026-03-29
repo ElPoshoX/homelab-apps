@@ -40,3 +40,6 @@ patches:
           runAsGroup: 65534
           runAsNonRoot: true
           runAsUser: 65534
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1

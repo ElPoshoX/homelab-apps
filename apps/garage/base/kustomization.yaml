@@ -49,6 +49,9 @@ patches:
       - op: add
         path: /spec/volumeClaimTemplates/0/kind
         value: PersistentVolumeClaim
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1
   # Add apiVersion and kind to volumeClaimTemplates (data)
   - target:
       group: apps

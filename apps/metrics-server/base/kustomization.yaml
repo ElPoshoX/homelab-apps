@@ -30,3 +30,6 @@ patches:
     patch: |-
       - op: remove
         path: /spec/template/spec/containers/0/securityContext
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1

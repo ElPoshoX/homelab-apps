@@ -22,3 +22,21 @@ resources:
   - namespace.yaml
   - secret.yaml
   - ingress.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+    patch: |-
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1

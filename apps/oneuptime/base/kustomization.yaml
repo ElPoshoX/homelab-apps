@@ -30,5 +30,15 @@ resources:
   - ingress.yaml
   - secret.yaml
 
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1
+
 # Note: The new labels API doesn't apply labels to CustomResourceDefinitions by default,
 # preventing the annotation overflow issue with KEDA CRDs that have large OpenAPI schemas
