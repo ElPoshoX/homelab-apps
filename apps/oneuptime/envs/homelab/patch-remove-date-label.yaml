@@ -1,0 +1,80 @@
+# Remove the dynamic "date" label that the OneUptime Helm chart injects
+# with a Unix timestamp on every render, causing unnecessary pod restarts
+# on each ArgoCD sync.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-app
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-home
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-nginx
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-probe-one
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-telemetry
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneuptime-worker
+  namespace: oneuptime
+  labels:
+    date: null
+spec:
+  template:
+    metadata:
+      labels:
+        date: null

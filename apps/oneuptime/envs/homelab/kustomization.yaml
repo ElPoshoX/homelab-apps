@@ -5,5 +5,7 @@ kind: Kustomization
 resources:
   - ../../base
 
-# Environment-specific patches (if needed in future)
-# Currently, no overrides needed for homelab environment
+# Patches
+# Remove dynamic "date" label from Helm chart that causes unnecessary restarts
+patches:
+  - path: patch-remove-date-label.yaml
