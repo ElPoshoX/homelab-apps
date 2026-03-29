@@ -28,7 +28,7 @@ layout:
         columns: 4
     Personal:
         style: row
-        columns: 3
+        columns: 2
     Media Tools:
         style: row
         columns: 4
