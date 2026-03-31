@@ -8,7 +8,7 @@ labels:
       app.kubernetes.io/part-of: nats
       homelab.local/OwnedBy: ElPoshoX
 
-namespace: moltis-infra
+namespace: nats
 
 helmCharts:
   - name: nats
@@ -16,7 +16,7 @@ helmCharts:
     releaseName: nats
     version: "2.12.6"
     valuesFile: values.yaml
-    namespace: moltis-infra
+    namespace: nats
 
 resources:
   - namespace.yaml
