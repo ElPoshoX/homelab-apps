@@ -41,3 +41,4 @@ spec:
           kind: Service
           name: nats
           port: 4222
+          weight: 1
