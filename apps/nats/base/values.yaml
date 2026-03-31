@@ -40,3 +40,9 @@ service:
       enabled: false
     profiling:
       enabled: false
+  merge:
+    metadata:
+      annotations:
+        lbipam.cilium.io/ips: "192.168.5.12"
+    spec:
+      type: LoadBalancer
