@@ -1,0 +1,48 @@
+# NATS Helm Chart v2.12.6
+
+config:
+  cluster:
+    enabled: false
+
+  jetstream:
+    enabled: true
+    fileStore:
+      enabled: true
+      dir: /data
+      pvc:
+        enabled: true
+        size: 2Gi
+        storageClassName: longhorn
+
+  monitor:
+    enabled: true
+    port: 8222
+
+  nats:
+    port: 4222
+
+service:
+  enabled: true
+  ports:
+    nats:
+      enabled: true
+    monitor:
+      enabled: false
+    leafnodes:
+      enabled: false
+    websocket:
+      enabled: false
+    mqtt:
+      enabled: false
+    cluster:
+      enabled: false
+    gateway:
+      enabled: false
+    profiling:
+      enabled: false
+  merge:
+    metadata:
+      annotations:
+        lbipam.cilium.io/ips: "192.168.5.10"
+    spec:
+      type: LoadBalancer

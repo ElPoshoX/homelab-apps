@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: nats
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: moltis-infra
+
+helmCharts:
+  - name: nats
+    repo: https://nats-io.github.io/k8s/helm/charts/
+    releaseName: nats
+    version: "2.12.6"
+    valuesFile: values.yaml
+    namespace: moltis-infra
+
+resources:
+  - namespace.yaml
+  - service-monitor.yaml
+  - ingress.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: nats
+    patch: |-
+      - op: add
+        path: /spec/revisionHistoryLimit
+        value: 1
+      - op: add
+        path: /spec/volumeClaimTemplates/0/apiVersion
+        value: v1
+      - op: add
+        path: /spec/volumeClaimTemplates/0/kind
+        value: PersistentVolumeClaim
