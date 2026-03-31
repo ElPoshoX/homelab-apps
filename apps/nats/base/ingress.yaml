@@ -22,3 +22,22 @@ spec:
           name: nats-monitor
           port: 8222
           weight: 1
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: nats-tcp
+  namespace: nats
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
+      namespace: ingress
+      sectionName: nats-tcp
+  rules:
+    - backendRefs:
+        - group: ''
+          kind: Service
+          name: nats
+          port: 4222
