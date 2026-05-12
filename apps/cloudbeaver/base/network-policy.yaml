@@ -1,0 +1,38 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cloudbeaver-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cloudbeaver
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ingress
+      toPorts:
+        - ports:
+            - port: "8978"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # PostgreSQL (aegis-postgres namespace)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: aegis-postgres
+            cnpg.io/cluster: postgres
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

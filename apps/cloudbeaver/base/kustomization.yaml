@@ -5,13 +5,13 @@ labels:
   - includeSelectors: true
     pairs:
       app.kubernetes.io/managed-by: kustomize
-      app.kubernetes.io/part-of: aegis
+      app.kubernetes.io/part-of: cloudbeaver
       homelab.local/OwnedBy: ElPoshoX
 
-namespace: aegis-postgres
+namespace: cloudbeaver
 
 resources:
   - namespace.yaml
-  - secret.yaml
-  - cluster.yaml
+  - deployment.yaml
+  - ingress.yaml
   - network-policy.yaml

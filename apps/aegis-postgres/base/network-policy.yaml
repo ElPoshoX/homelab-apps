@@ -20,11 +20,11 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-    # Envoy gateway (for TCPRoute local access)
+    # CloudBeaver (cross-namespace, DB management UI)
     - fromEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: ingress
-            gateway.envoyproxy.io/owning-gateway-name: homelab-gateway
+            k8s:io.kubernetes.pod.namespace: cloudbeaver
+            app.kubernetes.io/name: cloudbeaver
       toPorts:
         - ports:
             - port: "5432"
