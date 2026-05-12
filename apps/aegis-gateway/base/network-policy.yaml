@@ -75,6 +75,7 @@ spec:
         - matchName: api.moonshot.cn
         - matchName: openrouter.ai
         - matchName: api.anthropic.com
+        - matchName: raw.githubusercontent.com
       toPorts:
         - ports:
             - port: "443"
