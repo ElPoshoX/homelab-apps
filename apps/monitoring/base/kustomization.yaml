@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: monitoring
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: monitoring
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: monitoring
+    version: "85.0.1"
+    valuesFile: values.yaml
+    namespace: monitoring
+    includeCRDs: true
+    skipTests: true
+
+resources:
+  - namespace.yaml
+  # Phase 2: uncomment after removing old HTTPRoutes from prometheus/alertmanager namespaces
+  # - ingress.yaml

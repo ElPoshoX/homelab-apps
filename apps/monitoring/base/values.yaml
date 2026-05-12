@@ -1,0 +1,125 @@
+# kube-prometheus-stack v85.0.1
+# Replaces: prometheus (standalone), alertmanager (standalone), kube-state-metrics
+
+fullnameOverride: monitoring
+
+crds:
+  enabled: true
+
+# --- Prometheus Operator ---
+prometheusOperator:
+  enabled: true
+  admissionWebhooks:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# --- Prometheus ---
+prometheus:
+  enabled: true
+  prometheusSpec:
+    scrapeInterval: 15s
+    scrapeTimeout: 10s
+    evaluationInterval: 15s
+    retention: 15d
+
+    # Accept remote_write from Tempo metrics generator
+    enableRemoteWriteReceiver: true
+
+    # Select ALL ServiceMonitors/PodMonitors/Rules across all namespaces
+    # Without these, only monitors with kube-prometheus-stack helm labels are picked up
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 300m
+        memory: 512Mi
+
+    securityContext:
+      runAsUser: 65534
+      runAsNonRoot: true
+      runAsGroup: 65534
+      fsGroup: 65534
+
+# --- AlertManager ---
+# Phase 1: default receiver only
+# Phase 2: add AlertmanagerConfig CR + SopsSecret for Telegram (see alertmanager-telegram.yaml)
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    alertmanagerConfigSelector: {}
+    alertmanagerConfigNamespaceSelector: {}
+    alertmanagerConfigMatcherStrategy:
+      type: None
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    securityContext:
+      runAsUser: 65534
+      runAsNonRoot: true
+      runAsGroup: 65534
+      fsGroup: 65534
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: default
+    receivers:
+      - name: default
+
+# --- Grafana: managed separately ---
+grafana:
+  enabled: false
+
+# --- kube-state-metrics: replaces standalone app ---
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# --- Node Exporter ---
+# DISABLED during Phase 1: old prometheus chart runs node-exporter on hostPort 9100.
+# Two DaemonSets binding the same hostPort will fail.
+# Enable after decommissioning old prometheus app in Phase 4.
+prometheus-node-exporter:
+  enabled: false
+
+# --- Default recording + alerting rules ---
+defaultRules:
+  create: true
