@@ -21,7 +21,7 @@ metadata:
   labels:
     app.kubernetes.io/name: litellm
     app.kubernetes.io/component: gateway
-    app.kubernetes.io/version: "1.83.7"
+    app.kubernetes.io/version: "1.83.14"
 spec:
   replicas: 1
   selector:
@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: litellm
-          image: ghcr.io/berriai/litellm:main-v1.83.7-stable
+          image: ghcr.io/berriai/litellm:main-v1.83.14-stable
           args:
             - "--config"
             - "/etc/litellm/config.yaml"
