@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config
+data:
+  config.yaml: |
+    model_list:
+      # ── Meridian (Claude Max 20x) ─────────────────────────────
+      - model_name: claude-sonnet
+        litellm_params:
+          model: openai/claude-sonnet-4-6
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:8317/v1
+          api_key: os.environ/MERIDIAN_API_KEY
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      - model_name: claude-opus
+        litellm_params:
+          model: openai/claude-opus-4-6
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:8317/v1
+          api_key: os.environ/MERIDIAN_API_KEY
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      # ── Claude API direct (fallback if Meridian blocked) ──────
+      - model_name: claude-sonnet-api
+        litellm_params:
+          model: anthropic/claude-sonnet-4-6
+          api_key: os.environ/ANTHROPIC_API_KEY
+
+      # ── DeepSeek V4 Pro ──────────────────────────────────────
+      - model_name: deepseek-v4-pro
+        litellm_params:
+          model: deepseek/deepseek-reasoner
+          api_key: os.environ/DEEPSEEK_API_KEY
+          input_cost_per_token: 0.00000174
+          output_cost_per_token: 0.00000348
+
+      # ── DeepSeek V4 Flash ────────────────────────────────────
+      - model_name: deepseek-v4-flash
+        litellm_params:
+          model: deepseek/deepseek-chat
+          api_key: os.environ/DEEPSEEK_API_KEY
+          input_cost_per_token: 0.00000014
+          output_cost_per_token: 0.00000028
+
+      # ── Kimi K2.6 ───────────────────────────────────────────
+      - model_name: kimi-k2.6
+        litellm_params:
+          model: openai/moonshot-v1-auto
+          api_base: https://api.moonshot.cn/v1
+          api_key: os.environ/KIMI_API_KEY
+          input_cost_per_token: 0.00000075
+          output_cost_per_token: 0.0000035
+
+      # ── OpenRouter fallback (last resort) ────────────────────
+      - model_name: openrouter-fallback
+        litellm_params:
+          model: openrouter/anthropic/claude-sonnet-4-6
+          api_key: os.environ/OPENROUTER_API_KEY
+
+    litellm_settings:
+      drop_params: true
+      cache: true
+      cache_params:
+        type: redis
+        host: redis
+        port: 6379
+        namespace: "aegis"
+        ttl: 3600
+        supported_call_types:
+          - acompletion
+          - completion
+      set_verbose: false
+      num_retries: 3
+      request_timeout: 120
+      fallbacks:
+        - claude-sonnet: [claude-sonnet-api, openrouter-fallback]
+        - claude-opus: [claude-sonnet-api, openrouter-fallback]
+
+    router_settings:
+      routing_strategy: "usage-based-routing-v2"
+      enable_pre_call_checks: true
+      redis_host: redis
+      redis_port: 6379
+
+    general_settings:
+      master_key: os.environ/LITELLM_MASTER_KEY
+      database_url: os.environ/DATABASE_URL
+      store_model_in_db: true
+      max_budget: 300
+      budget_duration: "30d"
