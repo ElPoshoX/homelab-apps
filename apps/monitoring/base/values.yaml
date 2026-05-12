@@ -11,6 +11,8 @@ prometheusOperator:
   enabled: true
   admissionWebhooks:
     enabled: false
+  tls:
+    enabled: false
   resources:
     requests:
       cpu: 100m
@@ -117,7 +119,8 @@ kube-state-metrics:
 # DISABLED during Phase 1: old prometheus chart runs node-exporter on hostPort 9100.
 # Two DaemonSets binding the same hostPort will fail.
 # Enable after decommissioning old prometheus app in Phase 4.
-prometheus-node-exporter:
+# NOTE: condition key is nodeExporter.enabled (not prometheus-node-exporter.enabled)
+nodeExporter:
   enabled: false
 
 # --- Default recording + alerting rules ---
