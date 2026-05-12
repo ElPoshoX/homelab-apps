@@ -7,6 +7,10 @@ spec:
     matchLabels:
       cnpg.io/cluster: postgres
   ingress:
+    # CNPG operator (management, webhooks, health checks)
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cnpg-system
     # LiteLLM (cross-namespace)
     - fromEndpoints:
         - matchLabels:
@@ -26,6 +30,7 @@ spec:
             - port: "5432"
               protocol: TCP
   egress:
+    # DNS
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
@@ -34,6 +39,18 @@ spec:
         - ports:
             - port: "53"
               protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # CNPG operator
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: cnpg-system
+    # Container registry (CNPG image pull verification)
+    - toFQDNs:
+        - matchName: ghcr.io
+        - matchName: pkg-containers.githubusercontent.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
