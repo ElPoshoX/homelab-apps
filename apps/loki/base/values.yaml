@@ -1,27 +1,21 @@
-# Loki Helm Chart Configuration
+# Loki Community Helm Chart v13.6.3
 # Monolithic log aggregation for homelab observability stack
 
-# Monolithic mode - single pod deployment
+deploymentMode: SingleBinary
+
 loki:
-  # Authentication and tenancy disabled for internal use
   auth_enabled: false
 
-  # Must match replica count — SingleBinary with 1 replica requires replication_factor: 1
   commonConfig:
     replication_factor: 1
 
-  # Log retention policy
   limits_config:
-    retention_period: 360h  # 15 days
+    retention_period: 360h
     reject_old_samples: true
     reject_old_samples_max_age: 168h
     ingestion_rate_mb: 10
     ingestion_burst_size_mb: 20
     max_cache_freshness_per_query: 10m
-
-  # Chunk encoding and storage
-  chunk_store_config:
-    max_look_back_period: 0s
 
   schemaConfig:
     configs:
@@ -33,8 +27,6 @@ loki:
           prefix: index_
           period: 24h
 
-
-  # Ruler S3 config — must mirror storage_config.aws so ruler doesn't fall back to AWS IMDS
   ruler:
     storage:
       type: s3
@@ -47,8 +39,6 @@ loki:
         insecure: true
         region: garage
 
-  # Storage bucket configuration for S3 backend
-  # bucketNames.chunks is used by the Helm chart to populate common.storage.s3.bucketnames
   storage:
     type: s3
     bucketNames:
@@ -63,90 +53,56 @@ loki:
       insecure: true
       region: garage
 
-  # Server configuration
   server:
     http_listen_port: 3100
     log_level: info
     log_format: json
 
-# Deployment strategy - monolithic single pod
-deploymentMode: SingleBinary
+  podSecurityContext:
+    fsGroup: 10001
+    runAsNonRoot: true
+    runAsUser: 10001
 
-# Single pod replica
-replicas: 1
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
 
-# Image configuration
-image:
-  repository: grafana/loki
-  pullPolicy: IfNotPresent
-
-# Service configuration
-service:
-  type: ClusterIP
-  port: 3100
-  targetPort: 3100
-
-# Ingress configuration
-ingress:
-  enabled: false
-
-# Persistence - 30GB Longhorn PVC for logs
-persistence:
-  enabled: true
-  storageClassName: longhorn
-  size: 30Gi
-  accessModes:
-    - ReadWriteMany
-
-# Resource management
-resources:
-  requests:
-    cpu: 300m
-    memory: 512Mi
-  limits:
-    cpu: 500m
-    memory: 1Gi
-
-# Pod disruption budget
-podDisruptionBudget:
-  minAvailable: 1
-
-# Service monitoring for Prometheus
-serviceMonitor:
-  enabled: false
-
-# Security context
-podSecurityContext:
-  fsGroup: 10001
-  runAsNonRoot: true
-  runAsUser: 10001
-
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-
-# Single binary configuration
 singleBinary:
-  # Enable environment variable expansion in configuration
+  replicas: 1
   extraArgs:
     - "-config.expand-env"
     - "true"
-  # Environment variables from Kubernetes Secrets
   extraEnvFrom:
     - secretRef:
         name: loki-s3-credentials
+  persistence:
+    enabled: true
+    storageClass: longhorn
+    size: 30Gi
+    enableStatefulSetAutoDeletePVC: false
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  affinity: {}
 
-# Backend configuration for distributed/HA setup (optional future use)
 backend:
-  replicas: 1
-
-# Read replicas for distributed setup (optional future use)
+  replicas: 0
 read:
-  replicas: 1
-
-# Write replicas for distributed setup (optional future use)
+  replicas: 0
 write:
-  replicas: 1
+  replicas: 0
+
+gateway:
+  enabled: true
+
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
