@@ -5,13 +5,14 @@ labels:
   - includeSelectors: true
     pairs:
       app.kubernetes.io/managed-by: kustomize
-      app.kubernetes.io/part-of: aegis
+      app.kubernetes.io/part-of: postgres
       homelab.local/OwnedBy: ElPoshoX
 
-namespace: aegis-postgres
+namespace: postgres
 
 resources:
   - namespace.yaml
   - secret.yaml
   - cluster.yaml
+  - scheduled-backup.yaml
   - network-policy.yaml

@@ -43,7 +43,7 @@ spec:
     # PostgreSQL (cross-namespace)
     - toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: aegis-postgres
+            k8s:io.kubernetes.pod.namespace: postgres
             cnpg.io/cluster: postgres
       toPorts:
         - ports:

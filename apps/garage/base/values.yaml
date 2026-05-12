@@ -101,6 +101,9 @@ buckets:
   - name: tempo-bucket
     quota: null
     description: "Tempo traces storage"
+  - name: postgres-backup
+    quota: null
+    description: "PostgreSQL CNPG backups"
 
 # Security context
 podSecurityContext:
@@ -160,7 +163,7 @@ clusterConfig:
     zone: dc1
     capacity: "17000"  # Per replica in MB
 
-  # S3 buckets for observability stack
+  # S3 buckets
   buckets:
     - name: mimir-bucket
     - name: loki-bucket
@@ -168,6 +171,7 @@ clusterConfig:
     - name: loki-ruler
     - name: loki-admin
     - name: tempo-bucket
+    - name: postgres-backup
 
   # S3 access keys - reference existing Kubernetes secret with encrypted credentials
   keys:
@@ -207,6 +211,15 @@ clusterConfig:
       secretKey: secretKey
       buckets:
         - name: tempo-bucket
+          read: true
+          write: true
+          owner: true
+    postgres-key:
+      secretName: postgres-s3-credentials
+      keyId: accessKey
+      secretKey: secretKey
+      buckets:
+        - name: postgres-backup
           read: true
           write: true
           owner: true

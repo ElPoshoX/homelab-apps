@@ -7,11 +7,19 @@ spec:
     matchLabels:
       cnpg.io/cluster: postgres
   ingress:
-    # CNPG operator (management, webhooks, health checks)
+    # CNPG operator
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: cnpg-system
-    # LiteLLM (cross-namespace)
+    # Inter-replica replication
+    - fromEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: postgres
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # Aegis LiteLLM
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: aegis-gateway
@@ -20,7 +28,7 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-    # CloudBeaver (cross-namespace, DB management UI)
+    # CloudBeaver
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: cloudbeaver
@@ -42,14 +50,30 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    # Kubernetes API server (CNPG pods read their own Cluster CR)
+    # Kubernetes API server
     - toEntities:
         - kube-apiserver
     # CNPG operator
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: cnpg-system
-    # Container registry (CNPG image pull verification)
+    # Inter-replica replication
+    - toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: postgres
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    # Garage S3 (backups)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: garage
+      toPorts:
+        - ports:
+            - port: "3900"
+              protocol: TCP
+    # ghcr.io (CNPG image verification)
     - toFQDNs:
         - matchName: ghcr.io
         - matchName: pkg-containers.githubusercontent.com
