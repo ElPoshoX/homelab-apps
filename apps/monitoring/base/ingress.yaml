@@ -1,5 +1,3 @@
-# Phase 2: Add to kustomization.yaml resources AFTER removing old HTTPRoutes
-# from prometheus and alertmanager namespaces (same commit to avoid routing gap)
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

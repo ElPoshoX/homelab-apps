@@ -26,7 +26,7 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
-  - ingress.yaml
+  # ingress.yaml removed — HTTPRoute moved to apps/monitoring/
 
 # Patches
 patches:

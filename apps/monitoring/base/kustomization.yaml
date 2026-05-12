@@ -22,5 +22,6 @@ helmCharts:
 
 resources:
   - namespace.yaml
-  # Phase 2: uncomment after removing old HTTPRoutes from prometheus/alertmanager namespaces
-  # - ingress.yaml
+  - ingress.yaml
+  - secret-telegram-url.yaml
+  - alertmanager-telegram.yaml

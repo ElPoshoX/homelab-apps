@@ -132,7 +132,7 @@ datasources:
       # Prometheus (Metrics)
       - name: Prometheus
         type: prometheus
-        url: http://prometheus-server.prometheus.svc.cluster.local:80
+        url: http://monitoring-prometheus.monitoring.svc.cluster.local:9090
         isDefault: true
         access: proxy
         editable: true
@@ -148,7 +148,7 @@ datasources:
       - name: alertmanager
         uid: alertmanager
         type: alertmanager
-        url: http://alertmanager.alertmanager.svc.cluster.local:9093
+        url: http://monitoring-alertmanager.monitoring.svc.cluster.local:9093
         access: proxy
         editable: true
         jsonData:

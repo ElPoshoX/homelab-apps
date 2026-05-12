@@ -35,7 +35,7 @@ tempo:
 
   metricsGenerator:
     enabled: true
-    remoteWriteUrl: "http://prometheus:9090/api/v1/write"
+    remoteWriteUrl: "http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
     processor: {}
     registry: {}
     storage:

@@ -1,4 +1,3 @@
-# Phase 2: Add to kustomization.yaml resources after encrypting secret-telegram-url.yaml
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
