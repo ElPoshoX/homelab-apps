@@ -12,9 +12,9 @@ namespace: grafana
 
 helmCharts:
   - name: grafana
-    repo: https://grafana.github.io/helm-charts
+    repo: https://grafana-community.github.io/helm-charts
     releaseName: grafana
-    version: "10.5.15"
+    version: "12.3.1"
     valuesFile: values.yaml
     namespace: grafana
 
