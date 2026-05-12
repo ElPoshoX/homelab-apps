@@ -6,7 +6,7 @@
 image:
   repository: dxflrs/garage
   pullPolicy: IfNotPresent
-  tag: v2.2.0
+  tag: v2.3.0
 
 # Garage configuration
 garage:
@@ -176,28 +176,37 @@ clusterConfig:
       keyId: accessKey
       secretKey: secretKey
       buckets:
-        - mimir-bucket
+        - name: mimir-bucket
+          read: true
+          write: true
+          owner: true
     loki-key:
       secretName: loki-s3-credentials
       keyId: accessKey
       secretKey: secretKey
       buckets:
-        - loki-bucket
-        - loki-chunks
-        - loki-ruler
-        - loki-admin
+        - name: loki-bucket
+          read: true
+          write: true
+          owner: true
+        - name: loki-chunks
+          read: true
+          write: true
+          owner: true
+        - name: loki-ruler
+          read: true
+          write: true
+          owner: true
+        - name: loki-admin
+          read: true
+          write: true
+          owner: true
     tempo-key:
       secretName: tempo-s3-credentials
       keyId: accessKey
       secretKey: secretKey
       buckets:
-        - tempo-bucket
-
-  # Grant owner permission — required by Garage v2 for ListObjectsV2 on buckets
-  extraCommands:
-    - 'bucket allow mimir-bucket --key "$KEY_ID_MIMIR_KEY" --owner || true'
-    - 'bucket allow loki-bucket --key "$KEY_ID_LOKI_KEY" --owner || true'
-    - 'bucket allow loki-chunks --key "$KEY_ID_LOKI_KEY" --owner || true'
-    - 'bucket allow loki-ruler --key "$KEY_ID_LOKI_KEY" --owner || true'
-    - 'bucket allow loki-admin --key "$KEY_ID_LOKI_KEY" --owner || true'
-    - 'bucket allow tempo-bucket --key "$KEY_ID_TEMPO_KEY" --owner || true'
+        - name: tempo-bucket
+          read: true
+          write: true
+          owner: true

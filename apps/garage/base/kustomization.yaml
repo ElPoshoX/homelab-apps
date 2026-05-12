@@ -14,7 +14,7 @@ helmCharts:
   - name: garage
     repo: https://datahub-local.github.io/garage-helm
     releaseName: garage
-    version: "0.2.1"
+    version: "0.6.0"
     valuesFile: values.yaml
     namespace: garage
 
