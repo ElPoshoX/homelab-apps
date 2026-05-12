@@ -133,8 +133,9 @@ kube-state-metrics:
   enabled: false
 
 ## prometheus-node-exporter sub-chart
+## Disabled — moved to kube-prometheus-stack in monitoring namespace
 nodeExporter:
-  enabled: true
+  enabled: false
 
 ## prometheus-pushgateway sub-chart
 pushgateway:

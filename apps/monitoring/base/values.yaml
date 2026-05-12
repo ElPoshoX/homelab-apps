@@ -117,12 +117,8 @@ kube-state-metrics:
       memory: 128Mi
 
 # --- Node Exporter ---
-# DISABLED during Phase 1: old prometheus chart runs node-exporter on hostPort 9100.
-# Two DaemonSets binding the same hostPort will fail.
-# Enable after decommissioning old prometheus app in Phase 4.
-# NOTE: condition key is nodeExporter.enabled (not prometheus-node-exporter.enabled)
 nodeExporter:
-  enabled: false
+  enabled: true
 
 # --- Talos: disable components that don't exist or bind to localhost only ---
 kubeScheduler:
