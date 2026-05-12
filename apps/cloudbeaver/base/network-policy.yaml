@@ -7,9 +7,10 @@ spec:
     matchLabels:
       app.kubernetes.io/name: cloudbeaver
   ingress:
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: ingress
+    # Cilium Gateway API processes traffic via eBPF datapath
+    - fromEntities:
+        - world
+        - cluster
       toPorts:
         - ports:
             - port: "8978"
