@@ -42,6 +42,9 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+    # Kubernetes API server (CNPG pods read their own Cluster CR)
+    - toEntities:
+        - kube-apiserver
     # CNPG operator
     - toEndpoints:
         - matchLabels:
