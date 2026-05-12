@@ -99,6 +99,7 @@ alertmanager:
       receiver: default
     receivers:
       - name: default
+      - name: "null"
 
 # --- Grafana: managed separately ---
 grafana:
