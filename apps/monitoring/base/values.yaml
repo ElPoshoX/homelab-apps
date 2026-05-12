@@ -124,6 +124,14 @@ kube-state-metrics:
 nodeExporter:
   enabled: false
 
+# --- Talos: disable components that don't exist or bind to localhost only ---
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+
 # --- Default recording + alerting rules ---
 defaultRules:
   create: true
