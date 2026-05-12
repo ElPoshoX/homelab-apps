@@ -15,4 +15,5 @@ resources:
   - secret.yaml
   - cluster.yaml
   - scheduled-backup.yaml
+  - alerts.yaml
   - network-policy.yaml

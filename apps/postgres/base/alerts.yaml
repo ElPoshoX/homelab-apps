@@ -1,0 +1,65 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgres-alerts
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  groups:
+    - name: postgres-storage
+      rules:
+        - alert: PostgresDiskUsageHigh
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{namespace="postgres", persistentvolumeclaim=~"postgres-.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="postgres", persistentvolumeclaim=~"postgres-.*"}
+            ) > 0.80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL disk usage above 80%"
+            description: "PVC {{ $labels.persistentvolumeclaim }} is at {{ $value | humanizePercentage }}."
+
+        - alert: PostgresDiskUsageCritical
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{namespace="postgres", persistentvolumeclaim=~"postgres-.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="postgres", persistentvolumeclaim=~"postgres-.*"}
+            ) > 0.90
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PostgreSQL disk usage above 90%"
+            description: "PVC {{ $labels.persistentvolumeclaim }} is at {{ $value | humanizePercentage }}. Expand storage urgently."
+
+    - name: postgres-health
+      rules:
+        - alert: PostgresReplicaDown
+          expr: cnpg_collector_up{namespace="postgres"} == 0
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL replica down"
+            description: "Pod {{ $labels.pod }} is not responding."
+
+        - alert: PostgresReplicationLag
+          expr: cnpg_pg_replication_lag{namespace="postgres"} > 30
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL replication lag > 30s"
+            description: "Replica {{ $labels.pod }} is {{ $value }}s behind primary."
+
+        - alert: PostgresBackupFailed
+          expr: |
+            time() - cnpg_pg_last_archived_wal_timestamp{namespace="postgres"} > 86400
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL backup stale > 24h"
+            description: "Last WAL archive for {{ $labels.pod }} was {{ $value | humanizeDuration }} ago."
