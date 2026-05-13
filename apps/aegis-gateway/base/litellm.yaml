@@ -59,10 +59,10 @@ spec:
           resources:
             requests:
               cpu: 200m
-              memory: 512Mi
+              memory: 1Gi
             limits:
               cpu: "1"
-              memory: 1Gi
+              memory: 2Gi
           livenessProbe:
             httpGet:
               path: /health/liveliness
@@ -81,9 +81,9 @@ spec:
             httpGet:
               path: /health/liveliness
               port: 4000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            failureThreshold: 12
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30
       volumes:
         - name: config
           configMap:
