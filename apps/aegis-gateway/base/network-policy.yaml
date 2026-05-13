@@ -62,7 +62,7 @@ spec:
             app.kubernetes.io/name: meridian
       toPorts:
         - ports:
-            - port: "8317"
+            - port: "3456"
               protocol: TCP
 
     # External LLM APIs — FQDN locked, HTTPS only
