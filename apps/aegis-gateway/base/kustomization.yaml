@@ -16,4 +16,5 @@ resources:
   - litellm-config.yaml
   - litellm.yaml
   - redis.yaml
+  - alerts.yaml
   - network-policy.yaml

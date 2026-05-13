@@ -1,0 +1,88 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aegis-gateway-alerts
+  labels:
+    app.kubernetes.io/name: litellm
+spec:
+  groups:
+    - name: aegis-gateway-resources
+      rules:
+        - alert: LiteLLMMemoryHigh
+          expr: |
+            (
+              container_memory_working_set_bytes{namespace="aegis-gateway", container="litellm"}
+              / container_spec_memory_limit_bytes{namespace="aegis-gateway", container="litellm"}
+            ) > 0.80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "LiteLLM memory usage above 80%"
+            description: "Pod {{ $labels.pod }} at {{ $value | humanizePercentage }}. OOMKill risk."
+
+        - alert: LiteLLMMemoryCritical
+          expr: |
+            (
+              container_memory_working_set_bytes{namespace="aegis-gateway", container="litellm"}
+              / container_spec_memory_limit_bytes{namespace="aegis-gateway", container="litellm"}
+            ) > 0.90
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "LiteLLM memory usage above 90%"
+            description: "Pod {{ $labels.pod }} at {{ $value | humanizePercentage }}. OOMKill imminent."
+
+        - alert: LiteLLMOOMKilled
+          expr: |
+            increase(kube_pod_container_status_last_terminated_reason{namespace="aegis-gateway", container="litellm", reason="OOMKilled"}[5m]) > 0
+          labels:
+            severity: critical
+          annotations:
+            summary: "LiteLLM OOMKilled"
+            description: "Pod {{ $labels.pod }} was OOMKilled. Consider increasing memory limit."
+
+        - alert: LiteLLMCPUThrottled
+          expr: |
+            (
+              rate(container_cpu_cfs_throttled_periods_total{namespace="aegis-gateway", container="litellm"}[5m])
+              / rate(container_cpu_cfs_periods_total{namespace="aegis-gateway", container="litellm"}[5m])
+            ) > 0.50
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "LiteLLM CPU throttled >50%"
+            description: "Pod {{ $labels.pod }} throttled {{ $value | humanizePercentage }}."
+
+        - alert: LiteLLMRestarting
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="aegis-gateway", container="litellm"}[1h]) > 3
+          labels:
+            severity: warning
+          annotations:
+            summary: "LiteLLM restarting frequently"
+            description: "Pod {{ $labels.pod }} restarted {{ $value }} times in 1h."
+
+    - name: aegis-gateway-health
+      rules:
+        - alert: LiteLLMDown
+          expr: |
+            absent(up{namespace="aegis-gateway", job=~".*litellm.*"}) or up{namespace="aegis-gateway", job=~".*litellm.*"} == 0
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "LiteLLM gateway is down"
+            description: "No healthy LiteLLM pods for 3 minutes."
+
+        - alert: RedisDown
+          expr: |
+            absent(up{namespace="aegis-gateway", job=~".*redis.*"}) or up{namespace="aegis-gateway", job=~".*redis.*"} == 0
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Redis cache is down"
+            description: "LiteLLM semantic cache unavailable."
