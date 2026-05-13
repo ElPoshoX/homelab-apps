@@ -108,7 +108,8 @@ spec:
           persistentVolumeClaim:
             claimName: meridian-config
         - name: meridian-cache
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: meridian-cache
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -131,3 +132,14 @@ spec:
   resources:
     requests:
       storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: meridian-cache
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 500Mi
