@@ -15,6 +15,7 @@ resources:
   - secret.yaml
   - litellm-config.yaml
   - litellm.yaml
+  - ingress.yaml
   - redis.yaml
   - alerts.yaml
   - network-policy.yaml
