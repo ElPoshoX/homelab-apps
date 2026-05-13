@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: meridian-alerts
+  labels:
+    app.kubernetes.io/name: meridian
+spec:
+  groups:
+    - name: meridian-health
+      rules:
+        - alert: MeridianAuthExpired
+          expr: |
+            probe_http_status_code{namespace="aegis-meridian", job=~".*meridian.*"} == 503
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Meridian auth expired"
+            description: "Claude login expired. Run: kubectl exec -n aegis-meridian deploy/meridian -- claude login"
+
+        - alert: MeridianDown
+          expr: |
+            up{namespace="aegis-meridian", job=~".*meridian.*"} == 0
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Meridian bridge is down"
+            description: "No healthy Meridian pods for 3 minutes."

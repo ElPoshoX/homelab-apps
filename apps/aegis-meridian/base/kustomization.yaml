@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: aegis
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: aegis-meridian
+
+resources:
+  - namespace.yaml
+  - secret.yaml
+  - deployment.yaml
+  - ingress.yaml
+  - alerts.yaml
+  - network-policy.yaml

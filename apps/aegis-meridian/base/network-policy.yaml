@@ -1,0 +1,40 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: meridian-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: meridian
+  ingress:
+    # Cilium Gateway (UI + API)
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "3456"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Anthropic APIs (Claude SDK OAuth + API)
+    - toFQDNs:
+        - matchName: api.anthropic.com
+        - matchName: platform.claude.com
+        - matchName: claude.ai
+        - matchName: statsig.anthropic.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
