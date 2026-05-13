@@ -10,7 +10,7 @@ data:
         litellm_params:
           model: openai/claude-sonnet-4-6
           api_base: http://meridian.aegis-meridian.svc.cluster.local:3456/v1
-          api_key: os.environ/MERIDIAN_API_KEY
+          api_key: "not-needed"
           input_cost_per_token: 0
           output_cost_per_token: 0
 
@@ -18,7 +18,7 @@ data:
         litellm_params:
           model: openai/claude-opus-4-6
           api_base: http://meridian.aegis-meridian.svc.cluster.local:3456/v1
-          api_key: os.environ/MERIDIAN_API_KEY
+          api_key: "not-needed"
           input_cost_per_token: 0
           output_cost_per_token: 0
 
