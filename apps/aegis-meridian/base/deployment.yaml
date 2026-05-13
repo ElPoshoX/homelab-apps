@@ -61,11 +61,6 @@ spec:
               value: "10"
             - name: MERIDIAN_IDLE_TIMEOUT_SECONDS
               value: "120"
-            - name: MERIDIAN_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: meridian-secrets
-                  key: MERIDIAN_API_KEY
           volumeMounts:
             - name: claude-auth
               mountPath: /home/claude/.claude

@@ -9,7 +9,7 @@ data:
       - model_name: claude-sonnet
         litellm_params:
           model: openai/claude-sonnet-4-6
-          api_base: http://meridian.aegis-meridian.svc.cluster.local:8317/v1
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456/v1
           api_key: os.environ/MERIDIAN_API_KEY
           input_cost_per_token: 0
           output_cost_per_token: 0
@@ -17,7 +17,7 @@ data:
       - model_name: claude-opus
         litellm_params:
           model: openai/claude-opus-4-6
-          api_base: http://meridian.aegis-meridian.svc.cluster.local:8317/v1
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456/v1
           api_key: os.environ/MERIDIAN_API_KEY
           input_cost_per_token: 0
           output_cost_per_token: 0
