@@ -18,7 +18,7 @@ helmCharts:
   - name: oneuptime
     repo: https://helm-chart.oneuptime.com
     releaseName: oneuptime
-    version: "10.2.8"
+    version: "10.5.29"
     valuesFile: values.yaml
     namespace: oneuptime
     skipTests: true

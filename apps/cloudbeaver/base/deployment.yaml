@@ -35,7 +35,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: cloudbeaver
-          image: dbeaver/cloudbeaver:26.0.4
+          image: dbeaver/cloudbeaver:26.0.5
           ports:
             - containerPort: 8978
               name: http

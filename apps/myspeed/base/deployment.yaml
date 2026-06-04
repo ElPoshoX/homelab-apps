@@ -24,8 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: myspeed
-        image: germannewsmaker/myspeed:latest
-        imagePullPolicy: Always
+        image: germannewsmaker/myspeed:v1.0.9
         env:
         - name: PUID
           value: "1000"

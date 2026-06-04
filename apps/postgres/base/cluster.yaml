@@ -6,8 +6,12 @@ metadata:
     app.kubernetes.io/name: postgres
     app.kubernetes.io/component: database
 spec:
+  env:
+    - name: AWS_DEFAULT_REGION
+      value: garage
+
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.9
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.10
 
   primaryUpdateStrategy: unsupervised
 
