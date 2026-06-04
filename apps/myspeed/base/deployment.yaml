@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: myspeed
-        image: germannewsmaker/myspeed:v1.0.9
+        image: germannewsmaker/myspeed:1.0.9
         env:
         - name: PUID
           value: "1000"
