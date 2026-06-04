@@ -47,6 +47,7 @@ spec:
       containers:
         - name: meridian
           image: ghcr.io/rynfar/meridian:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3456
               name: http
