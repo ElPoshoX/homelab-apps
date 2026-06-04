@@ -1,7 +1,4 @@
-# Loki Community Helm Chart v13.6.3
-# Monolithic log aggregation for homelab observability stack
-
-deploymentMode: SingleBinary
+deploymentMode: Monolithic
 
 loki:
   auth_enabled: false
@@ -27,18 +24,6 @@ loki:
           prefix: index_
           period: 24h
 
-  ruler:
-    storage:
-      type: s3
-      s3:
-        endpoint: garage.garage.svc.cluster.local:3900
-        bucketnames: loki-ruler
-        access_key_id: ${LOKI_S3_ACCESS_KEY_ID}
-        secret_access_key: ${LOKI_S3_SECRET_ACCESS_KEY}
-        s3forcepathstyle: true
-        insecure: true
-        region: garage
-
   storage:
     type: s3
     bucketNames:
@@ -58,23 +43,8 @@ loki:
     log_level: info
     log_format: json
 
-  podSecurityContext:
-    fsGroup: 10001
-    runAsNonRoot: true
-    runAsUser: 10001
-
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-
 singleBinary:
   replicas: 1
-  extraArgs:
-    - "-config.expand-env"
-    - "true"
   extraEnvFrom:
     - secretRef:
         name: loki-s3-credentials
@@ -82,6 +52,7 @@ singleBinary:
     enabled: true
     storageClass: longhorn
     size: 30Gi
+    # CRITICAL: default is true in 17.x — would delete PVC on scale-down or helm uninstall
     enableStatefulSetAutoDeletePVC: false
   resources:
     requests:
