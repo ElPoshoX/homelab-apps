@@ -70,6 +70,18 @@ config:
     # Convert delta temporality to cumulative (Claude Code sends delta, Mimir requires cumulative)
     deltatocumulative:
 
+    # Normalize Claude Code OTEL labels to match backfilled data schema
+    # OTEL sends type={input,output,cacheRead,cacheCreation}
+    # Backfill uses token_type={input,output,cache_read,cache_create}
+    transform/claude:
+      metric_statements:
+        - context: datapoint
+          statements:
+            - set(attributes["token_type"], attributes["type"]) where attributes["type"] != nil
+            - replace_pattern(attributes["token_type"], "^cacheRead$", "cache_read")
+            - replace_pattern(attributes["token_type"], "^cacheCreation$", "cache_create")
+            - delete_key(attributes, "type") where attributes["token_type"] != nil
+
     # Attributes processor for adding metadata
     attributes:
       actions:
@@ -135,6 +147,7 @@ config:
           - memory_limiter
           - resourcedetection
           - attributes
+          - transform/claude
           - deltatocumulative
           - batch
         exporters:
