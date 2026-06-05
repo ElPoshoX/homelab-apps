@@ -21,6 +21,7 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
+  - dashboard-claude-code-cm.yaml
 
 patches:
   - target:
