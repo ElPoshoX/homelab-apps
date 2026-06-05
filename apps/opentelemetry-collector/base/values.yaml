@@ -7,7 +7,6 @@ mode: daemonset
 # Image configuration
 image:
   repository: otel/opentelemetry-collector-k8s
-  tag: latest
   pullPolicy: IfNotPresent
 
 # DaemonSet specific settings
@@ -38,13 +37,9 @@ config:
               - targets:
                   - localhost:8888
 
-    # Kubelet metrics receiver (part of hostMetrics)
+    # Kubelet metrics receiver — preset handles endpoint/auth via K8S_NODE_IP
     kubeletstats:
       collection_interval: 30s
-      endpoint: https://kubelet:10250
-      auth_type: serviceAccount
-      insecure_skip_verify: true
-      # Disable deprecated resource attributes
       resource_attributes:
         aws.volume.id:
           enabled: false
@@ -59,19 +54,6 @@ config:
         partition:
           enabled: false
 
-    # Host metrics receiver
-    hostmetrics:
-      collection_interval: 30s
-      scrapers:
-        cpu: {}
-        disk: {}
-        filesystem: {}
-        load: {}
-        memory: {}
-        network: {}
-        paging: {}
-        processes: {}
-
   # Processors - process telemetry data
   processors:
     # Batch processor for better throughput
@@ -82,8 +64,8 @@ config:
     # Memory limiter to prevent out-of-memory
     memory_limiter:
       check_interval: 1s
-      limit_mib: 512
-      spike_limit_mib: 128
+      limit_mib: 400
+      spike_limit_mib: 100
 
     # Attributes processor for adding metadata
     attributes:
@@ -123,7 +105,7 @@ config:
 
     # Debug exporter (replaces deprecated logging exporter)
     debug:
-      verbosity: detailed
+      verbosity: basic
 
   # Service - defines which processors and exporters are active
   service:
@@ -134,25 +116,23 @@ config:
           - otlp
         processors:
           - memory_limiter
-          - batch
           - resourcedetection
           - attributes
+          - batch
         exporters:
           - otlp
           - debug
 
-      # Metrics pipeline
+      # Metrics pipeline — hostmetrics/kubeletstats added by presets
       metrics:
         receivers:
           - otlp
           - prometheus
-          - hostmetrics
-          - kubeletstats
         processors:
           - memory_limiter
-          - batch
           - resourcedetection
           - attributes
+          - batch
         exporters:
           - otlphttp/mimir
           - debug
@@ -163,9 +143,9 @@ config:
           - otlp
         processors:
           - memory_limiter
-          - batch
           - resourcedetection
           - attributes
+          - batch
         exporters:
           - otlphttp/loki
           - debug
@@ -173,11 +153,11 @@ config:
 # Resource requests and limits
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
     cpu: 200m
     memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
 
 # Pod Security Context
 podSecurityContext:

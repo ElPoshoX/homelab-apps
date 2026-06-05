@@ -131,6 +131,7 @@ datasources:
     datasources:
       # Prometheus (Metrics)
       - name: Prometheus
+        uid: prometheus
         type: prometheus
         url: http://monitoring-prometheus.monitoring.svc.cluster.local:9090
         isDefault: true
@@ -140,6 +141,7 @@ datasources:
           timeInterval: 15s
       # Loki (Logs)
       - name: Loki
+        uid: loki
         type: loki
         url: http://loki.loki.svc.cluster.local:3100
         access: proxy
@@ -156,6 +158,7 @@ datasources:
           handleGrafanaManagedAlerts: true
       # Mimir (OTLP Metrics) — Prometheus-compatible API
       - name: Mimir
+        uid: mimir
         type: prometheus
         url: http://mimir-gateway.mimir.svc.cluster.local/prometheus
         access: proxy
@@ -164,6 +167,7 @@ datasources:
           timeInterval: 15s
       # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
+        uid: tempo
         type: tempo
         url: http://tempo.tempo.svc.cluster.local:3200
         access: proxy
@@ -171,11 +175,11 @@ datasources:
         jsonData:
           httpMethod: GET
           tracesToMetrics:
-            datasourceUid: 'prometheus'
+            datasourceUid: prometheus
           tracesToLogsV2:
-            datasourceUid: 'loki'
+            datasourceUid: loki
           serviceMap:
-            datasourceUid: 'prometheus'
+            datasourceUid: prometheus
 
 # Resource requests and limits
 resources:
