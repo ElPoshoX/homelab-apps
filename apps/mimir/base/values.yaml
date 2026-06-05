@@ -37,6 +37,9 @@ mimir:
     ingest_storage:
       enabled: false
 
+    limits:
+      out_of_order_time_window: 60d
+
     ingester:
       push_grpc_method_enabled: true
 
