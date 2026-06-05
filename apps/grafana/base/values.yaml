@@ -128,6 +128,17 @@ dashboards:
 datasources:
   datasources.yaml:
     apiVersion: 1
+    deleteDatasources:
+      - name: Prometheus
+        orgId: 1
+      - name: Loki
+        orgId: 1
+      - name: alertmanager
+        orgId: 1
+      - name: Mimir
+        orgId: 1
+      - name: Tempo
+        orgId: 1
     datasources:
       # Prometheus (Metrics)
       - name: Prometheus
