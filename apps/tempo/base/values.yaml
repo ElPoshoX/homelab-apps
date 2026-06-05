@@ -35,9 +35,21 @@ tempo:
 
   metricsGenerator:
     enabled: true
-    remoteWriteUrl: "http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
-    processor: {}
-    registry: {}
+    remoteWriteUrl: "http://mimir-gateway.mimir.svc.cluster.local/api/v1/push"
+    processor:
+      span_metrics:
+        dimensions:
+          - model
+          - tool_name
+          - success
+          - span.type
+        enable_target_info: true
+      local_blocks:
+        filter_server_spans: false
+    registry:
+      external_labels:
+        source: tempo
+        cluster: homelab
     storage:
       path: "/var/tempo/metrics"
       remote_write: []
