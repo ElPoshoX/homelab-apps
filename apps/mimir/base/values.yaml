@@ -38,8 +38,8 @@ mimir:
       enabled: false
 
     limits:
-      out_of_order_time_window: 60d
-      creation_grace_period: 90d
+      out_of_order_time_window: 1h
+      creation_grace_period: 10m
       compactor_block_upload_enabled: true
       max_query_lookback: 90d
 
