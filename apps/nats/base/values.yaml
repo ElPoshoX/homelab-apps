@@ -1,5 +1,14 @@
 # NATS Helm Chart v2.12.6
 
+container:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 50m
+      memory: 64Mi
+
 config:
   cluster:
     enabled: false

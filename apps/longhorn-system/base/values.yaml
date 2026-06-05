@@ -33,6 +33,13 @@ longhornManager:
   priorityClass: longhorn-critical
   tolerations: []
   nodeSelector: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
 
 # Longhorn UI
 longhornUI:

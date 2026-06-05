@@ -29,6 +29,13 @@ spec:
       containers:
       - name: adguard-home
         image: adguard/adguardhome:v0.107.77
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
         ports:
         - containerPort: 53
           name: dns
