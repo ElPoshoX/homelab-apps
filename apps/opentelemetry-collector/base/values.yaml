@@ -67,6 +67,9 @@ config:
       limit_mib: 400
       spike_limit_mib: 100
 
+    # Convert delta temporality to cumulative (Claude Code sends delta, Mimir requires cumulative)
+    deltatocumulative:
+
     # Attributes processor for adding metadata
     attributes:
       actions:
@@ -132,6 +135,7 @@ config:
           - memory_limiter
           - resourcedetection
           - attributes
+          - deltatocumulative
           - batch
         exporters:
           - otlphttp/mimir
