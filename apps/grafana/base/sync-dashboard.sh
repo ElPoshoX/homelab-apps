@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GRAFANA_URL="${GRAFANA_URL:-http://grafana.elposhox.dev}"
+GRAFANA_URL="${GRAFANA_URL:-https://grafana.elposhox.dev}"
 DASHBOARD_UID="adqvb4t"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 JSON_FILE="${SCRIPT_DIR}/dashboards/claude-code.json"
