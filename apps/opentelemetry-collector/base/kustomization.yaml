@@ -25,6 +25,7 @@ helmCharts:
 # Additional Kubernetes resources
 resources:
   - namespace.yaml
+  - ingress.yaml
 
 patches:
   - target:

@@ -154,6 +154,14 @@ datasources:
         jsonData:
           implementation: prometheus
           handleGrafanaManagedAlerts: true
+      # Mimir (OTLP Metrics) — Prometheus-compatible API
+      - name: Mimir
+        type: prometheus
+        url: http://mimir-gateway.mimir.svc.cluster.local/prometheus
+        access: proxy
+        editable: true
+        jsonData:
+          timeInterval: 15s
       # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
         type: tempo
