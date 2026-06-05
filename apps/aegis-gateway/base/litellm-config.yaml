@@ -56,7 +56,7 @@ data:
       - model_name: qwen3-235b
         litellm_params:
           model: openai/qwen3-235b-a22b
-          api_base: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+          api_base: https://dashscope-us.aliyuncs.com/compatible-mode/v1
           api_key: os.environ/QWEN_API_KEY
           input_cost_per_token: 0.0000002
           output_cost_per_token: 0.000001
@@ -64,7 +64,7 @@ data:
       # ── Gemini 2.5 Flash-Lite (fallback, last resort) ───────
       - model_name: gemini-flash-lite
         litellm_params:
-          model: gemini/gemini-2.5-flash-lite-preview-06-17
+          model: gemini/gemini-2.5-flash-lite
           api_key: os.environ/GEMINI_API_KEY
           input_cost_per_token: 0.0000001
           output_cost_per_token: 0.0000003

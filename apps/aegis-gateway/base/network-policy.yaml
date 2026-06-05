@@ -68,7 +68,7 @@ spec:
     # External LLM APIs — FQDN locked, HTTPS only
     - toFQDNs:
         - matchName: api.deepseek.com
-        - matchName: dashscope-intl.aliyuncs.com
+        - matchName: dashscope-us.aliyuncs.com
         - matchName: generativelanguage.googleapis.com
         - matchName: api.anthropic.com
         - matchName: raw.githubusercontent.com
