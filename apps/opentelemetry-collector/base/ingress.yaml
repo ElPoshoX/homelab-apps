@@ -19,6 +19,6 @@ spec:
       backendRefs:
         - group: ''
           kind: Service
-          name: opentelemetry-collector-agent
+          name: opentelemetry-collector
           port: 4318
           weight: 1
