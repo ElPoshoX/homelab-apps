@@ -39,6 +39,7 @@ mimir:
 
     limits:
       out_of_order_time_window: 60d
+      creation_grace_period: 90d
 
     ingester:
       push_grpc_method_enabled: true
