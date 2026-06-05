@@ -41,12 +41,21 @@ mimir:
       out_of_order_time_window: 60d
       creation_grace_period: 90d
       compactor_block_upload_enabled: true
+      max_query_lookback: 90d
+
+    frontend:
+      query_stats_enabled: true
+
+    querier:
+      timeout: 5m
 
     ingester:
       push_grpc_method_enabled: true
 
     server:
       http_listen_port: 8009
+      http_server_read_timeout: 5m
+      http_server_write_timeout: 5m
       log_level: info
 
     blocks_storage:

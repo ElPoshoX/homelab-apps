@@ -176,6 +176,7 @@ datasources:
         editable: true
         jsonData:
           timeInterval: 15s
+          timeout: 300
       # Tempo (Traces) — httpMethod: GET and no gRPC; port 3200 speaks HTTP/1.1
       - name: Tempo
         uid: tempo
