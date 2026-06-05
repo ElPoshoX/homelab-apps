@@ -64,7 +64,11 @@ tempo:
   retention: 168h
 
   overrides:
-    defaults: {}
+    defaults:
+      metrics_generator:
+        processors:
+          - span-metrics
+          - local-blocks
     per_tenant_override_config: /conf/overrides.yaml
   per_tenant_overrides: {}
 
