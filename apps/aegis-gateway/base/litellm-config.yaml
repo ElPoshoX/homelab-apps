@@ -52,20 +52,22 @@ data:
           input_cost_per_token: 0.00000014
           output_cost_per_token: 0.00000028
 
-      # ── Kimi K2.6 ───────────────────────────────────────────
-      - model_name: kimi-k2.6
+      # ── Qwen3-235B (mid tier: coding, blog, PoC, review) ────
+      - model_name: qwen3-235b
         litellm_params:
-          model: openai/moonshot-v1-auto
-          api_base: https://api.moonshot.cn/v1
-          api_key: os.environ/KIMI_API_KEY
-          input_cost_per_token: 0.00000075
-          output_cost_per_token: 0.0000035
+          model: openai/qwen3-235b-a22b
+          api_base: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+          api_key: os.environ/QWEN_API_KEY
+          input_cost_per_token: 0.0000002
+          output_cost_per_token: 0.000001
 
-      # ── OpenRouter fallback (last resort) ────────────────────
-      - model_name: openrouter-fallback
+      # ── Gemini 2.5 Flash-Lite (fallback, last resort) ───────
+      - model_name: gemini-flash-lite
         litellm_params:
-          model: openrouter/anthropic/claude-sonnet-4-6
-          api_key: os.environ/OPENROUTER_API_KEY
+          model: gemini/gemini-2.5-flash-lite-preview-06-17
+          api_key: os.environ/GEMINI_API_KEY
+          input_cost_per_token: 0.0000001
+          output_cost_per_token: 0.0000003
 
     litellm_settings:
       drop_params: true
@@ -83,8 +85,11 @@ data:
       num_retries: 3
       request_timeout: 120
       fallbacks:
-        - claude-sonnet: [claude-sonnet-api, openrouter-fallback]
-        - claude-opus: [claude-sonnet-api, openrouter-fallback]
+        - claude-sonnet: [claude-sonnet-api, gemini-flash-lite]
+        - claude-opus: [claude-sonnet-api, gemini-flash-lite]
+        - deepseek-v4-pro: [qwen3-235b, gemini-flash-lite]
+        - deepseek-v4-flash: [qwen3-235b, gemini-flash-lite]
+        - qwen3-235b: [deepseek-v4-flash, gemini-flash-lite]
 
     router_settings:
       routing_strategy: "usage-based-routing-v2"
