@@ -185,6 +185,8 @@ datasources:
         editable: true
         jsonData:
           httpMethod: GET
+          streamingEnabled:
+            search: false
           tracesToMetrics:
             datasourceUid: prometheus
           tracesToLogsV2:
