@@ -20,5 +20,5 @@ spec:
         - group: ''
           kind: Service
           name: tempo
-          port: 16686
+          port: 3200
           weight: 1

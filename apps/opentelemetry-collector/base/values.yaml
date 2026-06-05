@@ -105,13 +105,13 @@ config:
   exporters:
     # OTLP exporter to Tempo (traces)
     otlp:
-      endpoint: tempo:4317
+      endpoint: tempo.tempo.svc.cluster.local:4317
       tls:
         insecure: true
 
     # OTLP HTTP exporter to Mimir (metrics)
     otlphttp/mimir:
-      endpoint: http://mimir.mimir.svc.cluster.local:9009/otlp
+      endpoint: http://mimir-gateway.mimir.svc.cluster.local/otlp
       tls:
         insecure: true
 
