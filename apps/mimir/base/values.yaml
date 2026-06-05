@@ -40,6 +40,9 @@ mimir:
     limits:
       out_of_order_time_window: 60d
 
+    compactor:
+      deletion_enabled: true
+
     ingester:
       push_grpc_method_enabled: true
 
