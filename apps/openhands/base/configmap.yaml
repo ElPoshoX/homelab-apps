@@ -6,9 +6,9 @@ metadata:
 data:
   config.toml: |
     [core]
-    # DinD sidecar provides Docker daemon — agent code runs in isolated
-    # Docker containers via tcp://localhost:2376
-    runtime = "docker"
+    # ProcessSandboxService (RUNTIME=local) spawns agent-server subprocess,
+    # which uses K8s runtime to execute agent code in isolated pods.
+    runtime = "kubernetes"
     workspace_base = "/opt/workspace_base"
     file_store = "local"
     file_store_path = "/.openhands"
