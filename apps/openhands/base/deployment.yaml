@@ -39,6 +39,8 @@ spec:
               sed -i 's/status == psutil.STATUS_RUNNING/status in (psutil.STATUS_RUNNING, psutil.STATUS_SLEEPING)/' "$F"
               # Patch 2: exposed URL uses external base URL instead of localhost
               sed -i "s|url=f'http://localhost:{process_info.port}',|url=os.environ.get('OH_AGENT_BASE_URL', f'http://localhost:{process_info.port}'),|" "$F"
+              # Patch 3: create /workspace with git init (agent-server expects it)
+              mkdir -p /workspace && cd /workspace && git init -q && git config user.email "openhands@localhost" && git config user.name "OpenHands" && git commit -q --allow-empty -m "init" 2>/dev/null; cd /app
               exec /app/entrypoint.sh uvicorn openhands.server.listen:app --host 0.0.0.0 --port 3000
           securityContext:
             runAsUser: 0
