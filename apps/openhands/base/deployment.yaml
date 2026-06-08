@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openhands
+  namespace: openhands
+  labels:
+    app: openhands
+    app.kubernetes.io/name: openhands
+    app.kubernetes.io/instance: openhands
+    app.kubernetes.io/component: server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: openhands
+  template:
+    metadata:
+      labels:
+        app: openhands
+        app.kubernetes.io/name: openhands
+        app.kubernetes.io/component: server
+    spec:
+      serviceAccountName: openhands
+      automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 0
+      containers:
+        - name: openhands
+          image: docker.openhands.dev/openhands/openhands:1.7
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE"]
+          env:
+            - name: SANDBOX_USER_ID
+              value: "0"
+            - name: AGENT_SERVER_IMAGE_REPOSITORY
+              value: ghcr.io/openhands/agent-server
+            - name: AGENT_SERVER_IMAGE_TAG
+              value: 1.19.1-python
+            - name: LOG_ALL_EVENTS
+              value: "true"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: openhands-secrets
+                  key: jwt-secret
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 20
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: data
+              mountPath: /.openhands
+            - name: config
+              mountPath: /app/config.toml
+              subPath: config.toml
+              readOnly: true
+            - name: workspace
+              mountPath: /opt/workspace_base
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: openhands-data
+        - name: config
+          configMap:
+            name: openhands-config
+        - name: workspace
+          emptyDir:
+            sizeLimit: 2Gi

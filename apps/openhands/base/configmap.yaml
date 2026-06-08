@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openhands-config
+  namespace: openhands
+data:
+  config.toml: |
+    [core]
+    runtime = "kubernetes"
+    workspace_base = "/opt/workspace_base"
+    file_store = "local"
+    file_store_path = "/.openhands"
+    max_iterations = 500
+    max_budget_per_task = 5.0
+    max_concurrent_conversations = 3
+    enable_default_condenser = true
+
+    [sandbox]
+    use_host_network = false
+    base_container_image = "nikolaik/python-nodejs:python3.12-nodejs22-slim"
+    timeout = 120
+    keep_runtime_alive = false
+    close_delay = 300
+
+    [kubernetes]
+    namespace = "openhands"
+    pvc_storage_size = "2Gi"
+    pvc_storage_class = "longhorn"
+    resource_cpu_request = "1"
+    resource_memory_request = "1Gi"
+    resource_memory_limit = "2Gi"
+    privileged = false
+
+    # ────────────────────────────────────────────────────────────
+    # LLM: configured via web UI on first launch (Settings > LLM)
+    #
+    # To switch to LiteLLM gateway (aegis-gateway) later:
+    # 1. Uncomment the [llm] section below
+    # 2. Set the base_url to the LiteLLM service endpoint
+    # 3. Create a SopsSecret with the LiteLLM API key
+    # 4. Inject LITELLM_API_KEY env var in deployment.yaml
+    #
+    # [llm]
+    # model = "anthropic/claude-sonnet-4-20250514"
+    # base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000"
+    # api_key_env = "LITELLM_API_KEY"
+    # ────────────────────────────────────────────────────────────

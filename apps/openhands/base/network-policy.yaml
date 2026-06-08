@@ -1,0 +1,112 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: openhands-server-policy
+  namespace: openhands
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: openhands
+      app.kubernetes.io/component: server
+  ingress:
+    # Cilium Gateway (UI + WebSocket)
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Kubernetes API server (for creating agent pods)
+    - toEntities:
+        - kube-apiserver
+    # Agent runtime pods (same namespace, dynamic)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: openhands
+    # LLM provider APIs
+    - toFQDNs:
+        - matchName: api.anthropic.com
+        - matchName: api.openai.com
+        - matchName: generativelanguage.googleapis.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # Container registries (agent-server image pull)
+    - toFQDNs:
+        - matchName: ghcr.io
+        - matchName: pkg-containers.githubusercontent.com
+        - matchName: docker.openhands.dev
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # GitHub (repo operations)
+    - toFQDNs:
+        - matchName: github.com
+        - matchName: api.github.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+---
+# Agent runtime pods spawned dynamically by OpenHands K8s runtime.
+# Selects all pods in namespace that are NOT the server component.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: openhands-agent-policy
+  namespace: openhands
+spec:
+  endpointSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/component
+        operator: NotIn
+        values: ["server"]
+  ingress:
+    # Allow server to reach agent pods
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: openhands
+            app.kubernetes.io/component: server
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Internet (package installs, git clone, pip, npm, etc.)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
+    # Back to server
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: openhands
+            app.kubernetes.io/component: server
