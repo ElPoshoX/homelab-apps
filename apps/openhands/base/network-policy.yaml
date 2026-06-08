@@ -9,13 +9,15 @@ spec:
       app.kubernetes.io/name: openhands
       app.kubernetes.io/component: server
   ingress:
-    # Cilium Gateway (UI + WebSocket)
+    # Cilium Gateway (UI + WebSocket + agent-server)
     - fromEntities:
         - world
         - cluster
       toPorts:
         - ports:
             - port: "3000"
+              protocol: TCP
+            - port: "8000"
               protocol: TCP
   egress:
     # DNS

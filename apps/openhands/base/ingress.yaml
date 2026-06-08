@@ -12,13 +12,57 @@ spec:
   hostnames:
     - openhands.elposhox.dev
   rules:
+    # App server API (most specific prefix wins over /api)
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1
+      backendRefs:
+        - kind: Service
+          name: openhands
+          port: 3000
+    # Agent-server API (conversations, git, files, etc.)
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - kind: Service
+          name: openhands
+          port: 8000
+    # Agent-server Socket.IO (WebSocket for real-time events)
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /socket.io
+      backendRefs:
+        - kind: Service
+          name: openhands
+          port: 8000
+    # Agent-server health/status
+    - matches:
+        - path:
+            type: Exact
+            value: /alive
+        - path:
+            type: Exact
+            value: /health
+        - path:
+            type: Exact
+            value: /ready
+        - path:
+            type: Exact
+            value: /server_info
+      backendRefs:
+        - kind: Service
+          name: openhands
+          port: 8000
+    # Frontend SPA + catch-all
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - group: ""
-          kind: Service
+        - kind: Service
           name: openhands
           port: 3000
-          weight: 1

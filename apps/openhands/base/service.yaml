@@ -11,3 +11,7 @@ spec:
       port: 3000
       targetPort: http
       protocol: TCP
+    - name: agent
+      port: 8000
+      targetPort: 8000
+      protocol: TCP

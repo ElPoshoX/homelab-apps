@@ -34,8 +34,11 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
             - |
-              sed -i 's/status == psutil.STATUS_RUNNING/status in (psutil.STATUS_RUNNING, psutil.STATUS_SLEEPING)/' \
-                /app/openhands/app_server/sandbox/process_sandbox_service.py
+              F=/app/openhands/app_server/sandbox/process_sandbox_service.py
+              # Patch 1: psutil sleeping status mapped to RUNNING (upstream bug)
+              sed -i 's/status == psutil.STATUS_RUNNING/status in (psutil.STATUS_RUNNING, psutil.STATUS_SLEEPING)/' "$F"
+              # Patch 2: exposed URL uses external base URL instead of localhost
+              sed -i "s|url=f'http://localhost:{process_info.port}',|url=os.environ.get('OH_AGENT_BASE_URL', f'http://localhost:{process_info.port}'),|" "$F"
               exec /app/entrypoint.sh uvicorn openhands.server.listen:app --host 0.0.0.0 --port 3000
           securityContext:
             runAsUser: 0
@@ -53,6 +56,10 @@ spec:
               value: 1.19.1-python
             - name: LOG_ALL_EVENTS
               value: "true"
+            - name: OH_AGENT_BASE_URL
+              value: https://openhands.elposhox.dev
+            - name: OPENHANDS_SUPPRESS_BANNER
+              value: "1"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
