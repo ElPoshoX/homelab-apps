@@ -6,10 +6,9 @@ metadata:
 data:
   config.toml: |
     [core]
-    # Agent code executes in isolated K8s pods (not in this container).
-    # RUNTIME=local env var is separate — it controls the GUI server's
-    # sandbox management service (avoids Docker socket dependency).
-    runtime = "kubernetes"
+    # DinD sidecar provides Docker daemon — agent code runs in isolated
+    # Docker containers via tcp://localhost:2376
+    runtime = "docker"
     workspace_base = "/opt/workspace_base"
     file_store = "local"
     file_store_path = "/.openhands"
