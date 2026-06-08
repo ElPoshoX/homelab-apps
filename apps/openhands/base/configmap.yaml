@@ -6,10 +6,10 @@ metadata:
 data:
   config.toml: |
     [core]
-    # RUNTIME=local env var overrides this — agent code runs in-process
-    # (no Docker/K8s sandbox). Acceptable for single-user homelab.
-    # For isolation, add a DinD sidecar and remove RUNTIME=local from deployment.
-    runtime = "local"
+    # Agent code executes in isolated K8s pods (not in this container).
+    # RUNTIME=local env var is separate — it controls the GUI server's
+    # sandbox management service (avoids Docker socket dependency).
+    runtime = "kubernetes"
     workspace_base = "/opt/workspace_base"
     file_store = "local"
     file_store_path = "/.openhands"
