@@ -36,6 +36,8 @@ spec:
             capabilities:
               drop: ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE"]
           env:
+            - name: RUNTIME
+              value: local
             - name: SANDBOX_USER_ID
               value: "0"
             - name: AGENT_SERVER_IMAGE_REPOSITORY
