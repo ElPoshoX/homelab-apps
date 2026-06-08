@@ -30,6 +30,13 @@ spec:
       containers:
         - name: openhands
           image: docker.openhands.dev/openhands/openhands:1.7
+          # Patch upstream bug: psutil sleeping status incorrectly mapped to STARTING
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              sed -i 's/status == psutil.STATUS_RUNNING/status in (psutil.STATUS_RUNNING, psutil.STATUS_SLEEPING)/' \
+                /app/openhands/app_server/sandbox/process_sandbox_service.py
+              exec /app/entrypoint.sh uvicorn openhands.server.listen:app --host 0.0.0.0 --port 3000
           securityContext:
             runAsUser: 0
             allowPrivilegeEscalation: false
