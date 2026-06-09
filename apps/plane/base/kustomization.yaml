@@ -24,6 +24,7 @@ resources:
   - secret.yaml
   - httproute.yaml
   - network-policy.yaml
+  - reference-grant.yaml
 
 patches:
   - target:

@@ -55,6 +55,15 @@ spec:
     - matches:
         - path:
             type: PathPrefix
+            value: /plane-uploads
+      backendRefs:
+        - kind: Service
+          name: garage
+          namespace: garage
+          port: 3900
+    - matches:
+        - path:
+            type: PathPrefix
             value: /
       backendRefs:
         - kind: Service
