@@ -1,0 +1,79 @@
+postgresql:
+  enabled: false
+
+persistence:
+  enabled: false
+
+database:
+  url: ""
+  postgres:
+    host: "postgres-rw.postgres.svc.cluster.local"
+    port: 5432
+    user: "litellm"
+    password: "placeholder-overridden-by-secret"
+    db: "phoenix"
+
+server:
+  port: 6006
+  grpcPort: 4317
+  host: "::"
+  enablePrometheus: true
+  telemetryEnabled: false
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+
+auth:
+  enableAuth: true
+  createSecret: true
+  name: "phoenix-secret"
+  secret:
+    - key: "PHOENIX_SECRET"
+      value: ""
+    - key: "PHOENIX_ADMIN_SECRET"
+      value: ""
+    - key: "PHOENIX_POSTGRES_PASSWORD"
+      value: "iszrcHLQWOik6uEkBqO3OcoNzHY12f"
+    - key: "PHOENIX_SMTP_PASSWORD"
+      value: ""
+    - key: "PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD"
+      value: ""
+
+smtp:
+  hostname: ""
+
+logging:
+  level: "info"
+  mode: "structured"
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+securityContext:
+  pod:
+    enabled: true
+    fsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    seccompProfile:
+      type: RuntimeDefault
+  container:
+    enabled: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    seccompProfile:
+      type: RuntimeDefault

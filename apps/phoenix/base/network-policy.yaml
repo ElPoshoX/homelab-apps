@@ -1,28 +1,30 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: langfuse-ingress
+  name: phoenix-ingress
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: langfuse
+      app.kubernetes.io/name: phoenix
   ingress:
     - fromEntities:
         - world
         - cluster
       toPorts:
         - ports:
-            - port: "3000"
+            - port: "6006"
+              protocol: TCP
+            - port: "4317"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: langfuse-egress
+  name: phoenix-egress
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: langfuse
+      app.kubernetes.io/name: phoenix
   egress:
     - toEndpoints:
         - matchLabels:

@@ -37,7 +37,7 @@ spec:
       secret:
         name: postgres-credentials
       postInitApplicationSQL:
-        - CREATE DATABASE langfuse OWNER litellm
+        - CREATE DATABASE phoenix OWNER litellm
         - CREATE DATABASE langgraph OWNER litellm
 
   storage:
