@@ -44,6 +44,7 @@ spec:
         - matchName: api.anthropic.com
         - matchName: api.openai.com
         - matchName: generativelanguage.googleapis.com
+        - matchName: llm-proxy.app.all-hands.dev
       toPorts:
         - ports:
             - port: "443"
