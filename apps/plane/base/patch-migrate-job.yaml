@@ -5,6 +5,7 @@ metadata:
   namespace: plane
   annotations:
     argocd.argoproj.io/sync-options: Replace=true
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 spec:
   template:
     metadata:
