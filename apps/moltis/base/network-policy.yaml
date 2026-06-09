@@ -1,0 +1,56 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: moltis-ingress
+spec:
+  endpointSelector:
+    matchLabels:
+      app: moltis
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "13131"
+              protocol: TCP
+            - port: "13132"
+              protocol: TCP
+            - port: "1455"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: moltis-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      app: moltis
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+
+    # LLM providers, messaging, web, MCP, package registries — broad egress
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
+
+    # Internal cluster services (OTel collector, TrueNAS, etc.)
+    - toEntities:
+        - cluster

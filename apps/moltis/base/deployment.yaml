@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moltis
+  labels:
+    app: moltis
+    app.kubernetes.io/name: moltis
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: moltis
+  template:
+    metadata:
+      labels:
+        app: moltis
+        app.kubernetes.io/name: moltis
+    spec:
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: moltis-config
+              mountPath: /home/moltis/.config/moltis
+            - name: moltis-data
+              mountPath: /home/moltis/.moltis
+      containers:
+        - name: moltis
+          image: ghcr.io/moltis-org/moltis:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 13131
+              name: gateway
+            - containerPort: 13132
+              name: http-ca
+            - containerPort: 1455
+              name: oauth
+          env:
+            - name: MOLTIS_NO_TLS
+              value: "true"
+            - name: MOLTIS_BEHIND_PROXY
+              value: "true"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
+            - name: OTEL_SERVICE_NAME
+              value: "moltis"
+            - name: MOLTIS_VAULT_AUTO_UNSEAL_KEY_FILE
+              value: /run/secrets/recovery-key
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker.sock
+          envFrom:
+            - secretRef:
+                name: moltis-bootstrap
+          volumeMounts:
+            - name: moltis-config
+              mountPath: /home/moltis/.config/moltis
+            - name: moltis-data
+              mountPath: /home/moltis/.moltis
+            - name: moltis-toml
+              mountPath: /home/moltis/.config/moltis/moltis.toml
+              subPath: moltis.toml
+            - name: vault-recovery
+              mountPath: /run/secrets
+              readOnly: true
+            - name: docker-socket
+              mountPath: /var/run
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          startupProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+        - name: dind
+          image: docker:27-dind
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          volumeMounts:
+            - name: dind-storage
+              mountPath: /var/lib/docker
+            - name: docker-socket
+              mountPath: /var/run
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: moltis-config
+          persistentVolumeClaim:
+            claimName: moltis-config
+        - name: moltis-data
+          persistentVolumeClaim:
+            claimName: moltis-data
+        - name: moltis-toml
+          configMap:
+            name: moltis-config
+        - name: vault-recovery
+          secret:
+            secretName: moltis-vault-recovery-key
+            items:
+              - key: recovery-key
+                path: recovery-key
+        - name: docker-socket
+          emptyDir: {}
+        - name: dind-storage
+          emptyDir:
+            sizeLimit: 10Gi
