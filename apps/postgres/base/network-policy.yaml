@@ -46,6 +46,15 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
+    # Phoenix (LLM observability)
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: phoenix
+            app.kubernetes.io/name: phoenix
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
   egress:
     # DNS
     - toEndpoints:
