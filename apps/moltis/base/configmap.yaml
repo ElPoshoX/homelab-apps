@@ -11,6 +11,19 @@ data:
     [telemetry]
     otlp_endpoint = "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
 
+    # ── LLM Provider ──────────────────────────────────────────────
+
+    [providers]
+    offered = ["custom-litellm"]
+
+    [providers.custom-litellm]
+    enabled = true
+    base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000/v1"
+    models = ["claude-haiku", "claude-sonnet", "claude-opus-4-7", "claude-opus-4-6", "deepseek-v4-pro", "deepseek-v4-flash", "gemini-flash-lite"]
+    fetch_models = true
+    stream_transport = "sse"
+    wire_api = "chat-completions"
+
     # ── Agent Presets ──────────────────────────────────────────────
 
     [agents.presets.de-job-hunter]
