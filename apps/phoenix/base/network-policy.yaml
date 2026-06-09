@@ -5,7 +5,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: phoenix
+      app: phoenix
   ingress:
     - fromEntities:
         - world
@@ -24,7 +24,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: phoenix
+      app: phoenix
   egress:
     - toEndpoints:
         - matchLabels:
