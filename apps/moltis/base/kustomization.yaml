@@ -14,6 +14,8 @@ resources:
   - namespace.yaml
   - storageclass.yaml
   - configmap.yaml
+  - agents-configmap.yaml
+  - hooks-configmap.yaml
   - secret.yaml
   - vault-recovery-secret.yaml
   - pvc.yaml

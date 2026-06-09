@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: moltis-hooks
+data:
+  exec-guard.sh: |
+    #!/bin/bash
+    payload=$(cat)
+    tool=$(printf '%s' "$payload" | jq -r '.tool // ""')
+
+    if [ "$tool" != "exec" ]; then
+      exit 0
+    fi
+
+    command=$(printf '%s' "$payload" | jq -r '.arguments.command // ""')
+
+    if printf '%s' "$command" | grep -qiE 'rm\s+(-[a-zA-Z]*r[a-zA-Z]*\s+|--recursive).*\/|chmod\s+(777|a\+rwx)|mkfs[\s.]|dd\s+if=|:\(\)\s*\{|>\s*/dev/sd|find\s+/.*-delete|curl\s.*\|\s*(ba)?sh|wget\s.*\|\s*(ba)?sh|python[3]?\s+-c.*os\.(remove|system|exec)'; then
+      printf 'Blocked: dangerous command detected\n' >&2
+      exit 1
+    fi
+
+    exit 0
+
+  audit-log.sh: |
+    #!/bin/bash
+    payload=$(cat)
+    log_dir="/home/moltis/.moltis/logs"
+    [ -d "$log_dir" ] || mkdir -p "$log_dir"
+
+    printf '%s' "$payload" | jq -c --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+      ts: $ts,
+      agent: (.preset // .agent // "unknown"),
+      tool: (.tool // "unknown"),
+      event: (.event // "unknown"),
+      args: ((.arguments // {}) | tostring | .[:1024] | fromjson? // .)
+    }' >> "$log_dir/audit.jsonl" 2>/dev/null
+    exit 0
+
+  trajectory-logger.sh: |
+    #!/bin/bash
+    payload=$(cat)
+    log_dir="/home/moltis/.moltis/logs"
+    [ -d "$log_dir" ] || mkdir -p "$log_dir"
+
+    event=$(printf '%s' "$payload" | jq -r '.event // "unknown"')
+
+    case "$event" in
+      AfterLLMCall)
+        printf '%s' "$payload" | jq -c --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+          ts: $ts,
+          event: "llm_call",
+          agent: (.preset // .agent // "unknown"),
+          model: (.model // "unknown"),
+          input_tokens: (.usage.input_tokens // 0),
+          output_tokens: (.usage.output_tokens // 0)
+        }' >> "$log_dir/trajectories.jsonl" 2>/dev/null
+        ;;
+      AfterToolCall)
+        printf '%s' "$payload" | jq -c --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+          ts: $ts,
+          event: "tool_call",
+          agent: (.preset // .agent // "unknown"),
+          tool: (.tool // "unknown"),
+          result: ((.result // {}) | tostring | .[:2048] | fromjson? // .)
+        }' >> "$log_dir/trajectories.jsonl" 2>/dev/null
+        ;;
+      SessionEnd)
+        printf '%s' "$payload" | jq -c --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+          ts: $ts,
+          event: "session_end",
+          agent: (.preset // .agent // "unknown"),
+          duration_secs: (.duration_secs // 0),
+          tool_calls: (.total_tool_calls // 0),
+          llm_calls: (.total_llm_calls // 0),
+          status: (.status // "unknown")
+        }' >> "$log_dir/trajectories.jsonl" 2>/dev/null
+        ;;
+    esac
+    exit 0

@@ -23,7 +23,17 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "cp -n /tmp/moltis-config/moltis.toml /home/moltis/.config/moltis/moltis.toml 2>/dev/null; chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis"]
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              cp /tmp/moltis-config/moltis.toml /home/moltis/.config/moltis/moltis.toml
+              mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs
+              cp /tmp/moltis-agents/*.md /home/moltis/.moltis/agents/
+              cp /tmp/moltis-hooks/*.sh /home/moltis/.moltis/hooks/
+              chmod +x /home/moltis/.moltis/hooks/*.sh
+              chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis
           securityContext:
             runAsUser: 0
           volumeMounts:
@@ -33,6 +43,10 @@ spec:
               mountPath: /home/moltis/.moltis
             - name: moltis-toml
               mountPath: /tmp/moltis-config
+            - name: moltis-agents
+              mountPath: /tmp/moltis-agents
+            - name: moltis-hooks
+              mountPath: /tmp/moltis-hooks
       containers:
         - name: moltis
           image: ghcr.io/moltis-org/moltis:latest
@@ -158,3 +172,10 @@ spec:
         - name: dind-storage
           emptyDir:
             sizeLimit: 10Gi
+        - name: moltis-agents
+          configMap:
+            name: moltis-agents-config
+        - name: moltis-hooks
+          configMap:
+            name: moltis-hooks
+            defaultMode: 0755

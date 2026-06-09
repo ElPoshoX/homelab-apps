@@ -30,10 +30,23 @@ data:
           input_cost_per_token: 0
           output_cost_per_token: 0
 
+      - model_name: claude-haiku
+        litellm_params:
+          model: anthropic/claude-haiku-4-5-20251001
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
+          api_key: "not-needed"
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
       # ── Claude API direct (fallback if Meridian blocked) ──────
       - model_name: claude-sonnet-api
         litellm_params:
           model: anthropic/claude-sonnet-4-6
+          api_key: os.environ/ANTHROPIC_API_KEY
+
+      - model_name: claude-haiku-api
+        litellm_params:
+          model: anthropic/claude-haiku-4-5-20251001
           api_key: os.environ/ANTHROPIC_API_KEY
 
       # ── DeepSeek V4 Pro ──────────────────────────────────────
@@ -87,9 +100,13 @@ data:
       num_retries: 3
       request_timeout: 120
       fallbacks:
-        - claude-sonnet: [claude-sonnet-api, gemini-flash-lite]
-        - claude-opus: [claude-sonnet-api, gemini-flash-lite]
-        - deepseek-v4-pro: [qwen3-235b, gemini-flash-lite]
+        - claude-opus-4-7: [claude-sonnet, claude-sonnet-api, deepseek-v4-pro, gemini-flash-lite]
+        - claude-opus-4-6: [claude-sonnet, claude-sonnet-api, deepseek-v4-pro, gemini-flash-lite]
+        - claude-sonnet: [claude-sonnet-api, deepseek-v4-pro, deepseek-v4-flash, gemini-flash-lite]
+        - claude-haiku: [claude-haiku-api, deepseek-v4-flash, gemini-flash-lite]
+        - claude-sonnet-api: [deepseek-v4-pro, gemini-flash-lite]
+        - claude-haiku-api: [deepseek-v4-flash, gemini-flash-lite]
+        - deepseek-v4-pro: [qwen3-235b, deepseek-v4-flash, gemini-flash-lite]
         - deepseek-v4-flash: [qwen3-235b, gemini-flash-lite]
         - qwen3-235b: [deepseek-v4-flash, gemini-flash-lite]
 
