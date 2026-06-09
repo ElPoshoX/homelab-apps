@@ -19,6 +19,7 @@ spec:
         app: moltis
         app.kubernetes.io/name: moltis
     spec:
+      automountServiceAccountToken: false
       initContainers:
         - name: fix-permissions
           image: busybox
