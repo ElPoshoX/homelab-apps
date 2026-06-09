@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: false
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: aegis
+      homelab.local/OwnedBy: ElPoshoX
+
+namespace: pushgateway
+
+helmCharts:
+  - name: prometheus-pushgateway
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: pushgateway
+    version: "2.16.0"
+    valuesFile: values.yaml
+    namespace: pushgateway
+
+resources:
+  - namespace.yaml
+  - network-policy.yaml
