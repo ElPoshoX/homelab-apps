@@ -5,3 +5,8 @@ metadata:
   namespace: plane
   annotations:
     argocd.argoproj.io/sync-options: Replace=true
+spec:
+  template:
+    metadata:
+      annotations:
+        timestamp: "static"
