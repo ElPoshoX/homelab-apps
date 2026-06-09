@@ -9,6 +9,7 @@ spec:
     - fromEndpoints:
         - {}
     - fromEntities:
+        - ingress
         - world
       toPorts:
         - ports:

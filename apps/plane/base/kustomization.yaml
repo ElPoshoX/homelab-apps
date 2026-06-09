@@ -23,7 +23,7 @@ resources:
   - namespace.yaml
   - secret.yaml
   - httproute.yaml
-  # - network-policy.yaml  # temporarily disabled for debugging
+  - network-policy.yaml
 
 patches:
   - target:
