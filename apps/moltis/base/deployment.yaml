@@ -109,6 +109,12 @@ spec:
 
         - name: dind
           image: docker:27-dind
+          args:
+            - dockerd
+            - --host=unix:///var/run/docker.sock
+            - --iptables=false
+            - --ip6tables=false
+            - --bridge=none
           securityContext:
             privileged: true
           env:
