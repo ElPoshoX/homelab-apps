@@ -53,7 +53,7 @@ spec:
             - name: MOLTIS_VAULT_AUTO_UNSEAL_KEY_FILE
               value: /run/secrets/recovery-key
             - name: DOCKER_HOST
-              value: unix:///var/run/docker.sock
+              value: unix:///run/docker/docker.sock
           envFrom:
             - secretRef:
                 name: moltis-bootstrap
@@ -69,7 +69,7 @@ spec:
               mountPath: /run/secrets
               readOnly: true
             - name: docker-socket
-              mountPath: /var/run
+              mountPath: /run/docker
           resources:
             requests:
               cpu: 250m
@@ -111,7 +111,7 @@ spec:
           image: docker:27-dind
           args:
             - dockerd
-            - --host=unix:///var/run/docker.sock
+            - --host=unix:///run/docker/docker.sock
             - --iptables=false
             - --ip6tables=false
             - --bridge=none
@@ -124,7 +124,7 @@ spec:
             - name: dind-storage
               mountPath: /var/lib/docker
             - name: docker-socket
-              mountPath: /var/run
+              mountPath: /run/docker
           resources:
             requests:
               cpu: 250m
