@@ -30,7 +30,7 @@ spec:
         - kind: Service
           name: openhands
           port: 8000
-    # Agent-server Socket.IO (WebSocket for real-time events)
+    # Socket.IO lives on the app server, not agent-server
     - matches:
         - path:
             type: PathPrefix
@@ -38,7 +38,7 @@ spec:
       backendRefs:
         - kind: Service
           name: openhands
-          port: 8000
+          port: 3000
     # Agent-server health/status
     - matches:
         - path:
