@@ -39,7 +39,15 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: openhands
-    # LLM provider APIs
+    # LiteLLM gateway (in-cluster)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: aegis-gateway
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+    # LLM provider APIs (direct, fallback)
     - toFQDNs:
         - matchName: api.anthropic.com
         - matchName: api.openai.com

@@ -33,17 +33,7 @@ data:
     resource_memory_limit = "2Gi"
     privileged = false
 
-    # ────────────────────────────────────────────────────────────
-    # LLM: configured via web UI on first launch (Settings > LLM)
-    #
-    # To switch to LiteLLM gateway (aegis-gateway) later:
-    # 1. Uncomment the [llm] section below
-    # 2. Set the base_url to the LiteLLM service endpoint
-    # 3. Create a SopsSecret with the LiteLLM API key
-    # 4. Inject LITELLM_API_KEY env var in deployment.yaml
-    #
-    # [llm]
-    # model = "anthropic/claude-sonnet-4-20250514"
-    # base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000"
-    # api_key_env = "LITELLM_API_KEY"
-    # ────────────────────────────────────────────────────────────
+    [llm]
+    model = "anthropic/claude-sonnet-4-6"
+    base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000"
+    api_key_env = "LITELLM_API_KEY"
