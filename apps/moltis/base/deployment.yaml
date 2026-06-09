@@ -23,7 +23,7 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis"]
+          command: ["sh", "-c", "cp -n /tmp/moltis-config/moltis.toml /home/moltis/.config/moltis/moltis.toml 2>/dev/null; chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis"]
           securityContext:
             runAsUser: 0
           volumeMounts:
@@ -31,6 +31,8 @@ spec:
               mountPath: /home/moltis/.config/moltis
             - name: moltis-data
               mountPath: /home/moltis/.moltis
+            - name: moltis-toml
+              mountPath: /tmp/moltis-config
       containers:
         - name: moltis
           image: ghcr.io/moltis-org/moltis:latest
@@ -64,8 +66,7 @@ spec:
             - name: moltis-data
               mountPath: /home/moltis/.moltis
             - name: moltis-toml
-              mountPath: /home/moltis/.config/moltis/moltis.toml
-              subPath: moltis.toml
+              mountPath: /tmp/moltis-config
             - name: vault-recovery
               mountPath: /run/secrets
               readOnly: true
