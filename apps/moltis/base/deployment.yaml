@@ -23,12 +23,21 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox
+          env:
+            - name: LITELLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: moltis-bootstrap
+                  key: LITELLM_API_KEY
           command:
             - sh
             - -c
             - |
               set -e
               cp /tmp/moltis-config/moltis.toml /home/moltis/.config/moltis/moltis.toml
+              cat > /home/moltis/.config/moltis/provider_keys.json <<KEYS
+              {"custom-litellm":{"apiKey":"$LITELLM_API_KEY"}}
+              KEYS
               mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs
               cp /tmp/moltis-agents/*.md /home/moltis/.moltis/agents/
               cp /tmp/moltis-hooks/*.sh /home/moltis/.moltis/hooks/
