@@ -39,3 +39,9 @@ patches:
       version: v1
       kind: ConfigMap
       name: plane-app-app-vars
+  - path: patch-migrate-job.yaml
+    target:
+      group: batch
+      version: v1
+      kind: Job
+      name: plane-app-api-migrate-1

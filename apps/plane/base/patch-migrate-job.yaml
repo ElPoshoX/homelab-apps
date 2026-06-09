@@ -1,0 +1,7 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: plane-app-api-migrate-1
+  namespace: plane
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
