@@ -118,6 +118,12 @@ config:
       tls:
         insecure: true
 
+    # OTLP exporter to Phoenix (traces — LLM observability)
+    otlp/phoenix:
+      endpoint: phoenix-svc.phoenix.svc.cluster.local:4317
+      tls:
+        insecure: true
+
     # Debug exporter (replaces deprecated logging exporter)
     debug:
       verbosity: basic
@@ -136,6 +142,7 @@ config:
           - batch
         exporters:
           - otlp
+          - otlp/phoenix
           - debug
 
       # Metrics pipeline — hostmetrics/kubeletstats added by presets
