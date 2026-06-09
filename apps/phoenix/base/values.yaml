@@ -57,6 +57,11 @@ resources:
     cpu: "1000m"
     memory: "4Gi"
 
+startupProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 30
+
 securityContext:
   pod:
     enabled: true
