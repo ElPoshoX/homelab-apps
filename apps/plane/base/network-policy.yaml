@@ -1,0 +1,39 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: plane-default
+  namespace: plane
+spec:
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - {}
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: ingress
+  egress:
+    - toEndpoints:
+        - {}
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: postgres
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: garage
+    - toEntities:
+        - world
+  egressDeny:
+    - toCIDRSet:
+        - cidr: 169.254.0.0/16
+    - toCIDRSet:
+        - cidr: 100.100.100.0/24

@@ -1,0 +1,117 @@
+planeVersion: v1.3.1
+
+ingress:
+  enabled: false
+  appHost: "plane.elposhox.dev"
+
+ssl:
+  createIssuer: false
+  generateCerts: false
+
+postgres:
+  local_setup: false
+
+redis:
+  local_setup: true
+  image: valkey/valkey:7.2.11-alpine
+  servicePort: 6379
+  storageClass: longhorn
+  volumeSize: 500Mi
+  assign_cluster_ip: true
+
+rabbitmq:
+  local_setup: true
+  image: rabbitmq:3.13.6-management-alpine
+  servicePort: 5672
+  managementPort: 15672
+  storageClass: longhorn
+  volumeSize: 500Mi
+  default_user: plane
+  default_password: "REPLACED_BY_SOPS_SECRET"
+  assign_cluster_ip: true
+
+minio:
+  local_setup: false
+
+external_secrets:
+  rabbitmq_existingSecret: "plane-rabbitmq-credentials"
+  pgdb_existingSecret: ""
+  doc_store_existingSecret: "plane-doc-store-credentials"
+  app_env_existingSecret: "plane-app-credentials"
+  live_env_existingSecret: "plane-live-credentials"
+
+env:
+  pgdb_remote_url: ""
+  remote_redis_url: ""
+  secret_key: "REPLACED_BY_SOPS_SECRET"
+  live_server_secret_key: "REPLACED_BY_SOPS_SECRET"
+  docstore_bucket: "plane-uploads"
+  doc_upload_size_limit: "10485760"
+  aws_access_key: ""
+  aws_secret_access_key: ""
+  aws_region: "garage"
+  aws_s3_endpoint_url: "http://garage.garage.svc.cluster.local:3900"
+  cors_allowed_origins: ""
+  default_cluster_domain: cluster.local
+  api_key_rate_limit: "60/minute"
+
+web:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+  assign_cluster_ip: true
+
+space:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+  assign_cluster_ip: true
+
+admin:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+  assign_cluster_ip: true
+
+api:
+  replicas: 1
+  memoryLimit: 1000Mi
+  cpuLimit: 500m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+  assign_cluster_ip: true
+
+worker:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+
+beatworker:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+
+live:
+  replicas: 1
+  memoryLimit: 512Mi
+  cpuLimit: 250m
+  cpuRequest: 50m
+  memoryRequest: 50Mi
+  pullPolicy: IfNotPresent
+  assign_cluster_ip: true
