@@ -10,6 +10,12 @@ spec:
         - {}
     - fromEntities:
         - world
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+            - port: "8000"
+              protocol: TCP
   egress:
     - toEndpoints:
         - {}
@@ -26,9 +32,17 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: postgres
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: garage
+      toPorts:
+        - ports:
+            - port: "3900"
+              protocol: TCP
     - toEntities:
         - world
   egressDeny:

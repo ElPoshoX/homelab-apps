@@ -37,6 +37,15 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
+    # Plane
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: plane
+            app.kubernetes.io/part-of: plane
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
   egress:
     # DNS
     - toEndpoints:
