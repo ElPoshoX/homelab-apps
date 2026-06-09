@@ -8,16 +8,15 @@ spec:
   ingress:
     - fromEndpoints:
         - {}
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: ingress
+    - fromEntities:
+        - world
   egress:
     - toEndpoints:
         - {}
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
       toPorts:
         - ports:
             - port: "53"
@@ -26,10 +25,10 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: postgres
+            k8s:io.kubernetes.pod.namespace: postgres
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: garage
+            k8s:io.kubernetes.pod.namespace: garage
     - toEntities:
         - world
   egressDeny:
