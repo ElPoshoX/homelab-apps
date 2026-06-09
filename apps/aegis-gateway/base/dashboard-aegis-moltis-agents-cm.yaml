@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-aegis-moltis-agents
+  labels:
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Aegis"
+data:
+  aegis-moltis-agents.json: |
+    {
+      "uid": "aegis-moltis-agents",
+      "title": "Aegis Moltis Agents (Phase 4)",
+      "description": "Stub dashboard — populated after Phase 4 Moltis integration",
+      "editable": true,
+      "timezone": "browser",
+      "refresh": "30s",
+      "time": { "from": "now-24h", "to": "now" },
+      "schemaVersion": 39,
+      "panels": [
+        {
+          "id": 1,
+          "title": "Per-Agent Budget Burn",
+          "type": "text",
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 0 },
+          "options": {
+            "mode": "markdown",
+            "content": "Data available after Phase 4 — Moltis integration"
+          },
+          "fieldConfig": { "defaults": {}, "overrides": [] }
+        },
+        {
+          "id": 2,
+          "title": "Job Count",
+          "type": "text",
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+          "options": {
+            "mode": "markdown",
+            "content": "Data available after Phase 4 — Moltis integration"
+          },
+          "fieldConfig": { "defaults": {}, "overrides": [] }
+        },
+        {
+          "id": 3,
+          "title": "Article Count",
+          "type": "text",
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 6 },
+          "options": {
+            "mode": "markdown",
+            "content": "Data available after Phase 4 — Moltis integration"
+          },
+          "fieldConfig": { "defaults": {}, "overrides": [] }
+        },
+        {
+          "id": 4,
+          "title": "PoC Success Rate",
+          "type": "text",
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 6 },
+          "options": {
+            "mode": "markdown",
+            "content": "Data available after Phase 4 — Moltis integration"
+          },
+          "fieldConfig": { "defaults": {}, "overrides": [] }
+        },
+        {
+          "id": 5,
+          "title": "Schedule Adherence",
+          "type": "text",
+          "gridPos": { "h": 6, "w": 24, "x": 0, "y": 12 },
+          "options": {
+            "mode": "markdown",
+            "content": "Data available after Phase 4 — Moltis integration"
+          },
+          "fieldConfig": { "defaults": {}, "overrides": [] }
+        }
+      ],
+      "templating": { "list": [] },
+      "annotations": { "list": [] }
+    }

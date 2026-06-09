@@ -71,6 +71,8 @@ data:
 
     litellm_settings:
       drop_params: true
+      success_callback:
+        - prometheus
       cache: true
       cache_params:
         type: redis

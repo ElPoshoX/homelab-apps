@@ -1,0 +1,69 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aegis-business-alerts
+  labels:
+    app.kubernetes.io/name: litellm
+spec:
+  groups:
+    - name: aegis-business
+      rules:
+        - alert: AegisBudget80Pct
+          expr: |
+            litellm_remaining_budget < 60
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Budget 80% consumed"
+            description: "Remaining budget ${{ $value | humanize }} (less than $60 of $300 cap)."
+
+        - alert: AegisBudgetExhausted
+          expr: |
+            litellm_remaining_budget <= 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Budget exhausted"
+            description: "No remaining budget. All requests will be rejected."
+
+        - alert: AegisCacheHitRateLow
+          expr: |
+            aegis_cache_hit_rate < 0.30
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cache hit rate below 30%"
+            description: "Cache hit rate {{ $value | humanizePercentage }} is below 30% target."
+
+        - alert: AegisDailySpendHigh
+          expr: |
+            increase(litellm_spend_total[24h]) > 15
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Daily spend exceeds $15"
+            description: "Spend in last 24h is ${{ $value | humanize }}, exceeding $15 threshold."
+
+        - alert: AegisRTKInactive
+          expr: |
+            absent(aegis_rtk_savings_tokens) or rate(aegis_rtk_savings_tokens[1h]) == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RTK not reporting savings"
+            description: "No RTK token savings recorded in the last hour."
+
+        - alert: AegisPipelineStuck
+          expr: |
+            aegis_active_pipelines > 0 and changes(aegis_active_pipelines[1h]) == 0
+          for: 60m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pipeline appears stuck"
+            description: "Active pipelines count unchanged for 1h. Possible stuck execution."

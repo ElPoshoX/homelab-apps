@@ -89,6 +89,9 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: litellm
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: aegis-exporter
+            app.kubernetes.io/name: aegis-exporter
       toPorts:
         - ports:
             - port: "6379"

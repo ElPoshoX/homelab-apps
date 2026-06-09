@@ -18,4 +18,12 @@ resources:
   - ingress.yaml
   - redis.yaml
   - alerts.yaml
+  - business-alerts.yaml
+  - servicemonitor.yaml
   - network-policy.yaml
+  - dashboard-aegis-cost-overview-cm.yaml
+  - dashboard-aegis-token-analytics-cm.yaml
+  - dashboard-aegis-rtk-savings-cm.yaml
+  - dashboard-aegis-agent-performance-cm.yaml
+  - dashboard-aegis-moltis-agents-cm.yaml
+  - dashboard-aegis-pipelines-cm.yaml
