@@ -123,6 +123,8 @@ config:
       endpoint: phoenix-svc.phoenix.svc.cluster.local:4317
       tls:
         insecure: true
+      headers:
+        authorization: "Bearer ${env:PHOENIX_API_KEY}"
 
     # Debug exporter (replaces deprecated logging exporter)
     debug:
@@ -173,6 +175,14 @@ config:
         exporters:
           - otlphttp/loki
           - debug
+
+# Extra environment variables from Secrets
+extraEnvs:
+  - name: PHOENIX_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: otel-collector-phoenix
+        key: PHOENIX_API_KEY
 
 # Resource requests and limits
 resources:

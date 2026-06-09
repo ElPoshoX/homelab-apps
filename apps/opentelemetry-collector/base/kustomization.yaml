@@ -27,6 +27,7 @@ resources:
   - namespace.yaml
   - service.yaml
   - ingress.yaml
+  - secret.yaml
 
 patches:
   - target:
