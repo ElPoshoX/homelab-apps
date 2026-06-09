@@ -17,55 +17,69 @@ spec:
             type: PathPrefix
             value: /api
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-api
           port: 8000
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /auth
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-api
           port: 8000
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /spaces
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-space
           port: 3000
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /god-mode
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-admin
           port: 3000
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /live/
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-live
           port: 3000
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /plane-uploads
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: garage
           namespace: garage
           port: 3900
+          weight: 1
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - kind: Service
+        - group: ""
+          kind: Service
           name: plane-app-web
           port: 3000
+          weight: 1
