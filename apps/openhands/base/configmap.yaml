@@ -34,6 +34,6 @@ data:
     privileged = false
 
     [llm]
-    model = "anthropic/claude-sonnet-4-6"
+    model = "claude-sonnet"
     base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000"
     api_key_env = "LITELLM_API_KEY"
