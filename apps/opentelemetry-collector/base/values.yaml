@@ -94,8 +94,8 @@ config:
             - replace_pattern(attributes["gen_ai.operation.name"], "^acompletion$", "chat")
             - replace_pattern(attributes["gen_ai.operation.name"], "^atext_completion$", "text_completion")
             # Span kind classification for Phoenix
+            - set(attributes["openinference.span.kind"], "LLM") where attributes["gen_ai.operation.name"] != nil
             - set(attributes["openinference.span.kind"], "CHAIN") where name == "claude_code.interaction"
-            - set(attributes["openinference.span.kind"], "LLM") where attributes["gen_ai.operation.name"] != nil and attributes["openinference.span.kind"] == nil
             # gen_ai content → OpenInference input/output (Phoenix table columns)
             - set(attributes["input.value"], attributes["gen_ai.input.messages"]) where attributes["gen_ai.input.messages"] != nil
             - set(attributes["input.mime_type"], "application/json") where attributes["gen_ai.input.messages"] != nil
