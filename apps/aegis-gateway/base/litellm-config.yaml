@@ -6,6 +6,7 @@ data:
   config.yaml: |
     model_list:
       # ── Meridian (Claude Max 20x) ─────────────────────────────
+      # Short aliases (used by Moltis, orchestrator)
       - model_name: claude-sonnet
         litellm_params:
           model: anthropic/claude-sonnet-4-6
@@ -33,6 +34,39 @@ data:
       - model_name: claude-haiku
         litellm_params:
           model: anthropic/claude-haiku-4-5-20251001
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
+          api_key: "not-needed"
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      # Full model IDs (sent by Claude Code, Anthropic SDK clients)
+      - model_name: claude-sonnet-4-6
+        litellm_params:
+          model: anthropic/claude-sonnet-4-6
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
+          api_key: "not-needed"
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      - model_name: claude-opus-4-8
+        litellm_params:
+          model: anthropic/claude-opus-4-8
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
+          api_key: "not-needed"
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      - model_name: claude-haiku-4-5-20251001
+        litellm_params:
+          model: anthropic/claude-haiku-4-5-20251001
+          api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
+          api_key: "not-needed"
+          input_cost_per_token: 0
+          output_cost_per_token: 0
+
+      - model_name: claude-fable-5
+        litellm_params:
+          model: anthropic/claude-fable-5
           api_base: http://meridian.aegis-meridian.svc.cluster.local:3456
           api_key: "not-needed"
           input_cost_per_token: 0
@@ -103,10 +137,14 @@ data:
       num_retries: 3
       request_timeout: 120
       fallbacks:
+        - claude-opus-4-8: [claude-opus-4-7, claude-sonnet, claude-sonnet-api, deepseek-v4-pro, gemini-flash-lite]
         - claude-opus-4-7: [claude-sonnet, claude-sonnet-api, deepseek-v4-pro, gemini-flash-lite]
         - claude-opus-4-6: [claude-sonnet, claude-sonnet-api, deepseek-v4-pro, gemini-flash-lite]
         - claude-sonnet: [claude-sonnet-api, deepseek-v4-pro, deepseek-v4-flash, gemini-flash-lite]
+        - claude-sonnet-4-6: [claude-sonnet-api, deepseek-v4-pro, deepseek-v4-flash, gemini-flash-lite]
         - claude-haiku: [claude-haiku-api, deepseek-v4-flash, gemini-flash-lite]
+        - claude-haiku-4-5-20251001: [claude-haiku-api, deepseek-v4-flash, gemini-flash-lite]
+        - claude-fable-5: [claude-sonnet, deepseek-v4-pro, gemini-flash-lite]
         - claude-sonnet-api: [deepseek-v4-pro, gemini-flash-lite]
         - claude-haiku-api: [deepseek-v4-flash, gemini-flash-lite]
         - deepseek-v4-pro: [qwen3-235b, deepseek-v4-flash, gemini-flash-lite]
