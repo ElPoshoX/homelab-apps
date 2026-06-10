@@ -94,6 +94,14 @@ config:
             # Claude Code session spans — classify as CHAIN for Phoenix
             - set(attributes["openinference.span.kind"], "CHAIN") where name == "claude_code.interaction"
 
+    # Drop HTTP server spans that lack LLM data from Phoenix (show as "unknown" kind)
+    # Keep the ones WITH gen_ai attributes — those are real LLM calls via /v1/messages
+    filter/phoenix-only:
+      error_mode: ignore
+      traces:
+        span:
+          - 'name == "Received Proxy Server Request" and attributes["gen_ai.system"] == nil'
+
     # Attributes processor for adding metadata
     attributes:
       actions:
@@ -145,7 +153,7 @@ config:
   # Service - defines which processors and exporters are active
   service:
     pipelines:
-      # Traces pipeline
+      # Traces pipeline — all spans to Tempo
       traces:
         receivers:
           - otlp
@@ -157,8 +165,21 @@ config:
           - batch
         exporters:
           - otlp
-          - otlp/phoenix
           - debug
+
+      # Traces pipeline — filtered for Phoenix (drops HTTP server noise)
+      traces/phoenix:
+        receivers:
+          - otlp
+        processors:
+          - memory_limiter
+          - resourcedetection
+          - attributes
+          - transform/trace-normalize
+          - filter/phoenix-only
+          - batch
+        exporters:
+          - otlp/phoenix
 
       # Metrics pipeline — hostmetrics/kubeletstats added by presets
       metrics:
