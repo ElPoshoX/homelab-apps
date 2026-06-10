@@ -1,0 +1,62 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: cka-cp
+  namespace: kubevirt
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        app: cka
+        role: control-plane
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        resources:
+          requests:
+            memory: 4Gi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          containerDisk:
+            image: quay.io/containerdisks/ubuntu:24.04
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: cka-cp
+              user: ubuntu
+              password: cka-practice
+              chpasswd: { expire: false }
+              ssh_pwauth: true
+              package_update: true
+              packages:
+                - curl
+                - apt-transport-https
+                - ca-certificates
+              runcmd:
+                - echo "CKA Control Plane ready"
+            networkData: |
+              version: 2
+              ethernets:
+                enp1s0:
+                  dhcp4: true
+                  nameservers:
+                    addresses:
+                      - 192.168.5.192
+                      - 8.8.8.8
