@@ -82,28 +82,27 @@ config:
             - replace_pattern(attributes["token_type"], "^cacheCreation$", "cache_create")
             - delete_key(attributes, "type") where attributes["token_type"] != nil
 
-    # Normalize trace spans for Phoenix span kind detection
-    # Runs on all trace exporters (Tempo + Phoenix) — stores normalized values everywhere
+    # Normalize trace spans for Phoenix
+    # Verified via Phoenix GraphQL: spans have gen_ai.* attrs but Phoenix reads
+    # only OpenInference attrs (input.value, output.value, openinference.span.kind,
+    # llm.model_name). Bridge them here.
     transform/trace-normalize:
       trace_statements:
         - context: span
           statements:
-            # LiteLLM sends async call_type names; Phoenix expects OTEL semconv values
+            # LiteLLM async call_type names → OTEL semconv values
             - replace_pattern(attributes["gen_ai.operation.name"], "^acompletion$", "chat")
             - replace_pattern(attributes["gen_ai.operation.name"], "^atext_completion$", "text_completion")
-            # Claude Code session spans — classify as CHAIN for Phoenix
+            # Span kind classification for Phoenix
             - set(attributes["openinference.span.kind"], "CHAIN") where name == "claude_code.interaction"
-            # Bridge gen_ai content → OpenInference attributes for Phoenix input/output display
+            - set(attributes["openinference.span.kind"], "LLM") where attributes["gen_ai.operation.name"] != nil and attributes["openinference.span.kind"] == nil
+            # gen_ai content → OpenInference input/output (Phoenix table columns)
             - set(attributes["input.value"], attributes["gen_ai.input.messages"]) where attributes["gen_ai.input.messages"] != nil
+            - set(attributes["input.mime_type"], "application/json") where attributes["gen_ai.input.messages"] != nil
             - set(attributes["output.value"], attributes["gen_ai.output.messages"]) where attributes["gen_ai.output.messages"] != nil
-
-    # Drop HTTP server spans that lack LLM data from Phoenix (show as "unknown" kind)
-    # Keep the ones WITH gen_ai attributes — those are real LLM calls via /v1/messages
-    filter/phoenix-only:
-      error_mode: ignore
-      traces:
-        span:
-          - 'name == "Received Proxy Server Request" and attributes["gen_ai.system"] == nil'
+            - set(attributes["output.mime_type"], "application/json") where attributes["gen_ai.output.messages"] != nil
+            # gen_ai model → OpenInference model name
+            - set(attributes["llm.model_name"], attributes["gen_ai.response.model"]) where attributes["gen_ai.response.model"] != nil and attributes["llm.model_name"] == nil
 
     # Attributes processor for adding metadata
     attributes:
@@ -156,7 +155,7 @@ config:
   # Service - defines which processors and exporters are active
   service:
     pipelines:
-      # Traces pipeline — all spans to Tempo
+      # Traces pipeline — Tempo + Phoenix (single pipeline, no filter needed)
       traces:
         receivers:
           - otlp
@@ -168,21 +167,8 @@ config:
           - batch
         exporters:
           - otlp
-          - debug
-
-      # Traces pipeline — filtered for Phoenix (drops HTTP server noise)
-      traces/phoenix:
-        receivers:
-          - otlp
-        processors:
-          - memory_limiter
-          - resourcedetection
-          - attributes
-          - transform/trace-normalize
-          - filter/phoenix-only
-          - batch
-        exporters:
           - otlp/phoenix
+          - debug
 
       # Metrics pipeline — hostmetrics/kubeletstats added by presets
       metrics:
