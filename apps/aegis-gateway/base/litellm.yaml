@@ -56,8 +56,6 @@ spec:
               value: otlp_grpc
             - name: OTEL_SERVICE_NAME
               value: litellm
-            - name: DEBUG_OTEL
-              value: "true"
           envFrom:
             - secretRef:
                 name: aegis-secrets
