@@ -79,6 +79,10 @@ spec:
               value: https://openhands.elposhox.dev
             - name: OPENHANDS_SUPPRESS_BANNER
               value: "1"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
+            - name: OTEL_SERVICE_NAME
+              value: openhands
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

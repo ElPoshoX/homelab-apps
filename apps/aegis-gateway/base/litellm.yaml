@@ -49,6 +49,11 @@ spec:
           ports:
             - containerPort: 4000
               name: http
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
+            - name: OTEL_SERVICE_NAME
+              value: litellm
           envFrom:
             - secretRef:
                 name: aegis-secrets

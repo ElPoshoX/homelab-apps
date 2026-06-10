@@ -86,6 +86,7 @@ data:
       drop_params: true
       success_callback:
         - prometheus
+        - openinference
       cache: true
       cache_params:
         type: redis

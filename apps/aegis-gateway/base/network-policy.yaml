@@ -65,6 +65,16 @@ spec:
             - port: "3456"
               protocol: TCP
 
+    # OTEL collector (cross-namespace, traces)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: otel-collector
+            app.kubernetes.io/name: opentelemetry-collector
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+
     # External LLM APIs — FQDN locked, HTTPS only
     - toFQDNs:
         - matchName: api.deepseek.com

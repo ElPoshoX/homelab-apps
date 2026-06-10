@@ -47,6 +47,15 @@ spec:
         - ports:
             - port: "4000"
               protocol: TCP
+    # OTEL collector (cross-namespace, traces)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: otel-collector
+            app.kubernetes.io/name: opentelemetry-collector
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
     # LLM provider APIs (direct, fallback)
     - toFQDNs:
         - matchName: api.anthropic.com
