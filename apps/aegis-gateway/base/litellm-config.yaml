@@ -86,7 +86,7 @@ data:
       drop_params: true
       success_callback:
         - prometheus
-        - opentelemetry
+        - otel
       cache: true
       cache_params:
         type: redis
