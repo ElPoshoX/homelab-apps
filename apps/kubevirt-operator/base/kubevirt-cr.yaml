@@ -3,8 +3,6 @@ kind: KubeVirt
 metadata:
   name: kubevirt
   namespace: kubevirt
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   certificateRotateStrategy: {}
   configuration:
