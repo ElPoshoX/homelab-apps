@@ -87,6 +87,8 @@ data:
       success_callback:
         - prometheus
         - otel
+      failure_callback:
+        - otel
       cache: true
       cache_params:
         type: redis

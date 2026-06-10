@@ -50,10 +50,10 @@ spec:
             - containerPort: 4000
               name: http
           env:
-            - name: OTEL_ENDPOINT
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
-            - name: OTEL_EXPORTER
-              value: otlp_grpc
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
             - name: OTEL_SERVICE_NAME
               value: litellm
           envFrom:
