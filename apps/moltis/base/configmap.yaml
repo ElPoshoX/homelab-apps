@@ -86,31 +86,7 @@ data:
     max_iterations = 15
     timeout_secs = 1800
 
-    # ── Cron Schedules ─────────────────────────────────────────────
-
-    [[cron.jobs]]
-    name = "daily-job-hunt"
-    schedule = { kind = "cron", expr = "0 4 * * *", tz = "America/Mexico_City" }
-    payload = { kind = "agentTurn", message = "Run the daily job search. Deduplicate against previous results." }
-    sessionTarget = "isolated"
-    preset = "de-job-hunter"
-    deleteAfterRun = false
-
-    [[cron.jobs]]
-    name = "weekly-blog-generation"
-    schedule = { kind = "cron", expr = "0 6 * * 6", tz = "America/Mexico_City" }
-    payload = { kind = "agentTurn", message = "Generate weekly batch of 5 bilingual articles from Job Hunter skill tags." }
-    sessionTarget = "isolated"
-    preset = "de-blog-generator"
-    deleteAfterRun = false
-
-    [[cron.jobs]]
-    name = "weekly-saas-scan"
-    schedule = { kind = "cron", expr = "0 6 * * 0", tz = "America/Mexico_City" }
-    payload = { kind = "agentTurn", message = "Scan for top 3 micro-SaaS opportunities in DevOps tooling space." }
-    sessionTarget = "isolated"
-    preset = "de-saas-finder"
-    deleteAfterRun = false
+    # ── Cron jobs are in cron-configmap.yaml (jobs.json), not here ──
 
     # ── Heartbeat ──────────────────────────────────────────────────
 

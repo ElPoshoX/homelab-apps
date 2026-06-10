@@ -38,9 +38,10 @@ spec:
               cat > /home/moltis/.config/moltis/provider_keys.json <<KEYS
               {"custom-litellm":{"apiKey":"$LITELLM_API_KEY"}}
               KEYS
-              mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs
+              mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs /home/moltis/.moltis/cron
               cp /tmp/moltis-agents/*.md /home/moltis/.moltis/agents/
               cp /tmp/moltis-hooks/*.sh /home/moltis/.moltis/hooks/
+              cp /tmp/moltis-cron/jobs.json /home/moltis/.moltis/cron/jobs.json
               chmod +x /home/moltis/.moltis/hooks/*.sh
               chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis
           securityContext:
@@ -56,6 +57,8 @@ spec:
               mountPath: /tmp/moltis-agents
             - name: moltis-hooks
               mountPath: /tmp/moltis-hooks
+            - name: moltis-cron
+              mountPath: /tmp/moltis-cron
       containers:
         - name: moltis
           image: ghcr.io/moltis-org/moltis:latest
@@ -184,6 +187,9 @@ spec:
         - name: moltis-agents
           configMap:
             name: moltis-agents-config
+        - name: moltis-cron
+          configMap:
+            name: moltis-cron-jobs
         - name: moltis-hooks
           configMap:
             name: moltis-hooks

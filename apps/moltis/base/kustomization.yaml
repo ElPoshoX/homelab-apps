@@ -16,6 +16,7 @@ resources:
   - configmap.yaml
   - agents-configmap.yaml
   - hooks-configmap.yaml
+  - cron-configmap.yaml
   - secret.yaml
   - vault-recovery-secret.yaml
   - pvc.yaml
