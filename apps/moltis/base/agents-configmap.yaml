@@ -5,25 +5,14 @@ metadata:
 data:
   de-job-hunter.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer Job Hunter
-    level: Distinguished
-    recommended_model: claude-haiku
-    peers: []
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, jobs, autonomous]
-    permissions:
-      allowed_tools: [web_search, web_fetch, Write]
-      forbidden_tools: [exec, kubectl, docker, git]
-      allowed_paths: ["/vault/moltis/output/jobs/**"]
-      forbidden_paths: ["/**"]
-      network: true
-      max_file_size_mb: 1
-    pipelines: [pipeline-3]
-    caveman: true
-    frequency: "daily, 5 results"
-    budget_cap_month: 0.50
-    max_steps: 10
+    name: de-job-hunter
+    display_name: DE Job Hunter
+    model: haiku
+    tools: web_search, web_fetch, Write
+    deny_tools: exec, kubectl, docker, git
+    max_iterations: 10
+    timeout_secs: 600
+    reasoning_effort: low
     ---
     
     # Distinguished Engineer Job Hunter — Aegis (Moltis)
@@ -83,26 +72,13 @@ data:
     *(Updated at the end of each session)*
   de-blog-generator.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer Blog Generator
-    level: Distinguished
-    recommended_model: claude-sonnet
-    peers:
-      - de-review
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, content, blog, autonomous]
-    permissions:
-      allowed_tools: [Read, Write, web_search, web_fetch, exec]
-      forbidden_tools: [kubectl, docker, exec, git]
-      allowed_paths: ["/vault/moltis/output/blog/**"]
-      forbidden_paths: ["/etc/**", "/root/**", "~/.ssh/**"]
-      network: true
-      max_file_size_mb: 10
-    pipelines: [pipeline-3]
-    caveman: false
-    frequency: "weekly, 5 articles ES+EN"
-    budget_cap_month: 5.00
-    max_steps: 30
+    name: de-blog-generator
+    display_name: DE Blog Generator
+    model: sonnet
+    tools: Read, Write, web_search, web_fetch
+    deny_tools: kubectl, docker, git
+    max_iterations: 30
+    timeout_secs: 3600
     ---
     
     # Distinguished Engineer Blog Generator — Aegis (Moltis)
@@ -177,26 +153,13 @@ data:
     *(Updated at the end of each session)*
   de-saas-finder.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer SaaS Finder
-    level: Distinguished
-    recommended_model: claude-sonnet
-    peers:
-      - cto
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, saas, opportunities, autonomous]
-    permissions:
-      allowed_tools: [web_search, web_fetch, Write]
-      forbidden_tools: [exec, kubectl, docker, git]
-      allowed_paths: ["/vault/moltis/output/saas/**"]
-      forbidden_paths: ["/**"]
-      network: true
-      max_file_size_mb: 1
-    pipelines: [pipeline-2]
-    caveman: true
-    frequency: "weekly, 3 opportunities"
-    budget_cap_month: 1.00
-    max_steps: 10
+    name: de-saas-finder
+    display_name: DE SaaS Finder
+    model: sonnet
+    tools: web_search, web_fetch, Write
+    deny_tools: exec, kubectl, docker, git
+    max_iterations: 10
+    timeout_secs: 1200
     ---
     
     # Distinguished Engineer SaaS Finder — Aegis (Moltis)
@@ -259,25 +222,14 @@ data:
     *(Updated at the end of each session)*
   de-list-manager.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer List Manager
-    level: Distinguished
-    recommended_model: claude-haiku
-    peers: []
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, lists, telegram, autonomous]
-    permissions:
-      allowed_tools: [Read, Write]
-      forbidden_tools: [exec, kubectl, docker, git, web_search]
-      allowed_paths: ["/vault/moltis/output/lists/**"]
-      forbidden_paths: ["/**"]
-      network: false
-      max_file_size_mb: 1
-    pipelines: []
-    caveman: true
-    frequency: "on-demand via Telegram"
-    budget_cap_month: 0.50
-    max_steps: 5
+    name: de-list-manager
+    display_name: DE List Manager
+    model: haiku
+    tools: Read, Write
+    deny_tools: exec, kubectl, docker, git, web_search
+    max_iterations: 5
+    timeout_secs: 300
+    reasoning_effort: low
     ---
     
     # Distinguished Engineer List Manager — Aegis (Moltis)
@@ -329,27 +281,15 @@ data:
     *(Updated at the end of each session)*
   de-poc-overnight.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer PoC Overnight
-    level: Distinguished
-    recommended_model: claude-opus-4-7
-    peers:
-      - de-review
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, poc, prototyping, autonomous]
-    permissions:
-      allowed_tools: [Read, Write, exec, git]
-      forbidden_tools: [kubectl, docker, exec, chmod]
-      allowed_paths: ["/workspace/**"]
-      forbidden_paths: ["/etc/**", "/root/**", "~/.ssh/**", "/vault/**"]
-      network: true
-      max_file_size_mb: 10
-    pipelines: [pipeline-2]
-    caveman: partial
-    frequency: "~3/month, overnight runs"
-    budget_cap_month: 4.00
-    max_steps: 50
-    sandbox: true
+    name: de-poc-overnight
+    display_name: DE PoC Overnight
+    model: opus
+    tools: Read, Write, exec, git
+    deny_tools: kubectl, docker, chmod
+    max_iterations: 50
+    timeout_secs: 28800
+    sandbox_mode: all
+    reasoning_effort: high
     ---
     
     > **MANDATORY**: Before writing ANY code, read [`code-standards.md`](../code-standards.md). 100% compliance required — no exceptions.
@@ -433,25 +373,13 @@ data:
     *(Updated at the end of each session)*
   de-on-demand.md: |
     ---
-    project: aegis
-    role: Distinguished Engineer On-Demand
-    level: Distinguished
-    recommended_model: claude-sonnet
-    peers: []
-    last_updated: 2026-06-05
-    tags: [agent, aegis, moltis, general, ad-hoc, autonomous]
-    permissions:
-      allowed_tools: [Read, Write, web_search, web_fetch, exec]
-      forbidden_tools: [kubectl, docker, exec]
-      allowed_paths: ["/vault/moltis/output/**"]
-      forbidden_paths: ["/etc/**", "/root/**", "~/.ssh/**"]
-      network: true
-      max_file_size_mb: 5
-    pipelines: []
-    caveman: true
-    frequency: "variable"
-    budget_cap_month: 2.00
-    max_steps: 15
+    name: de-on-demand
+    display_name: DE On-Demand
+    model: sonnet
+    tools: Read, Write, web_search, web_fetch
+    deny_tools: kubectl, docker
+    max_iterations: 15
+    timeout_secs: 1800
     ---
     
     # Distinguished Engineer On-Demand — Aegis (Moltis)
