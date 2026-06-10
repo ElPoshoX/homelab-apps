@@ -93,6 +93,9 @@ config:
             - replace_pattern(attributes["gen_ai.operation.name"], "^atext_completion$", "text_completion")
             # Claude Code session spans — classify as CHAIN for Phoenix
             - set(attributes["openinference.span.kind"], "CHAIN") where name == "claude_code.interaction"
+            # Bridge gen_ai content → OpenInference attributes for Phoenix input/output display
+            - set(attributes["input.value"], attributes["gen_ai.input.messages"]) where attributes["gen_ai.input.messages"] != nil
+            - set(attributes["output.value"], attributes["gen_ai.output.messages"]) where attributes["gen_ai.output.messages"] != nil
 
     # Drop HTTP server spans that lack LLM data from Phoenix (show as "unknown" kind)
     # Keep the ones WITH gen_ai attributes — those are real LLM calls via /v1/messages
