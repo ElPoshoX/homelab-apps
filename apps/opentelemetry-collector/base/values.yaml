@@ -82,15 +82,17 @@ config:
             - replace_pattern(attributes["token_type"], "^cacheCreation$", "cache_create")
             - delete_key(attributes, "type") where attributes["token_type"] != nil
 
-    # Normalize LiteLLM gen_ai.operation.name to OTEL semconv values
-    # LiteLLM sends async call_type names; Phoenix expects standard names for span kind detection
+    # Normalize trace spans for Phoenix span kind detection
     # Runs on all trace exporters (Tempo + Phoenix) — stores normalized values everywhere
-    transform/litellm-normalize:
+    transform/trace-normalize:
       trace_statements:
         - context: span
           statements:
+            # LiteLLM sends async call_type names; Phoenix expects OTEL semconv values
             - replace_pattern(attributes["gen_ai.operation.name"], "^acompletion$", "chat")
             - replace_pattern(attributes["gen_ai.operation.name"], "^atext_completion$", "text_completion")
+            # Claude Code session spans — classify as CHAIN for Phoenix
+            - set(attributes["openinference.span.kind"], "CHAIN") where name == "claude_code.interaction"
 
     # Attributes processor for adding metadata
     attributes:
@@ -151,7 +153,7 @@ config:
           - memory_limiter
           - resourcedetection
           - attributes
-          - transform/litellm-normalize
+          - transform/trace-normalize
           - batch
         exporters:
           - otlp
