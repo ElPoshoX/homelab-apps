@@ -147,7 +147,6 @@ spec:
             - --host=unix:///run/docker/docker.sock
             - --iptables=false
             - --ip6tables=false
-            - --bridge=none
           securityContext:
             privileged: true
           env:
