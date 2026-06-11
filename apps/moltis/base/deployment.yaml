@@ -88,6 +88,10 @@ spec:
               value: /run/secrets/recovery-key
             - name: DOCKER_HOST
               value: unix:///run/docker/docker.sock
+            - name: no_proxy
+              value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
+            - name: NO_PROXY
+              value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
           envFrom:
             - secretRef:
                 name: moltis-bootstrap

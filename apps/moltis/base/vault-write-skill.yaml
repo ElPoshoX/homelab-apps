@@ -46,13 +46,11 @@ data:
 
     ### Step 2: PUT chunk
 
-    ```bash
-    bash -c 'CHUNK_ID="h:REPLACE_ME"; CONTENT="---
-    dedup_key: \"my-key\"
-    ---
-    # My Title
+    IMPORTANT: Use `printf` to pipe content into jq via `--rawfile` or `jq -Rs` to preserve real newlines.
+    Do NOT use `jq --arg data "$CONTENT"` — it double-escapes newlines into `\\n`.
 
-    Content here."; CHUNK_JSON=$(jq -n --arg id "$CHUNK_ID" --arg data "$CONTENT" "{_id: \$id, data: \$data, type: \"leaf\"}"); curl -s -w "\nHTTP_STATUS:%{http_code}\n" -X PUT "$COUCHDB_URL/obsidian-vault/$CHUNK_ID" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" -H "Content-Type: application/json" -d "$CHUNK_JSON"'
+    ```bash
+    bash -c 'CHUNK_ID="h:REPLACE_ME"; printf "%s" "$CONTENT" > /tmp/chunk_content; CHUNK_JSON=$(jq -n --arg id "$CHUNK_ID" --rawfile data /tmp/chunk_content "{_id: \$id, data: \$data, type: \"leaf\"}"); curl -s -w "\nHTTP_STATUS:%{http_code}\n" -X PUT "$COUCHDB_URL/obsidian-vault/$CHUNK_ID" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" -H "Content-Type: application/json" -d "$CHUNK_JSON"'
     ```
 
     Expect HTTP 201.
