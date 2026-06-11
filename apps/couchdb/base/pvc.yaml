@@ -8,6 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: longhorn-couchdb
+  volumeName: pvc-f8fd878e-e060-400a-950e-015df89a4a9e
   resources:
     requests:
       storage: 5Gi

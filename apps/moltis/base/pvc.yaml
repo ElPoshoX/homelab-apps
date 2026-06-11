@@ -8,6 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: longhorn-moltis
+  volumeName: pvc-8f0859a7-5bb4-4e5c-98b7-ba7db38eb1fd
   resources:
     requests:
       storage: 1Gi
@@ -22,6 +23,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: longhorn-moltis
+  volumeName: pvc-4878c6ae-c788-4673-bcb5-f51dd9a00879
   resources:
     requests:
       storage: 10Gi
