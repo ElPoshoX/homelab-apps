@@ -86,6 +86,54 @@ data:
     max_iterations = 15
     timeout_secs = 1800
 
+    # ── Exec / Sandbox ──────────────────────────────────────────
+
+    [tools.exec]
+    approval_mode = "never"
+
+    [tools.exec.sandbox]
+    packages = [
+        # DevOps / IaC
+        "terraform",
+        "helm",
+        "kubectl",
+        "kustomize",
+        "ansible",
+        # Vault write (JSON construction)
+        "jq",
+        "yq",
+        # Version control
+        "git",
+        "git-lfs",
+        "gh",
+        # Languages (PoC overnight)
+        "python3",
+        "python3-pip",
+        "python3-venv",
+        "python-is-python3",
+        "nodejs",
+        "golang-go",
+        "build-essential",
+        "cmake",
+        # Networking / HTTP
+        "curl",
+        "wget",
+        "ca-certificates",
+        "dnsutils",
+        "openssh-client",
+        # Utilities
+        "ripgrep",
+        "fd-find",
+        "tree",
+        "sqlite3",
+        "shellcheck",
+        "yamllint",
+        "pandoc",
+        "zip",
+        "unzip",
+        "tar",
+    ]
+
     # ── Cron jobs are in cron-configmap.yaml (jobs.json), not here ──
 
     # ── Heartbeat ──────────────────────────────────────────────────
