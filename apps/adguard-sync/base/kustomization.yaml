@@ -12,5 +12,4 @@ resources:
 - service.yaml
 - deployment.yaml
 - ingress.yaml
-- pvc.yaml
 - secret.yaml

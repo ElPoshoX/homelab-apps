@@ -49,27 +49,10 @@ data:
 
     ### Compute Chunk ID
 
-    ```python
-    import hashlib
-
-    def chunk_id(content: str) -> str:
-        n = len(content.encode('utf-8'))
-        h = int(hashlib.sha256(f"{content}-{n}".encode('utf-8')).hexdigest(), 16) % (2**64)
-        digits = "0123456789abcdefghijklmnopqrstuvwxyz"
-        r = ""
-        while h:
-            r, h = digits[h % 36] + r, h // 36
-        return f"h:{r or '0'}"
-    ```
-
-    Shell one-liner (stdlib only, no pip needed):
+    Pure shell — no Python needed:
     ```bash
-    CHUNK_ID=$(python3 -c "
-    import hashlib,sys; c=sys.stdin.read(); n=len(c.encode('utf-8'))
-    h=int(hashlib.sha256(f'{c}-{n}'.encode('utf-8')).hexdigest(),16)%(2**64)
-    d='0123456789abcdefghijklmnopqrstuvwxyz'; r=''
-    while h: r,h=d[h%36]+r,h//36
-    print(f'h:{r or \"0\"}')" <<< "$CONTENT")
+    BYTE_LEN=$(printf '%s' "$CONTENT" | wc -c | tr -d ' ')
+    CHUNK_ID="h:$(printf '%s' "${CONTENT}-${BYTE_LEN}" | sha256sum | cut -c1-16)"
     ```
 
     ## Create a Note
@@ -78,14 +61,12 @@ data:
 
     ```bash
     # 1. Write chunk
+    CHUNK_JSON=$(jq -n --arg id "$CHUNK_ID" --arg data "$CONTENT" \
+      '{_id: $id, data: $data, type: "leaf"}')
     curl -s -X PUT "$COUCHDB_URL/obsidian-vault/$CHUNK_ID" \
       -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
       -H "Content-Type: application/json" \
-      -d '{
-        "_id": "'"$CHUNK_ID"'",
-        "data": "'"$(echo "$CONTENT" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')"'",
-        "type": "leaf"
-      }'
+      -d "$CHUNK_JSON"
 
     # 2. Write parent
     NOW_MS=$(date +%s000)
@@ -124,7 +105,7 @@ data:
     ```bash
     # 1. Get current _rev
     REV=$(curl -s "$COUCHDB_URL/obsidian-vault/$DOC_PATH" \
-      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" | python3 -c "import sys,json; print(json.load(sys.stdin)['_rev'])")
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" | jq -r '._rev')
 
     # 2. Compute new chunk ID for updated content
     # (use chunk_id function above)
