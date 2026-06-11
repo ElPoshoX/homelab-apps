@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: meltis
+  labels:
+    app.kubernetes.io/name: meltis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: meltis
+  endpoints:
+    - port: gateway
+      path: /metrics
+      interval: 15s

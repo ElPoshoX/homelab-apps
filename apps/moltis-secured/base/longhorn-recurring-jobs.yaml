@@ -1,0 +1,42 @@
+# NOT managed by Kustomize — apply directly to longhorn-system namespace:
+#   kubectl apply -f apps/moltis/base/longhorn-recurring-jobs.yaml
+#
+# Or add these to apps/longhorn-system/base/ and include in its kustomization.yaml.
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: meltis-snapshot-daily
+  namespace: longhorn-system
+spec:
+  cron: "0 2 * * *"
+  task: snapshot
+  retain: 7
+  concurrency: 1
+  labels:
+    app: meltis
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: meltis-snapshot-weekly
+  namespace: longhorn-system
+spec:
+  cron: "0 3 * * 0"
+  task: snapshot
+  retain: 4
+  concurrency: 1
+  labels:
+    app: meltis
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: meltis-backup-daily
+  namespace: longhorn-system
+spec:
+  cron: "0 5 * * *"
+  task: backup
+  retain: 14
+  concurrency: 1
+  labels:
+    app: meltis

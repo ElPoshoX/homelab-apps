@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: meltis-vault-write-skill
+data:
+  vault-write.md: |
+    ---
+    name: vault-write
+    description: Write agent output to Obsidian vault via CouchDB. Docs sync automatically via LiveSync.
+    ---
+
+    # Vault Write Skill — CouchDB + LiveSync
+
+    Write agent output to the Obsidian vault via CouchDB. Documents sync to Obsidian automatically via LiveSync (≤30s).
+
+    ## Auth
+
+    All requests use Basic Auth from env vars:
+    ```bash
+    -u "$COUCHDB_USER:$COUCHDB_PASSWORD"
+    ```
+    - `COUCHDB_URL` — e.g. `http://couchdb.couchdb.svc.cluster.local:5984`
+    - `COUCHDB_USER` — admin username
+    - `COUCHDB_PASSWORD` — admin password
+
+    ## Directory Convention
+
+    Each agent writes to `agents/{agent-name}/`:
+    - `agents/de-job-hunter/2026-06-10-results.md`
+    - `agents/de-blog-generator/2026-06-10-cilium-draft.md`
+    - `agents/de-saas-finder/2026-06-10-ideas.md`
+
+    Use **date-stamped filenames** for recurring output. Never overwrite previous runs.
+
+    Nested subdirectories allowed: `agents/de-job-hunter/2026/06/10-results.md`
+
+    Do NOT write outside your `agents/{agent-name}/` directory.
+
+    ## Underscore Path Escaping
+
+    Paths starting with `_` collide with CouchDB system endpoints. Prefix with `/`:
+    - Path `_templates/foo.md` → `_id`: `/_templates/foo.md`
+
+    ## LiveSync Document Format
+
+    Every note = **two CouchDB documents**:
+    1. **Chunk** (`h:{hash}`) — contains the note content
+    2. **Parent** (`{path}`) — metadata pointing to the chunk
+
+    ### Compute Chunk ID
+
+    Pure shell — no Python needed:
+    ```bash
+    BYTE_LEN=$(printf '%s' "$CONTENT" | wc -c | tr -d ' ')
+    CHUNK_ID="h:$(printf '%s' "${CONTENT}-${BYTE_LEN}" | sha256sum | cut -c1-16)"
+    ```
+
+    ## Create a Note
+
+    Two PUT requests — chunk first, then parent:
+
+    ```bash
+    # 1. Write chunk
+    CHUNK_JSON=$(jq -n --arg id "$CHUNK_ID" --arg data "$CONTENT" \
+      '{_id: $id, data: $data, type: "leaf"}')
+    curl -s -X PUT "$COUCHDB_URL/obsidian-vault/$CHUNK_ID" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d "$CHUNK_JSON"
+
+    # 2. Write parent
+    NOW_MS=$(date +%s000)
+    SIZE=$(echo -n "$CONTENT" | wc -c)
+    curl -s -X PUT "$COUCHDB_URL/obsidian-vault/$DOC_PATH" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "_id": "'"$DOC_PATH"'",
+        "path": "'"$DOC_PATH"'",
+        "children": ["'"$CHUNK_ID"'"],
+        "ctime": '"$NOW_MS"',
+        "mtime": '"$NOW_MS"',
+        "size": '"$SIZE"',
+        "type": "plain",
+        "eden": {}
+      }'
+    ```
+
+    ## Read a Note
+
+    ```bash
+    # Get parent (metadata + chunk refs)
+    curl -s "$COUCHDB_URL/obsidian-vault/$DOC_PATH" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD"
+
+    # Get chunk content
+    curl -s "$COUCHDB_URL/obsidian-vault/$CHUNK_ID" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD"
+    ```
+
+    ## Update a Note
+
+    GET current doc for `_rev`, then PUT with `_rev` included:
+
+    ```bash
+    # 1. Get current _rev
+    REV=$(curl -s "$COUCHDB_URL/obsidian-vault/$DOC_PATH" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" | jq -r '._rev')
+
+    # 2. Compute new chunk ID for updated content
+    # (use chunk_id function above)
+
+    # 3. Write new chunk (no _rev needed — new doc)
+    curl -s -X PUT "$COUCHDB_URL/obsidian-vault/$NEW_CHUNK_ID" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d '{"_id":"'"$NEW_CHUNK_ID"'","data":"...","type":"leaf"}'
+
+    # 4. Update parent with _rev
+    curl -s -X PUT "$COUCHDB_URL/obsidian-vault/$DOC_PATH" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "_id": "'"$DOC_PATH"'",
+        "_rev": "'"$REV"'",
+        "path": "'"$DOC_PATH"'",
+        "children": ["'"$NEW_CHUNK_ID"'"],
+        "mtime": '"$(date +%s000)"',
+        "size": '"$NEW_SIZE"',
+        "type": "plain",
+        "eden": {}
+      }'
+    ```
+
+    **Never PUT to an existing path without `_rev`** — CouchDB returns 409 Conflict.
+
+    ## List Agent Outputs
+
+    ```bash
+    curl -s -X POST "$COUCHDB_URL/obsidian-vault/_find" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "selector": {"path": {"$regex": "^agents/de-job-hunter/"}},
+        "fields": ["path", "_id"],
+        "limit": 1000
+      }'
+    ```
+
+    ## Conflict Handling
+
+    - **Prefer new documents** over updating existing ones
+    - Use date-stamped filenames: `2026-06-10-results.md`, `2026-06-11-results.md`
+    - If you must update: GET → extract `_rev` → PUT with `_rev`
+    - If PUT returns 409: re-GET for fresh `_rev`, retry once
+
+    ## Dedup — Avoid Duplicate Output
+
+    Every output document MUST include a `dedup_key` in YAML frontmatter:
+
+    ```markdown
+    ---
+    dedup_key: "https://example.com/job/12345"
+    ---
+    # Sr SRE @ Datadog
+    ...
+    ```
+
+    ### dedup_key Format Per Agent
+
+    | Agent | dedup_key format | Example |
+    |-------|-----------------|---------|
+    | de-job-hunter | Canonical job URL | `https://linkedin.com/jobs/view/12345` |
+    | de-job-hunter (secondary) | `company:title` | `datadog:senior-sre` |
+    | de-blog-generator | Topic slug from skill tags | `cilium-network-policies` |
+    | de-saas-finder | Idea slug | `k8s-cost-optimizer` |
+
+    ### Dedup Query — Before Writing
+
+    Before creating output, query your directory for existing docs:
+
+    ```bash
+    curl -s -X POST "$COUCHDB_URL/obsidian-vault/_find" \
+      -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "selector": {"path": {"$regex": "^agents/{agent-name}/"}},
+        "fields": ["path", "_id"],
+        "limit": 1000
+      }'
+    ```
+
+    Then for each returned doc, fetch and extract `dedup_key` from frontmatter.
+
+    ### Dedup Flow
+
+    1. Query existing docs in your `agents/{agent-name}/` directory (Mango query above)
+    2. Fetch each doc's chunk → extract `dedup_key` from YAML frontmatter
+    3. Compare new output's `dedup_key` against existing keys
+    4. **Exact match** → skip (do not write)
+    5. **Near match** (same job different board, similar topic) → use your judgment to decide. No extra LLM call needed — decide as part of your current reasoning
+    6. **No match** → write the new document

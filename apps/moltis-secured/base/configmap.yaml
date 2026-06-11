@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: meltis-config
+data:
+  moltis.toml: |
+    [server]
+    host = "0.0.0.0"
+    port = 13131
+
+    [telemetry]
+    otlp_endpoint = "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
+
+    # ── LLM Provider ──────────────────────────────────────────────
+
+    [providers]
+    offered = ["custom-litellm"]
+
+    [providers.custom-litellm]
+    enabled = true
+    base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000/v1"
+    models = ["claude-haiku", "claude-sonnet", "claude-opus-4-7", "claude-opus-4-6", "deepseek-v4-pro", "deepseek-v4-flash", "gemini-flash-lite"]
+    fetch_models = true
+    stream_transport = "sse"
+    wire_api = "chat-completions"
+
+    # ── Agent Presets ──────────────────────────────────────────────
+
+    [agents.presets.de-job-hunter]
+    identity.name = "de-job-hunter"
+    identity.emoji = "🔍"
+    identity.theme = "terse job search specialist"
+    model = "claude-haiku"
+    tools.allow = ["web_search", "web_fetch", "Read", "Write", "Glob", "Grep", "memory_search", "memory_save"]
+    tools.deny = ["exec", "browser", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
+    max_iterations = 10
+    timeout_secs = 600
+
+    [agents.presets.de-blog-generator]
+    identity.name = "de-blog-generator"
+    identity.emoji = "✍️"
+    identity.theme = "bilingual technical content creator"
+    model = "claude-sonnet"
+    tools.allow = ["web_search", "web_fetch", "Read", "Write", "Edit", "Glob", "Grep", "exec", "browser", "send_image", "memory_search", "memory_save"]
+    tools.deny = ["cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
+    max_iterations = 30
+    timeout_secs = 3600
+
+    [agents.presets.de-saas-finder]
+    identity.name = "de-saas-finder"
+    identity.emoji = "💡"
+    identity.theme = "micro-SaaS opportunity analyst"
+    model = "claude-sonnet"
+    tools.allow = ["web_search", "web_fetch", "Read", "Write", "Glob", "Grep", "memory_search", "memory_save"]
+    tools.deny = ["exec", "browser", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
+    max_iterations = 10
+    timeout_secs = 1200
+
+    [agents.presets.de-list-manager]
+    identity.name = "de-list-manager"
+    identity.emoji = "📋"
+    identity.theme = "terse CRUD list handler"
+    model = "claude-haiku"
+    tools.allow = ["Read", "Write", "Edit", "Glob", "memory_search", "memory_save"]
+    tools.deny = ["exec", "browser", "web_search", "web_fetch", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
+    max_iterations = 5
+    timeout_secs = 300
+
+    [agents.presets.de-poc-overnight]
+    identity.name = "de-poc-overnight"
+    identity.emoji = "🔬"
+    identity.theme = "overnight PoC builder with full tooling"
+    model = "claude-opus-4-7"
+    tools.allow = ["Read", "Write", "Edit", "MultiEdit", "Glob", "Grep", "exec", "web_search", "web_fetch", "browser", "send_image", "memory_search", "memory_save", "spawn_agent", "spawn_status", "spawn_result", "task_list", "checkpoints_list", "checkpoint_restore"]
+    tools.deny = ["cron", "webhook", "sessions_delete", "create_skill", "delete_skill", "nodes_select"]
+    max_iterations = 50
+    timeout_secs = 28800
+
+    [agents.presets.de-on-demand]
+    identity.name = "de-on-demand"
+    identity.emoji = "⚡"
+    identity.theme = "general-purpose ad-hoc agent"
+    model = "claude-sonnet"
+    tools.allow = ["Read", "Write", "Edit", "Glob", "Grep", "exec", "web_search", "web_fetch", "memory_search", "memory_save"]
+    tools.deny = ["cron", "webhook", "sessions_delete", "create_skill", "delete_skill", "nodes_select"]
+    max_iterations = 15
+    timeout_secs = 1800
+
+    # ── Cron jobs are in cron-configmap.yaml (jobs.json), not here ──
+
+    # ── Heartbeat ──────────────────────────────────────────────────
+
+    [heartbeat]
+    wake_cooldown = "5m"
+    deliver = true
+    to = "6689299547"
+
+    # ── Hooks ──────────────────────────────────────────────────────
+
+    [[hooks.hooks]]
+    name = "exec-guard"
+    command = "/home/moltis/.moltis/hooks/exec-guard.sh"
+    events = ["BeforeToolCall"]
+    timeout = 5
+
+    [[hooks.hooks]]
+    name = "audit-log"
+    command = "/home/moltis/.moltis/hooks/audit-log.sh"
+    events = ["BeforeToolCall", "AfterToolCall"]
+    timeout = 5
+
+    [[hooks.hooks]]
+    name = "trajectory-logger"
+    command = "/home/moltis/.moltis/hooks/trajectory-logger.sh"
+    events = ["AfterLLMCall", "AfterToolCall", "SessionEnd"]
+    timeout = 5
