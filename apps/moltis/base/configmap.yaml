@@ -90,6 +90,7 @@ data:
 
     [tools.exec]
     approval_mode = "never"
+    default_timeout_secs = 300
 
     [tools.exec.sandbox]
     packages = [
