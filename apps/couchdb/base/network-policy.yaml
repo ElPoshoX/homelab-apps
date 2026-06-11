@@ -23,6 +23,7 @@ spec:
               protocol: TCP
     - fromEntities:
         - world
+        - cluster
       toPorts:
         - ports:
             - port: "5984"
