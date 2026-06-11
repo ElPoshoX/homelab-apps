@@ -19,7 +19,6 @@ resources:
   - cron-configmap.yaml
   - secret.yaml
   - vault-recovery-secret.yaml
-  - couchdb-secret.yaml
   - vault-write-skill.yaml
   - pvc.yaml
   - deployment.yaml

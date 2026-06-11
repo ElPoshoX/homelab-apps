@@ -88,18 +88,6 @@ spec:
               value: /run/secrets/recovery-key
             - name: DOCKER_HOST
               value: unix:///run/docker/docker.sock
-            - name: COUCHDB_URL
-              value: "http://couchdb.couchdb.svc.cluster.local:5984"
-            - name: COUCHDB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: moltis-couchdb
-                  key: COUCHDB_USER
-            - name: COUCHDB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: moltis-couchdb
-                  key: COUCHDB_PASSWORD
           envFrom:
             - secretRef:
                 name: moltis-bootstrap
