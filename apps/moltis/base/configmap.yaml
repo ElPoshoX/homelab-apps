@@ -93,6 +93,8 @@ data:
     default_timeout_secs = 300
 
     [tools.exec.sandbox]
+    backend = "docker"
+    image = "moltis-cache/aegis-sandbox:15ba4e502ce2"
     packages = [
         # DevOps / IaC (apt-available only; terraform/helm/kubectl installed at runtime)
         "ansible",
