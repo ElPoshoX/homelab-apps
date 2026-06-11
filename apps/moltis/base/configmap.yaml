@@ -93,11 +93,7 @@ data:
 
     [tools.exec.sandbox]
     packages = [
-        # DevOps / IaC
-        "terraform",
-        "helm",
-        "kubectl",
-        "kustomize",
+        # DevOps / IaC (apt-available only; terraform/helm/kubectl installed at runtime)
         "ansible",
         # Vault write (JSON construction)
         "jq",
