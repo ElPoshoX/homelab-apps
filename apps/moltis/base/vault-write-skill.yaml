@@ -15,100 +15,30 @@ data:
 
     ## Rules
 
-    - NEVER create script files — execute everything inline with `bash -c '...'`
-    - NEVER use jq for chunk JSON — use python3 (jq `--arg` double-escapes newlines, breaking LiveSync)
-    - `COUCHDB_URL`, `COUCHDB_USER`, `COUCHDB_PASSWORD` are already in the environment
-    - URL-encode slashes in doc paths: `agents/foo/bar.md` → `agents%2Ffoo%2Fbar.md`
-    - Each exec call does ONE thing — don't chain chunk+parent in one call
+    - NEVER use jq for JSON — use python3 only (jq double-escapes newlines)
+    - NEVER use f-strings with escaped quotes in python3 — use string concatenation
+    - NEVER use heredoc (`<< EOF`) — use triple-quoted strings inside python3
+    - `COUCHDB_URL`, `COUCHDB_USER`, `COUCHDB_PASSWORD` are in the environment
+    - Use `os.environ["VAR"]` to read them — no need to export
 
     ## Directory Convention
 
     Each agent writes to `agents/{agent-name}/`:
-    - `agents/de-job-hunter/2026-06-10-results.md`
-    - `agents/de-blog-generator/2026-06-10-cilium-draft.md`
-
     Use date-stamped filenames. Never overwrite previous runs.
 
-    ## Complete Example — Create a Note
+    ## One-Shot Write (Use This)
 
-    ### Step 1: Compute chunk ID and write chunk
-
-    Use a SINGLE python3 call to compute chunk ID AND PUT the chunk.
-    This avoids newline escaping issues entirely.
+    Single exec, single python3 call. Copy-paste and replace doc_path + content.
 
     ```bash
-    bash -c 'python3 -c "
-    import json, hashlib, urllib.request, urllib.parse, base64, os, sys
-
-    content = sys.stdin.read()
-    doc_path = os.environ[\"DOC_PATH\"]
-    couchdb_url = os.environ[\"COUCHDB_URL\"]
-    auth = base64.b64encode(f\"{os.environ[\"COUCHDB_USER\"]}:{os.environ[\"COUCHDB_PASSWORD\"]}\".encode()).decode()
-
-    byte_len = len(content.encode(\"utf-8\"))
-    chunk_hash = hashlib.sha256(f\"{content}-{byte_len}\".encode(\"utf-8\")).hexdigest()[:16]
-    chunk_id = f\"h:{chunk_hash}\"
-
-    chunk_doc = json.dumps({\"_id\": chunk_id, \"data\": content, \"type\": \"leaf\"})
-    req = urllib.request.Request(
-        f\"{couchdb_url}/obsidian-vault/{urllib.parse.quote(chunk_id, safe=\"\")}\",
-        data=chunk_doc.encode(), method=\"PUT\",
-        headers={\"Content-Type\": \"application/json\", \"Authorization\": f\"Basic {auth}\"}
-    )
-    resp = urllib.request.urlopen(req)
-    print(f\"CHUNK_ID={chunk_id}\")
-    print(f\"BYTE_LEN={byte_len}\")
-    print(f\"CHUNK_HTTP={resp.status}\")
-    " <<CONTENT_EOF
-    YOUR MARKDOWN CONTENT HERE
-    CONTENT_EOF'
-    ```
-
-    Replace `YOUR MARKDOWN CONTENT HERE` with the actual note content (with frontmatter).
-    Save CHUNK_ID and BYTE_LEN from output.
-
-    ### Step 2: PUT parent
-
-    ```bash
-    bash -c 'python3 -c "
-    import json, urllib.request, urllib.parse, base64, os, time
-
-    doc_path = os.environ[\"DOC_PATH\"]
-    chunk_id = os.environ[\"CHUNK_ID\"]
-    byte_len = int(os.environ[\"BYTE_LEN\"])
-    couchdb_url = os.environ[\"COUCHDB_URL\"]
-    auth = base64.b64encode(f\"{os.environ[\"COUCHDB_USER\"]}:{os.environ[\"COUCHDB_PASSWORD\"]}\".encode()).decode()
-
-    now_ms = int(time.time() * 1000)
-    parent_doc = json.dumps({
-        \"_id\": doc_path, \"path\": doc_path,
-        \"children\": [chunk_id],
-        \"ctime\": now_ms, \"mtime\": now_ms,
-        \"size\": byte_len, \"type\": \"plain\", \"eden\": {}
-    })
-    req = urllib.request.Request(
-        f\"{couchdb_url}/obsidian-vault/{urllib.parse.quote(doc_path, safe=\"\")}\",
-        data=parent_doc.encode(), method=\"PUT\",
-        headers={\"Content-Type\": \"application/json\", \"Authorization\": f\"Basic {auth}\"}
-    )
-    resp = urllib.request.urlopen(req)
-    print(f\"PARENT_HTTP={resp.status}\")
-    " DOC_PATH="agents/my-agent/2026-06-11-test.md" CHUNK_ID="h:REPLACE_ME" BYTE_LEN="REPLACE_ME"'
-    ```
-
-    Expect PARENT_HTTP=201.
-
-    ## One-Shot Write (Preferred)
-
-    For simplicity, use this single python3 call that does everything:
-
-    ```bash
-    bash -c 'python3 << '"'"'PYEOF'"'"'
+    bash -c 'python3 << PYEOF
     import json, hashlib, urllib.request, urllib.parse, base64, os, time
 
     COUCHDB = os.environ["COUCHDB_URL"]
-    AUTH = base64.b64encode(f"{os.environ[\"COUCHDB_USER\"]}:{os.environ[\"COUCHDB_PASSWORD\"]}".encode()).decode()
-    HEADERS = {"Content-Type": "application/json", "Authorization": f"Basic {AUTH}"}
+    USER = os.environ["COUCHDB_USER"]
+    PASSWORD = os.environ["COUCHDB_PASSWORD"]
+    AUTH = base64.b64encode((USER + ":" + PASSWORD).encode()).decode()
+    HEADERS = {"Content-Type": "application/json", "Authorization": "Basic " + AUTH}
 
     doc_path = "agents/YOUR-AGENT-NAME/YYYY-MM-DD-title.md"
     content = """---
@@ -118,29 +48,28 @@ data:
     # Your Title
 
     Your content here.
+    Multiple lines work fine.
     """
 
     byte_len = len(content.encode("utf-8"))
-    chunk_hash = hashlib.sha256(f"{content}-{byte_len}".encode("utf-8")).hexdigest()[:16]
-    chunk_id = f"h:{chunk_hash}"
+    chunk_hash = hashlib.sha256((content + "-" + str(byte_len)).encode("utf-8")).hexdigest()[:16]
+    chunk_id = "h:" + chunk_hash
 
-    # PUT chunk
     chunk_doc = json.dumps({"_id": chunk_id, "data": content, "type": "leaf"})
-    req1 = urllib.request.Request(f"{COUCHDB}/obsidian-vault/{urllib.parse.quote(chunk_id, safe='')}", data=chunk_doc.encode(), method="PUT", headers=HEADERS)
+    req1 = urllib.request.Request(COUCHDB + "/obsidian-vault/" + urllib.parse.quote(chunk_id, safe=""), data=chunk_doc.encode(), method="PUT", headers=HEADERS)
     r1 = urllib.request.urlopen(req1)
-    print(f"Chunk: HTTP {r1.status}")
+    print("Chunk: HTTP " + str(r1.status))
 
-    # PUT parent
     now_ms = int(time.time() * 1000)
     parent_doc = json.dumps({"_id": doc_path, "path": doc_path, "children": [chunk_id], "ctime": now_ms, "mtime": now_ms, "size": byte_len, "type": "plain", "eden": {}})
-    req2 = urllib.request.Request(f"{COUCHDB}/obsidian-vault/{urllib.parse.quote(doc_path, safe='')}", data=parent_doc.encode(), method="PUT", headers=HEADERS)
+    req2 = urllib.request.Request(COUCHDB + "/obsidian-vault/" + urllib.parse.quote(doc_path, safe=""), data=parent_doc.encode(), method="PUT", headers=HEADERS)
     r2 = urllib.request.urlopen(req2)
-    print(f"Parent: HTTP {r2.status}")
-    print(f"Document: {doc_path}")
+    print("Parent: HTTP " + str(r2.status))
+    print("Document: " + doc_path)
     PYEOF'
     ```
 
-    Replace doc_path, content, and dedup_key. This is the preferred method — one exec, no escaping issues.
+    Replace `doc_path`, `content`, and `dedup_key`. That's it.
 
     ## Read a Note
 
@@ -150,11 +79,13 @@ data:
 
     ## Update a Note
 
-    GET `_rev` first, then PUT with `_rev` in parent JSON. Never PUT without `_rev` — CouchDB returns 409.
+    GET `_rev` first. Never PUT without `_rev` — CouchDB returns 409.
 
     ```bash
-    bash -c 'curl -s "$COUCHDB_URL/obsidian-vault/$(echo "agents/my-agent/file.md" | sed "s|/|%2F|g")" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" | python3 -c "import sys,json; print(json.load(sys.stdin)[\"_rev\"])"'
+    bash -c 'DOC="agents/my-agent/file.md"; curl -s "$COUCHDB_URL/obsidian-vault/$(echo $DOC | sed s,/,%2F,g)" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get(\"_rev\",\"not found\"))"'
     ```
+
+    Then use the One-Shot Write pattern but add `"_rev": "THE_REV"` to the parent_doc dict.
 
     ## List Agent Outputs
 
@@ -162,17 +93,9 @@ data:
     bash -c 'curl -s -X POST "$COUCHDB_URL/obsidian-vault/_find" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" -H "Content-Type: application/json" -d "{\"selector\":{\"path\":{\"\$regex\":\"^agents/de-job-hunter/\"}},\"fields\":[\"path\",\"_id\"],\"limit\":1000}"'
     ```
 
-    ## Conflict Handling
-
-    - Prefer new documents over updating existing ones
-    - Use date-stamped filenames: `2026-06-10-results.md`, `2026-06-11-results.md`
-    - If PUT returns 409: GET for fresh `_rev`, retry once
-
     ## Dedup — Avoid Duplicate Output
 
-    Every output document MUST include a `dedup_key` in YAML frontmatter.
-
-    ### dedup_key Format Per Agent
+    Every output MUST include `dedup_key` in YAML frontmatter.
 
     | Agent | dedup_key format | Example |
     |-------|-----------------|---------|
@@ -181,8 +104,6 @@ data:
     | de-saas-finder | Idea slug | `k8s-cost-optimizer` |
 
     ### Dedup Flow
-
-    1. List existing docs in your `agents/{agent-name}/` directory
-    2. Fetch each doc's chunk → extract `dedup_key` from frontmatter
-    3. Exact match → skip
-    4. No match → write
+    1. List existing docs in your directory
+    2. Fetch chunks → extract `dedup_key`
+    3. Exact match → skip. No match → write.
