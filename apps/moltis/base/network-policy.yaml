@@ -51,6 +51,16 @@ spec:
             - port: "80"
               protocol: TCP
 
+    # CouchDB for agent vault writes
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: couchdb
+            app: couchdb
+      toPorts:
+        - ports:
+            - port: "5984"
+              protocol: TCP
+
     # Internal cluster services (OTel collector, TrueNAS, etc.)
     - toEntities:
         - cluster

@@ -5,25 +5,18 @@ labels:
   - includeSelectors: true
     pairs:
       app.kubernetes.io/managed-by: kustomize
-      app.kubernetes.io/part-of: moltis
+      app.kubernetes.io/part-of: couchdb
       homelab.local/OwnedBy: ElPoshoX
 
-namespace: moltis
+namespace: couchdb
 
 resources:
   - namespace.yaml
   - storageclass.yaml
-  - configmap.yaml
-  - agents-configmap.yaml
-  - hooks-configmap.yaml
-  - cron-configmap.yaml
-  - secret.yaml
-  - vault-recovery-secret.yaml
-  - couchdb-secret.yaml
-  - vault-write-skill.yaml
   - pvc.yaml
+  - secret.yaml
+  - livesync-config.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
   - network-policy.yaml
-  - servicemonitor.yaml
+  - init-job.yaml

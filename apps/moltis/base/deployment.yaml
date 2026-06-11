@@ -38,10 +38,12 @@ spec:
               cat > /home/moltis/.config/moltis/provider_keys.json <<KEYS
               {"custom-litellm":{"apiKey":"$LITELLM_API_KEY"}}
               KEYS
-              mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs /home/moltis/.moltis/cron
+              mkdir -p /home/moltis/.moltis/agents /home/moltis/.moltis/hooks /home/moltis/.moltis/logs /home/moltis/.moltis/cron /home/moltis/.moltis/skills
               cp /tmp/moltis-agents/*.md /home/moltis/.moltis/agents/
               cp /tmp/moltis-hooks/*.sh /home/moltis/.moltis/hooks/
               cp /tmp/moltis-cron/jobs.json /home/moltis/.moltis/cron/jobs.json
+              mkdir -p /home/moltis/.moltis/skills/vault-write
+              cp /tmp/moltis-skills/vault-write.md /home/moltis/.moltis/skills/vault-write/SKILL.md
               chmod +x /home/moltis/.moltis/hooks/*.sh
               chown -R 1000:1000 /home/moltis/.config/moltis /home/moltis/.moltis
           securityContext:
@@ -59,6 +61,9 @@ spec:
               mountPath: /tmp/moltis-hooks
             - name: moltis-cron
               mountPath: /tmp/moltis-cron
+            - name: vault-write-skill
+              mountPath: /tmp/moltis-skills
+
       containers:
         - name: moltis
           image: ghcr.io/moltis-org/moltis:latest
@@ -83,6 +88,18 @@ spec:
               value: /run/secrets/recovery-key
             - name: DOCKER_HOST
               value: unix:///run/docker/docker.sock
+            - name: COUCHDB_URL
+              value: "http://couchdb.couchdb.svc.cluster.local:5984"
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: moltis-couchdb
+                  key: COUCHDB_USER
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: moltis-couchdb
+                  key: COUCHDB_PASSWORD
           envFrom:
             - secretRef:
                 name: moltis-bootstrap
@@ -194,3 +211,6 @@ spec:
           configMap:
             name: moltis-hooks
             defaultMode: 0755
+        - name: vault-write-skill
+          configMap:
+            name: moltis-vault-write-skill

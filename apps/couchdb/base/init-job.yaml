@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: couchdb-init-db
+spec:
+  template:
+    metadata:
+      labels:
+        app: couchdb-init
+    spec:
+      restartPolicy: OnFailure
+      automountServiceAccountToken: false
+      containers:
+        - name: init-db
+          image: curlimages/curl:8.11.1
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-admin
+                  key: COUCHDB_USER
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-admin
+                  key: COUCHDB_PASSWORD
+          command:
+            - sh
+            - -c
+            - |
+              until curl -sf http://couchdb:5984/_up; do
+                echo "Waiting for CouchDB..."
+                sleep 2
+              done
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
+                -u "$COUCHDB_USER:$COUCHDB_PASSWORD" \
+                http://couchdb:5984/obsidian-vault)
+              if [ "$STATUS" = "201" ] || [ "$STATUS" = "412" ]; then
+                echo "Database obsidian-vault ready (HTTP $STATUS)"
+                exit 0
+              else
+                echo "Failed to create database (HTTP $STATUS)"
+                exit 1
+              fi
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: couchdb-livesync-config
+data:
+  livesync.ini: |
+    [chttpd]
+    require_valid_user_except_for_up = true
+    enable_cors = true
+    max_http_request_size = 4294967296
+
+    [chttpd_auth]
+    require_valid_user = true
+
+    [httpd]
+    enable_cors = true
+
+    [cors]
+    origins = app://obsidian.md, capacitor://localhost, http://localhost
+    credentials = true
+    methods = GET, PUT, POST, HEAD, DELETE
+    headers = accept, content-type, origin, referer, authorization
+
+    [couchdb]
+    max_document_size = 50000000
