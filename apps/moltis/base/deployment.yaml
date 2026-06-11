@@ -185,8 +185,8 @@ spec:
         - name: docker-socket
           emptyDir: {}
         - name: dind-storage
-          emptyDir:
-            sizeLimit: 10Gi
+          persistentVolumeClaim:
+            claimName: moltis-dind-storage
         - name: moltis-agents
           configMap:
             name: moltis-agents-config
