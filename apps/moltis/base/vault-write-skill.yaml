@@ -4,6 +4,11 @@ metadata:
   name: moltis-vault-write-skill
 data:
   vault-write.md: |
+    ---
+    name: vault-write
+    description: Write agent output to Obsidian vault via CouchDB. Docs sync automatically via LiveSync.
+    ---
+
     # Vault Write Skill — CouchDB + LiveSync
 
     Write agent output to the Obsidian vault via CouchDB. Documents sync to Obsidian automatically via LiveSync (≤30s).
