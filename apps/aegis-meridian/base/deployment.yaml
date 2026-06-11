@@ -20,7 +20,7 @@ metadata:
     app.kubernetes.io/name: meridian
     app.kubernetes.io/version: "1.42.1"
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: meridian
@@ -74,8 +74,8 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 2
+              memory: 2Gi
           livenessProbe:
             httpGet:
               path: /health
