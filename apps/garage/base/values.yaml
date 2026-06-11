@@ -34,7 +34,9 @@ garage:
     port: 9000
 
 # StatefulSet configuration
-replicaCount: 5
+deployment:
+  kind: StatefulSet
+  replicaCount: 5
 
 # Service configuration
 service:
@@ -46,17 +48,15 @@ service:
   admin:
     port: 3900
 
-# Storage configuration - distributed 17GB per replica (50GB total)
-# Each replica on separate worker node with Longhorn PVC
+# Storage configuration - 35Gi data + 1Gi meta per replica
 persistence:
   enabled: true
-  storageClassName: longhorn
-  size: 35Gi
-  accessModes:
-    - ReadWriteMany
-
-  # Mount path for data
-  mountPath: /mnt/garage/data
+  meta:
+    storageClass: longhorn
+    size: 1Gi
+  data:
+    storageClass: longhorn
+    size: 35Gi
 
 # Resource requests and limits
 resources:
