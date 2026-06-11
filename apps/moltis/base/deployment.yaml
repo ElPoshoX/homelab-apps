@@ -168,6 +168,7 @@ spec:
 
       securityContext:
         fsGroup: 1000
+        supplementalGroups: [2375]
       volumes:
         - name: moltis-config
           persistentVolumeClaim:
