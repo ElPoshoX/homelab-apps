@@ -50,11 +50,11 @@ data:
     ### Compute Chunk ID
 
     ```python
-    import xxhash
+    import hashlib
 
     def chunk_id(content: str) -> str:
         n = len(content.encode('utf-8'))
-        h = xxhash.xxh64(f"{content}-{n}".encode('utf-8')).intdigest()
+        h = int(hashlib.sha256(f"{content}-{n}".encode('utf-8')).hexdigest(), 16) % (2**64)
         digits = "0123456789abcdefghijklmnopqrstuvwxyz"
         r = ""
         while h:
@@ -62,11 +62,11 @@ data:
         return f"h:{r or '0'}"
     ```
 
-    Shell one-liner (requires `pip install xxhash`):
+    Shell one-liner (stdlib only, no pip needed):
     ```bash
     CHUNK_ID=$(python3 -c "
-    import xxhash,sys; c=sys.stdin.read(); n=len(c.encode('utf-8'))
-    h=xxhash.xxh64(f'{c}-{n}'.encode('utf-8')).intdigest()
+    import hashlib,sys; c=sys.stdin.read(); n=len(c.encode('utf-8'))
+    h=int(hashlib.sha256(f'{c}-{n}'.encode('utf-8')).hexdigest(),16)%(2**64)
     d='0123456789abcdefghijklmnopqrstuvwxyz'; r=''
     while h: r,h=d[h%36]+r,h//36
     print(f'h:{r or \"0\"}')" <<< "$CONTENT")
