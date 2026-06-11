@@ -20,3 +20,4 @@ resources:
   - service.yaml
   - network-policy.yaml
   - init-job.yaml
+  - httproute.yaml
