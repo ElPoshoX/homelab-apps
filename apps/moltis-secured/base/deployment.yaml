@@ -19,7 +19,7 @@ spec:
         app: meltis
         app.kubernetes.io/name: meltis
     spec:
-      RuntimeClassName: kata
+      runtimeClassName: kata
       automountServiceAccountToken: false
       initContainers:
         - name: fix-permissions
