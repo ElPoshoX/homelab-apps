@@ -145,8 +145,6 @@ spec:
           args:
             - dockerd
             - --host=unix:///run/docker/docker.sock
-            - --iptables=false
-            - --ip6tables=false
           securityContext:
             privileged: true
           env:
