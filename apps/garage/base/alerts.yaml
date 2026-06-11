@@ -1,0 +1,60 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: garage-alerts
+  labels:
+    app.kubernetes.io/name: garage
+spec:
+  groups:
+    - name: garage-storage
+      rules:
+        - alert: GarageDiskUsageHigh
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{namespace="garage", persistentvolumeclaim=~".*garage.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="garage", persistentvolumeclaim=~".*garage.*"}
+            ) > 0.75
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Garage disk usage above 75%"
+            description: "PVC {{ $labels.persistentvolumeclaim }} is at {{ $value | humanizePercentage }}."
+
+        - alert: GarageDiskUsageCritical
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{namespace="garage", persistentvolumeclaim=~".*garage.*"}
+              / kubelet_volume_stats_capacity_bytes{namespace="garage", persistentvolumeclaim=~".*garage.*"}
+            ) > 0.85
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Garage disk usage above 85%"
+            description: "PVC {{ $labels.persistentvolumeclaim }} is at {{ $value | humanizePercentage }}. Expand PVCs urgently to prevent WAL archiving failures."
+
+    - name: garage-health
+      rules:
+        - alert: GarageReplicaDown
+          expr: |
+            kube_statefulset_replicas{namespace="garage", statefulset="garage"}
+            - kube_statefulset_status_replicas_ready{namespace="garage", statefulset="garage"}
+            > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Garage replica not ready"
+            description: "{{ $value }} Garage replica(s) not ready in namespace garage."
+
+        - alert: GarageReplicaCountDrift
+          expr: |
+            kube_statefulset_replicas{namespace="garage", statefulset="garage"}
+            < count(kube_node_info{node=~"worker-.*"})
+          for: 30m
+          labels:
+            severity: info
+          annotations:
+            summary: "Garage replicas < worker node count"
+            description: "Garage has {{ $value }} fewer replicas than worker nodes. Consider scaling."

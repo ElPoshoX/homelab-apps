@@ -1,6 +1,6 @@
 # Garage S3 Helm Chart Configuration
 # Distributed S3 object storage backend for homelab observability stack
-# StatefulSet mode with 3 replicas (1 per worker node)
+# StatefulSet mode with 5 replicas (1 per worker node)
 
 # Image configuration
 image:
@@ -34,7 +34,7 @@ garage:
     port: 9000
 
 # StatefulSet configuration
-replicaCount: 3
+replicaCount: 5
 
 # Service configuration
 service:
@@ -51,7 +51,7 @@ service:
 persistence:
   enabled: true
   storageClassName: longhorn
-  size: 17Gi
+  size: 35Gi
   accessModes:
     - ReadWriteMany
 
@@ -79,7 +79,7 @@ node:
   # Per-replica configuration for distributed setup
   layout:
     redundancy: 2  # Data replicated across 2 zones
-    capacity: 17000  # Per replica in MB (approx 17GB)
+    capacity: 35000  # Per replica in MB (approx 35GB)
 
 # S3 buckets to create
 buckets:
@@ -161,7 +161,7 @@ clusterConfig:
   layout:
     enabled: true
     zone: dc1
-    capacity: "17000"  # Per replica in MB
+    capacity: "35000"  # Per replica in MB
 
   # S3 buckets
   buckets:
