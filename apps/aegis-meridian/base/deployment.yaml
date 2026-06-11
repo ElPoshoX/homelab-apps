@@ -20,7 +20,7 @@ metadata:
     app.kubernetes.io/name: meridian
     app.kubernetes.io/version: "1.42.1"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: meridian
