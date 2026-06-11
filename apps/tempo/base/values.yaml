@@ -61,7 +61,7 @@ tempo:
     max_concurrent_queries: 20
   queryFrontend: {}
 
-  retention: 168h
+  retention: 336h
 
   overrides:
     defaults:

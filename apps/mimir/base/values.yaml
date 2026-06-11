@@ -41,6 +41,7 @@ mimir:
       out_of_order_time_window: 1h
       creation_grace_period: 10m
       compactor_block_upload_enabled: true
+      compactor_blocks_retention_period: 2160h
       max_query_lookback: 90d
 
     frontend:
