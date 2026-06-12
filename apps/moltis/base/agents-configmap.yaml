@@ -142,23 +142,25 @@ data:
 
     ### Phase 5: Save to vault
 
-    Use the `vault-write` skill (exec + python3 → CouchDB). Write ONE file per job.
+    **Step 1:** Load the vault-write skill first:
+    ```
+    read_skill(name="vault-write")
+    ```
 
-    - **doc_path**: `02-Areas/Career/Job-Tracker/{Company-Name}.md`
-    - **dedup_key**: the canonical job URL
+    **Step 2:** Follow the skill's "One-Shot Write" pattern for each job. Key details:
+    - **doc_path**: `02-Areas/Career/Job-Tracker/{Company-Name}.md` (PascalCase with hyphens)
+    - If file exists for SAME role → duplicate, skip (HTTP 409 = already exists)
+    - If file exists for DIFFERENT role → use `{Company-Name}-{Short-Role}.md`
+    - `$COUCHDB_URL`, `$COUCHDB_USER`, `$COUCHDB_PASSWORD` are in the environment
 
-    **Filename:** PascalCase with hyphens (e.g. `Auvik-Networks.md`).
-    - If file exists for SAME role → duplicate, skip
-    - If file exists for DIFFERENT role → use `{Company-Name}-{Short-Role}.md` (e.g. `CookUnity-Staff-SRE.md`)
-
-    **Document format (EXACT):**
-    ```markdown
+    **Content MUST use this exact JobTracker frontmatter format:**
+    ```
     ---
     Company: "Company Name"
     Date Added: 'YYYY-MM-DD'
     Link: 'https://full-job-posting-url'
     Notes: >-
-      Work model, source board, geo-eligibility notes, caveats.
+      Work model, geo-eligibility, source board, caveats.
     Role: "Exact job title from posting"
     Salary Estimate: "$XXK-$XXXK/yr ($X.XK-$XX.XK/mo)"
     Stack: 'Tech1, Tech2, Tech3'
@@ -171,9 +173,8 @@ data:
     - [[02-Areas/Career/Job-Tracker/README|Job Tracker]]
     ```
 
-    **Status values:**
-    - `New` — verified geo-eligible, salary meets threshold
-    - `Needs Verification` — geo or salary ambiguous. Explain in Notes what to confirm.
+    **Status values:** `New` (verified) or `Needs Verification` (ambiguous geo/salary).
+    **Expected output per job:** `Chunk: HTTP 201` then `Parent: HTTP 201`.
 
     ### Phase 6: Output report
 
