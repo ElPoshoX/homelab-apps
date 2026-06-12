@@ -20,6 +20,7 @@ data:
     - NEVER use heredoc (`<< EOF`) — use triple-quoted strings inside python3
     - `COUCHDB_URL`, `COUCHDB_USER`, `COUCHDB_PASSWORD` are in the environment
     - Use `os.environ["VAR"]` to read them — no need to export
+    - ALWAYS lowercase the `_id` field — LiveSync uses lowercase IDs. The `path` field keeps original case.
 
     ## Directory Convention
 
@@ -67,8 +68,9 @@ data:
     print("Chunk: HTTP " + str(r1.status))
 
     now_ms = int(time.time() * 1000)
-    parent_doc = json.dumps({"_id": doc_path, "path": doc_path, "children": [chunk_id], "ctime": now_ms, "mtime": now_ms, "size": byte_len, "type": "plain", "eden": {}})
-    req2 = urllib.request.Request(COUCHDB + "/obsidian-vault/" + urllib.parse.quote(doc_path, safe=""), data=parent_doc.encode(), method="PUT", headers=HEADERS)
+    doc_id = doc_path.lower()
+    parent_doc = json.dumps({"_id": doc_id, "path": doc_path, "children": [chunk_id], "ctime": now_ms, "mtime": now_ms, "size": byte_len, "type": "plain", "eden": {}})
+    req2 = urllib.request.Request(COUCHDB + "/obsidian-vault/" + urllib.parse.quote(doc_id, safe=""), data=parent_doc.encode(), method="PUT", headers=HEADERS)
     r2 = urllib.request.urlopen(req2)
     print("Parent: HTTP " + str(r2.status))
     print("Document: " + doc_path)
