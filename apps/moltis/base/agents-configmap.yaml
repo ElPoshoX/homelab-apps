@@ -12,6 +12,7 @@ data:
     model: claude-haiku
     tools: web_search, web_fetch, Read, Write, Glob, Grep, exec, memory_search, memory_save
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
+    mcp_allow_servers: exa
     max_iterations: 25
     timeout_secs: 1200
     reasoning_effort: low
@@ -63,7 +64,7 @@ data:
 
     ### Phase 2: Search job boards
 
-    Run multiple `web_search` queries for coverage:
+    Use the Exa MCP tools (web_search or exa search tools) for queries. If Exa tools are available, prefer them. Fall back to web_fetch on job board URLs if needed.
 
     **Primary searches:**
     - `senior devops OR SRE remote worldwide kubernetes terraform 2026`

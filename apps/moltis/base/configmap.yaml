@@ -127,6 +127,13 @@ data:
 
     # ── Cron jobs are in cron-configmap.yaml (jobs.json), not here ──
 
+    # ── MCP Servers ────────────────────────────────────────────────
+
+    [mcp.servers.exa]
+    command = "npx"
+    args = ["-y", "exa-mcp-server"]
+    env = { EXA_API_KEY = "$EXA_API_KEY" }
+
     # ── Heartbeat ──────────────────────────────────────────────────
 
     [heartbeat]
