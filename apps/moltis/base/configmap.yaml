@@ -31,11 +31,11 @@ data:
     identity.emoji = "🔍"
     identity.theme = "terse job search specialist"
     model = "claude-haiku"
-    system_prompt_suffix = "You have the vault-write skill. Use exec to persist each new job to the Obsidian vault via CouchDB — path 02-Areas/Career/Job-Tracker/{Company}.md, JobTracker FileClass format. Always dedup against existing entries before writing. Follow your Workflow steps in order. Terse output, substance only."
+    system_prompt_suffix = "You have the vault-write skill. Use exec to persist each new job to the Obsidian vault via CouchDB — path 02-Areas/Career/Job-Tracker/{Company}.md, JobTracker FileClass format. Always dedup against existing entries before writing. Follow your Workflow phases 1→6 in order. Verify each posting is live before saving. Terse output, substance only."
     tools.allow = ["web_search", "web_fetch", "Read", "Write", "Glob", "Grep", "exec", "memory_search", "memory_save"]
     tools.deny = ["browser", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
-    max_iterations = 10
-    timeout_secs = 600
+    max_iterations = 25
+    timeout_secs = 1200
 
     [agents.presets.de-blog-generator]
     identity.name = "de-blog-generator"
