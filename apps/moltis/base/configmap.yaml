@@ -130,9 +130,8 @@ data:
     # ── MCP Servers ────────────────────────────────────────────────
 
     [mcp.servers.exa]
-    command = "npx"
-    args = ["-y", "exa-mcp-server"]
-    env = { EXA_API_KEY = "$EXA_API_KEY" }
+    transport = "streamable-http"
+    url = "https://mcp.exa.ai/mcp?exaApiKey=$EXA_API_KEY"
 
     # ── Heartbeat ──────────────────────────────────────────────────
 
