@@ -10,7 +10,7 @@ data:
     emoji: "\U0001F50D"
     theme: terse job search specialist
     model: claude-haiku
-    tools: Read, Write, Glob, Grep, exec, memory_search, memory_save, mcp__exa__web_search_exa, mcp__exa__web_fetch_exa
+    tools: Read, Write, Glob, Grep, exec, memory_search, memory_save
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
     max_iterations: 25
     timeout_secs: 1200
@@ -63,42 +63,67 @@ data:
 
     ### Phase 2: Search job boards
 
-    Use `web_search_exa` for search queries and `web_fetch_exa` to read full job posting pages.
+    Use `exec` with curl to call the Exa Search API. `$EXA_API_KEY` is in the environment.
 
-    **Primary searches:**
-    - `senior devops OR SRE remote worldwide kubernetes terraform 2026`
-    - `senior devops engineer remote LATAM Mexico 2026`
-    - `site:himalayas.app senior devops OR SRE worldwide`
-    - `site:remotive.com senior devops OR SRE remote worldwide`
-    - `site:weworkremotely.com senior devops OR SRE`
-    - `site:builtin.com senior devops engineer remote`
+    **Exa Search API — how to call:**
+    ```bash
+    bash -c 'curl -s -X POST "https://api.exa.ai/search" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"query\":\"YOUR SEARCH QUERY\",\"numResults\":10,\"contents\":{\"highlights\":true,\"text\":{\"maxCharacters\":2000}}}"'
+    ```
 
-    **Secondary (if < 10 candidates from primary):**
-    - `site:wellfound.com senior devops remote worldwide`
-    - `senior infrastructure engineer remote worldwide hiring`
-    - Company career pages: Grafana Labs, Canonical, Elastic, HashiCorp, GitLab, Percona
+    **Input fields:**
+    - `query` (string) — the search query
+    - `numResults` (int, 1-100) — how many results. Use 10.
+    - `contents.highlights` (bool) — returns key snippets from each page
+    - `contents.text.maxCharacters` (int) — full page text, truncated. Use 2000.
 
-    **Source tips:**
-    - BuiltIn returns Mexico-based results well — use `web_fetch_exa` on results pages
-    - WeWorkRemotely/RemoteOK often return 403 — rely on search snippets, verify via employer career page
-    - Lever.co and Greenhouse.io job pages are fetchable with structured data
-    - Remotive returns 410 for expired listings — treat as inactive
-    - Himalayas individual pages sometimes return homepage instead of listing — skip if generic content
+    **Response format (JSON):**
+    ```json
+    {
+      "results": [
+        {
+          "title": "Senior DevOps Engineer - Remote",
+          "url": "https://jobs.lever.co/company/uuid",
+          "publishedDate": "2026-06-10",
+          "author": "Company Name",
+          "text": "Full job posting text up to maxCharacters...",
+          "highlights": ["Key snippet 1", "Key snippet 2"]
+        }
+      ]
+    }
+    ```
 
-    ### Phase 3: Verify each candidate
+    **Each result gives you title, URL, AND page content in ONE call** — no separate fetch needed.
 
-    For every candidate, verify geo-eligibility and that posting is active.
+    **Run these searches (2-3 exec calls):**
+    ```bash
+    bash -c 'curl -s -X POST "https://api.exa.ai/search" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"query\":\"senior devops OR SRE engineer remote worldwide kubernetes terraform 2026\",\"numResults\":10,\"contents\":{\"highlights\":true,\"text\":{\"maxCharacters\":2000}}}"'
+    ```
+    ```bash
+    bash -c 'curl -s -X POST "https://api.exa.ai/search" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"query\":\"senior platform engineer remote LATAM Mexico hiring 2026\",\"numResults\":10,\"contents\":{\"highlights\":true,\"text\":{\"maxCharacters\":2000}}}"'
+    ```
+    ```bash
+    bash -c 'curl -s -X POST "https://api.exa.ai/search" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"query\":\"senior infrastructure engineer remote worldwide DevOps SRE 2026\",\"numResults\":10,\"contents\":{\"highlights\":true,\"text\":{\"maxCharacters\":2000}}}"'
+    ```
 
-    **Run each through dedup index first. Skip duplicates.**
+    Parse each result's `text` and `highlights` to extract: company, role, salary, stack, geo-eligibility.
 
-    **Geo-eligibility:**
+    ### Phase 3: Verify and filter candidates
+
+    **Run each candidate through dedup index from Phase 1. Skip duplicates.**
+
+    For each non-duplicate result from Phase 2, check the `text` and `highlights` fields:
+
+    **Geo-eligibility (check in the page text):**
     - ACCEPT: "Remote worldwide", "Remote (anywhere)", explicit Mexico/LATAM/Latin America mention
     - ACCEPT: Visa sponsorship + paid relocation offered
     - REJECT: "US only", "US residents only", "EU only", country restrictions excluding Mexico
-    - REJECT: Posting returns 404, redirects to homepage, or shows "no longer available"
-    - NEEDS VERIFICATION: Companies HQ'd in low-cost markets (Brazil, India) tagged "Worldwide" — check if they actually hire in Mexico and pay USD
+    - REJECT: If text is empty or generic (homepage instead of job posting) — skip
+    - NEEDS VERIFICATION: Companies HQ'd in Brazil/India tagged "Worldwide" — check if they pay USD
 
-    **Verification:** Use `web_fetch_exa` on job URL. Check location/eligibility section. If 403/timeout, try employer career page or different board. If still inaccessible, skip.
+    **If page text is insufficient**, fetch the full page with Exa Contents API:
+    ```bash
+    bash -c 'curl -s -X POST "https://api.exa.ai/contents" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"urls\":[\"https://jobs.lever.co/company/uuid\"],\"text\":{\"maxCharacters\":5000}}"'
+    ```
 
     **Salary verification:**
     - Explicitly stated >= $102K/yr → confirmed

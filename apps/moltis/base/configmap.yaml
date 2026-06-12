@@ -127,12 +127,6 @@ data:
 
     # ── Cron jobs are in cron-configmap.yaml (jobs.json), not here ──
 
-    # ── MCP Servers ────────────────────────────────────────────────
-
-    [mcp.servers.exa]
-    transport = "streamable-http"
-    url = "https://mcp.exa.ai/mcp?exaApiKey=$EXA_API_KEY"
-
     # ── Heartbeat ──────────────────────────────────────────────────
 
     [heartbeat]
