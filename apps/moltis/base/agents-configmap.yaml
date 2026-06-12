@@ -142,28 +142,29 @@ data:
 
     ### Phase 5: Save to vault
 
-    **Step 1:** Load the vault-write skill first:
-    ```
-    read_skill(name="vault-write")
-    ```
+    Save each verified job to the Obsidian vault via CouchDB. Follow these steps IN ORDER for each job.
 
-    **Step 2:** Follow the skill's "One-Shot Write" pattern for each job. Key details:
-    - **doc_path**: `02-Areas/Career/Job-Tracker/{Company-Name}.md` (PascalCase with hyphens)
-    - If file exists for SAME role → duplicate, skip (HTTP 409 = already exists)
-    - If file exists for DIFFERENT role → use `{Company-Name}-{Short-Role}.md`
-    - `$COUCHDB_URL`, `$COUCHDB_USER`, `$COUCHDB_PASSWORD` are in the environment
+    <rules>
+    - NEVER use jq, docker cp, curl-only, or Write tool for this phase
+    - NEVER hardcode CouchDB credentials — always use os.environ
+    - ALWAYS use python3 via exec tool
+    - ALWAYS use the exact frontmatter format shown below
+    </rules>
 
-    **Content MUST use this exact JobTracker frontmatter format:**
-    ```
+    <steps>
+    Step 1. Call read_skill with name="vault-write" to load the CouchDB write instructions.
+
+    Step 2. For each job, build the markdown content using this EXACT format:
+    <format>
     ---
-    Company: "Company Name"
+    Company: "COMPANY_NAME_HERE"
     Date Added: 'YYYY-MM-DD'
-    Link: 'https://full-job-posting-url'
+    Link: 'JOB_URL_HERE'
     Notes: >-
-      Work model, geo-eligibility, source board, caveats.
-    Role: "Exact job title from posting"
-    Salary Estimate: "$XXK-$XXXK/yr ($X.XK-$XX.XK/mo)"
-    Stack: 'Tech1, Tech2, Tech3'
+      GEO_AND_WORK_MODEL_NOTES_HERE
+    Role: "JOB_TITLE_HERE"
+    Salary Estimate: "SALARY_RANGE_HERE"
+    Stack: 'COMMA_SEPARATED_TECHS_HERE'
     Status: New
     ---
 
@@ -171,10 +172,26 @@ data:
     ## Related
 
     - [[02-Areas/Career/Job-Tracker/README|Job Tracker]]
-    ```
+    </format>
 
-    **Status values:** `New` (verified) or `Needs Verification` (ambiguous geo/salary).
-    **Expected output per job:** `Chunk: HTTP 201` then `Parent: HTTP 201`.
+    Step 3. Use the vault-write skill's "One-Shot Write" pattern via exec to write to CouchDB:
+    - Set doc_path to: 02-Areas/Career/Job-Tracker/CompanyName.md (PascalCase with hyphens)
+    - Set content to the markdown from Step 2
+    - The script reads COUCHDB_URL, COUCHDB_USER, COUCHDB_PASSWORD from os.environ — do NOT hardcode them
+    - If a company already has a file for a different role, use CompanyName-ShortRole.md
+
+    Step 4. Verify the output shows "Chunk: HTTP 201" and "Parent: HTTP 201". If you get HTTP 409, the doc already exists — skip it.
+
+    Step 5. Repeat Steps 2-4 for each of the top 5 jobs.
+    </steps>
+
+    <example>
+    For a job at SmartBear as Senior DevOps Engineer:
+    - doc_path = "02-Areas/Career/Job-Tracker/SmartBear.md"
+    - Company: "SmartBear"
+    - Role: "Senior DevOps Engineer"
+    - Status: always "New"
+    </example>
 
     ### Phase 6: Output report
 
