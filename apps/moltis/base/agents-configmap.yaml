@@ -14,7 +14,7 @@ data:
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
     max_iterations: 25
     timeout_secs: 1200
-    reasoning_effort: low
+    reasoning_effort: high
     ---
     
     # DE Job Hunter — Aegis (Moltis)
