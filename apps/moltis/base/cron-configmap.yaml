@@ -14,7 +14,7 @@ data:
         "payload": { "kind": "agentTurn", "message": "Run your Workflow phases in order (1→6). Use vault-write skill to persist new jobs. End with Phase 6 report.", "agentId": "de-job-hunter", "deliver": true, "channel": "TheThothAIBot", "to": "6689299547" },
         "sessionTarget": "isolated",
         "state": {},
-        "sandbox": { "enabled": false },
+        "sandbox": { "enabled": true },
         "wakeMode": "nextHeartbeat",
         "system": false,
         "createdAtMs": 1718000000000,
