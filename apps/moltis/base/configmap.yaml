@@ -31,8 +31,8 @@ data:
     identity.emoji = "🔍"
     identity.theme = "terse job search specialist"
     model = "claude-haiku"
-    tools.allow = ["web_search", "web_fetch", "Read", "Write", "Glob", "Grep", "memory_search", "memory_save"]
-    tools.deny = ["exec", "browser", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
+    tools.allow = ["web_search", "web_fetch", "Read", "Write", "Glob", "Grep", "exec", "memory_search", "memory_save"]
+    tools.deny = ["browser", "cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
     max_iterations = 10
     timeout_secs = 600
 

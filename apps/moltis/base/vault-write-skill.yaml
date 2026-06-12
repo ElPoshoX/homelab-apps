@@ -23,8 +23,14 @@ data:
 
     ## Directory Convention
 
-    Each agent writes to `agents/{agent-name}/`:
-    Use date-stamped filenames. Never overwrite previous runs.
+    Default: each agent writes to `agents/{agent-name}/` with date-stamped filenames.
+
+    Exceptions (agent-specific paths):
+    | Agent | Path | Filename |
+    |-------|------|----------|
+    | de-job-hunter | `02-Areas/Career/Job-Tracker/` | `{Company-Name}.md` |
+
+    Never overwrite previous runs.
 
     ## One-Shot Write (Use This)
 
@@ -87,15 +93,16 @@ data:
 
     Then use the One-Shot Write pattern but add `"_rev": "THE_REV"` to the parent_doc dict.
 
-    ## List Agent Outputs
+    ## List Docs in a Directory
 
+    Replace the path regex with your target directory:
     ```bash
-    bash -c 'curl -s -X POST "$COUCHDB_URL/obsidian-vault/_find" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" -H "Content-Type: application/json" -d "{\"selector\":{\"path\":{\"\$regex\":\"^agents/de-job-hunter/\"}},\"fields\":[\"path\",\"_id\"],\"limit\":1000}"'
+    bash -c 'curl -s -X POST "$COUCHDB_URL/obsidian-vault/_find" -u "$COUCHDB_USER:$COUCHDB_PASSWORD" -H "Content-Type: application/json" -d "{\"selector\":{\"path\":{\"\$regex\":\"^YOUR/DIRECTORY/\"}},\"fields\":[\"path\",\"children\"],\"limit\":200}"'
     ```
 
     ## Dedup — Avoid Duplicate Output
 
-    Every output MUST include `dedup_key` in YAML frontmatter.
+    Every output MUST include a `dedup_key` in YAML frontmatter.
 
     | Agent | dedup_key format | Example |
     |-------|-----------------|---------|
@@ -104,6 +111,6 @@ data:
     | de-saas-finder | Idea slug | `k8s-cost-optimizer` |
 
     ### Dedup Flow
-    1. List existing docs in your directory
-    2. Fetch chunks → extract `dedup_key`
+    1. List existing docs in your target directory
+    2. Fetch chunks → extract `dedup_key` (or `Link` for Job-Tracker entries)
     3. Exact match → skip. No match → write.
