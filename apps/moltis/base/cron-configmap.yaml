@@ -11,7 +11,7 @@ data:
         "enabled": true,
         "deleteAfterRun": false,
         "schedule": { "kind": "cron", "expr": "0 4 * * *", "tz": "America/Mexico_City" },
-        "payload": { "kind": "agentTurn", "message": "Run the daily job search. Deduplicate against previous results.", "agentId": "de-job-hunter" },
+        "payload": { "kind": "agentTurn", "message": "Run your Workflow steps in order:\n1. Load existing Job-Tracker entries from CouchDB (dedup)\n2. Search job boards for new Senior+ DevOps/SRE/Platform roles, remote LATAM-eligible\n3. Deduplicate against seen URLs and company names\n4. Use vault-write skill to persist each new job to 02-Areas/Career/Job-Tracker/{Company}.md\n\nEnd with a summary: how many new, how many skipped, and list the new ones with company + role.", "agentId": "de-job-hunter", "deliver": true },
         "sessionTarget": "isolated",
         "state": {},
         "sandbox": { "enabled": false },
