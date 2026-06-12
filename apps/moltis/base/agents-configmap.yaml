@@ -9,7 +9,7 @@ data:
     display_name: DE Job Hunter
     emoji: "\U0001F50D"
     theme: terse job search specialist
-    model: claude-sonnet
+    model: claude-haiku
     tools: Read, Write, Glob, Grep, exec, memory_search, memory_save
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
     max_iterations: 40
