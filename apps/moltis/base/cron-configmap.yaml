@@ -11,7 +11,7 @@ data:
         "enabled": true,
         "deleteAfterRun": false,
         "schedule": { "kind": "cron", "expr": "0 4 * * *", "tz": "America/Mexico_City" },
-        "payload": { "kind": "agentTurn", "message": "Run your Workflow phases in order (1→6). Use vault-write skill to persist new jobs. End with Phase 6 report.", "agentId": "de-job-hunter", "deliver": true, "channel": "TheThothAIBot", "to": "6689299547" },
+        "payload": { "kind": "agentTurn", "message": "Run the daily job search. Follow all phases in your system prompt. Persist results with vault-write skill. End with summary report.", "agentId": "de-job-hunter", "deliver": true, "channel": "TheThothAIBot", "to": "6689299547" },
         "sessionTarget": "isolated",
         "state": {},
         "sandbox": { "enabled": true },
