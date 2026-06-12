@@ -10,7 +10,7 @@ data:
     emoji: "\U0001F50D"
     theme: terse job search specialist
     model: claude-haiku
-    tools: Read, Write, Glob, Grep, exec, memory_search, memory_save
+    tools: Read, Write, Glob, Grep, exec, memory_search, memory_save, mcp__exa__web_search_exa, mcp__exa__web_fetch_exa
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
     max_iterations: 25
     timeout_secs: 1200
