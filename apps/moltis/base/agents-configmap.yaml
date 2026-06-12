@@ -10,7 +10,7 @@ data:
     emoji: "\U0001F50D"
     theme: terse job search specialist
     model: claude-haiku
-    tools: web_search, web_fetch, Read, Write, Glob, Grep, exec, memory_search, memory_save
+    tools: web_search_exa, web_fetch_exa, Read, Write, Glob, Grep, exec, memory_search, memory_save
     deny_tools: kubectl, docker, git, browser, cron, webhook, sessions_delete, create_skill, delete_skill
     mcp_allow_servers: exa
     max_iterations: 25
@@ -64,7 +64,7 @@ data:
 
     ### Phase 2: Search job boards
 
-    Use the Exa MCP tools (web_search or exa search tools) for queries. If Exa tools are available, prefer them. Fall back to web_fetch on job board URLs if needed.
+    Use `web_search_exa` for search queries and `web_fetch_exa` to read full job posting pages.
 
     **Primary searches:**
     - `senior devops OR SRE remote worldwide kubernetes terraform 2026`
@@ -80,7 +80,7 @@ data:
     - Company career pages: Grafana Labs, Canonical, Elastic, HashiCorp, GitLab, Percona
 
     **Source tips:**
-    - BuiltIn returns Mexico-based results well — use `web_fetch` on results pages
+    - BuiltIn returns Mexico-based results well — use `web_fetch_exa` on results pages
     - WeWorkRemotely/RemoteOK often return 403 — rely on search snippets, verify via employer career page
     - Lever.co and Greenhouse.io job pages are fetchable with structured data
     - Remotive returns 410 for expired listings — treat as inactive
@@ -99,7 +99,7 @@ data:
     - REJECT: Posting returns 404, redirects to homepage, or shows "no longer available"
     - NEEDS VERIFICATION: Companies HQ'd in low-cost markets (Brazil, India) tagged "Worldwide" — check if they actually hire in Mexico and pay USD
 
-    **Verification:** Use `web_fetch` on job URL. Check location/eligibility section. If 403/timeout, try employer career page or different board. If still inaccessible, skip.
+    **Verification:** Use `web_fetch_exa` on job URL. Check location/eligibility section. If 403/timeout, try employer career page or different board. If still inaccessible, skip.
 
     **Salary verification:**
     - Explicitly stated >= $102K/yr → confirmed
