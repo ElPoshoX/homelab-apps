@@ -107,29 +107,38 @@ data:
 
     Parse each result's `text` and `highlights` to extract: company, role, salary, stack, geo-eligibility.
 
-    ### Phase 3: Verify and filter candidates
+    ### Phase 3: Verify each candidate
 
-    **Run each candidate through dedup index from Phase 1. Skip duplicates.**
+    This is the MOST CRITICAL phase. For every candidate, you MUST verify THREE things in this order: (1) posting is still active, (2) geo-eligible, (3) salary meets threshold.
 
-    For each non-duplicate result from Phase 2, check the `text` and `highlights` fields:
+    **Before verifying, run each candidate through the dedup index from Phase 1. Skip any that match.**
 
-    **Geo-eligibility (check in the page text):**
-    - ACCEPT: "Remote worldwide", "Remote (anywhere)", explicit Mexico/LATAM/Latin America mention
-    - ACCEPT: Visa sponsorship + paid relocation offered
-    - REJECT: "US only", "US residents only", "EU only", country restrictions excluding Mexico
-    - REJECT: If text is empty or generic (homepage instead of job posting) — skip
-    - NEEDS VERIFICATION: Companies HQ'd in Brazil/India tagged "Worldwide" — check if they pay USD
+    **1. ACTIVE POSTING — check this FIRST, reject early:**
+    - Check `publishedDate` from Exa results — REJECT if older than 30 days
+    - Use exec+curl to fetch the actual job posting URL and confirm it loads a real posting
+    - REJECT if: returns 404/410, redirects to homepage, shows "position filled", "no longer accepting applications", "this job has expired", or is a generic careers page
+    - REJECT if: page has no "Apply" button/link or application instructions
+    - Remotive returns 410 for expired listings — treat as inactive
+    - If the page is inaccessible (403, timeout), try the employer's career page directly or search for the same role on a different board. If still inaccessible, SKIP — do not guess.
 
-    **If page text is insufficient**, fetch the full page with Exa Contents API:
+    **2. GEO-ELIGIBILITY — verify from the actual posting text, not assumptions:**
+    - ACCEPT: "Remote worldwide", "Remote (anywhere)", explicit mention of Mexico, Latin America, or LATAM
+    - ACCEPT: Visa sponsorship + paid relocation offered (even if on-site)
+    - REJECT: "US only", "US residents only", "Must be authorized to work in the US"
+    - REJECT: "EU only", "Europe only", country-specific restrictions excluding Mexico
+    - NEEDS VERIFICATION: Companies HQ'd in Brazil, India, or other low-cost markets tagged "Worldwide" — indicators: website in Portuguese/Hindi, salary in BRL/INR, no history of hiring in Mexico. Save with Status: Needs Verification and explain in Notes.
+
+    **3. SALARY — verify from posting or company profile:**
+    - Explicitly stated >= $102K/yr ($8,500/mo) → confirmed
+    - Unspecified but well-funded startup ($50M+), public company (NYSE/NASDAQ), or major tech → "likely competitive", include it
+    - LATAM-specific from staffing/outsourcing company → likely $60-90K, below threshold. Include ONLY if track record of above-market rates
+    - REJECT roles that explicitly state salary below $102K/yr
+    - BEWARE geo-banded comp: some show high US range but pay $40-60K for LATAM. Always check for regional bands and evaluate against the Mexico-applicable band, not the US band.
+
+    **If page text from Phase 2 is insufficient for any check**, fetch the full page:
     ```bash
-    bash -c 'curl -s -X POST "https://api.exa.ai/contents" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"urls\":[\"https://jobs.lever.co/company/uuid\"],\"text\":{\"maxCharacters\":5000}}"'
+    bash -c 'curl -s -X POST "https://api.exa.ai/contents" -H "x-api-key: $EXA_API_KEY" -H "Content-Type: application/json" -d "{\"urls\":[\"https://the-job-url.com/posting\"],\"text\":{\"maxCharacters\":5000}}"'
     ```
-
-    **Salary verification:**
-    - Explicitly stated >= $102K/yr → confirmed
-    - Unspecified but well-funded startup ($50M+) or public company → "likely competitive"
-    - LATAM-specific from staffing/outsourcing company → likely $60-90K, below threshold unless track record of above-market rates
-    - BEWARE geo-banded comp: some show high US range but pay $40-60K for LATAM. Check for regional bands.
 
     ### Phase 4: Rank and select top 5
 
