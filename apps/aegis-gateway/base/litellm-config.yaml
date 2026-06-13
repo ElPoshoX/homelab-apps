@@ -116,6 +116,22 @@ data:
           input_cost_per_token: 0.0000001
           output_cost_per_token: 0.0000003
 
+      # ── Smart Router (complexity-based model selection) ──
+      # Agents send model="auto" → LiteLLM classifies by
+      # request complexity and routes to optimal model.
+      # Tiers: SIMPLE=flash(cheap), MEDIUM=sonnet($0),
+      #        COMPLEX=opus($0), REASONING=deepseek-pro
+      - model_name: auto
+        litellm_params:
+          model: auto_router/complexity_router
+          complexity_router_config:
+            tiers:
+              SIMPLE: deepseek-v4-flash
+              MEDIUM: claude-sonnet
+              COMPLEX: claude-opus-4-6
+              REASONING: deepseek-v4-pro
+          complexity_router_default_model: claude-sonnet
+
     litellm_settings:
       drop_params: true
       success_callback:
