@@ -32,7 +32,7 @@ data:
     identity.name = "de-blog-generator"
     identity.emoji = "✍️"
     identity.theme = "bilingual technical content creator"
-    model = "claude-sonnet"
+    model = "claude-opus-4-6"
     tools.allow = ["web_search", "web_fetch", "Read", "Write", "Edit", "Glob", "Grep", "exec", "browser", "send_image", "memory_search", "memory_save"]
     tools.deny = ["cron", "webhook", "sessions_delete", "create_skill", "delete_skill"]
     max_iterations = 30
@@ -62,7 +62,7 @@ data:
     identity.name = "de-poc-overnight"
     identity.emoji = "🔬"
     identity.theme = "overnight PoC builder with full tooling"
-    model = "claude-opus-4-7"
+    model = "claude-opus-4-6"
     tools.allow = ["Read", "Write", "Edit", "MultiEdit", "Glob", "Grep", "exec", "web_search", "web_fetch", "browser", "send_image", "memory_search", "memory_save", "spawn_agent", "spawn_status", "spawn_result", "task_list", "checkpoints_list", "checkpoint_restore"]
     tools.deny = ["cron", "webhook", "sessions_delete", "create_skill", "delete_skill", "nodes_select"]
     max_iterations = 50
