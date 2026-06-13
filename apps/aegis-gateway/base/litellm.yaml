@@ -67,13 +67,8 @@ spec:
             - name: config
               mountPath: /etc/litellm
               readOnly: true
-            - name: aegis-router-py
-              mountPath: /etc/litellm/aegis_router.py
-              subPath: aegis_router.py
-              readOnly: true
-            - name: aegis-router-table
-              mountPath: /etc/aegis-router/routing-table.json
-              subPath: routing-table.json
+            - name: aegis-router
+              mountPath: /etc/aegis-router
               readOnly: true
           resources:
             requests:
@@ -107,15 +102,6 @@ spec:
         - name: config
           configMap:
             name: litellm-config
-        - name: aegis-router-py
+        - name: aegis-router
           configMap:
             name: aegis-router
-            items:
-              - key: aegis_router.py
-                path: aegis_router.py
-        - name: aegis-router-table
-          configMap:
-            name: aegis-router
-            items:
-              - key: routing-table.json
-                path: routing-table.json

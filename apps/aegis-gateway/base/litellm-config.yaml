@@ -180,3 +180,156 @@ data:
       store_model_in_db: true
       max_budget: 300
       budget_duration: "30d"
+
+  aegis_router.py: |
+    """Aegis smart model router — LiteLLM async_pre_call_hook callback."""
+
+    import asyncio
+    import json
+    import logging
+    import os
+    import time
+    from pathlib import Path
+    from typing import Optional, Union
+
+    from litellm.integrations.custom_logger import CustomLogger
+    from litellm.proxy._types import UserAPIKeyAuth
+
+    logger = logging.getLogger("aegis_router")
+
+    DEFAULT_ROUTING_TABLE = {
+        "code-generation": "qwen3-235b",
+        "code-review": "claude-sonnet",
+        "architecture": "claude-opus-4-6",
+        "reasoning": "deepseek-v4-pro",
+        "simple-query": "deepseek-v4-flash",
+        "creative-writing": "claude-fable-5",
+        "eval-judge": "claude-haiku",
+        "research": "claude-sonnet",
+        "implementation": "qwen3-235b",
+        "testing": "claude-sonnet",
+        "documentation": "claude-sonnet",
+        "mechanical": "deepseek-v4-flash",
+    }
+
+    ROUTING_TABLE_PATH = os.environ.get(
+        "AEGIS_ROUTING_TABLE_PATH",
+        "/etc/aegis-router/routing-table.json",
+    )
+
+    DEFAULT_MODEL = "claude-sonnet"
+    RELOAD_INTERVAL_S = 5.0
+
+
+    class AegisRouter(CustomLogger):
+
+        def __init__(self):
+            super().__init__()
+            self._routing_table = dict(DEFAULT_ROUTING_TABLE)
+            self._table_mtime: float = 0
+            self._last_check: float = 0
+            self._reload_lock = asyncio.Lock()
+            self._load_routing_table()
+
+        def _load_routing_table(self) -> None:
+            path = Path(ROUTING_TABLE_PATH)
+            if not path.exists():
+                return
+            try:
+                mtime = path.stat().st_mtime
+                if mtime <= self._table_mtime:
+                    return
+                with open(path) as f:
+                    loaded = json.load(f)
+                self._routing_table = {**DEFAULT_ROUTING_TABLE, **loaded}
+                self._table_mtime = mtime
+                logger.info("Routing table reloaded (%d entries)", len(self._routing_table))
+            except Exception as e:
+                logger.warning("Failed to load routing table: %s", e)
+
+        async def _maybe_reload_table(self) -> None:
+            now = time.monotonic()
+            if now - self._last_check < RELOAD_INTERVAL_S:
+                return
+            self._last_check = now
+            async with self._reload_lock:
+                self._load_routing_table()
+
+        async def async_pre_call_hook(
+            self,
+            user_api_key_dict: UserAPIKeyAuth,
+            cache,
+            data: dict,
+            call_type: str,
+        ) -> Optional[Union[Exception, str, dict]]:
+            await self._maybe_reload_table()
+
+            model = data.get("model", "")
+            if model != "auto":
+                return None
+
+            headers = data.get("metadata", {}).get("headers", {})
+            task_type = (
+                headers.get("x-ollin-task-type")
+                or headers.get("x-aegis-task-type")
+            )
+
+            if task_type:
+                if task_type not in self._routing_table:
+                    logger.warning("Unknown task type from header: %.100s", task_type)
+                resolved = self._routing_table.get(task_type, DEFAULT_MODEL)
+                logger.info("Header routing: %s -> %s", task_type, resolved)
+                data["model"] = resolved
+                self._add_routing_metadata(data, task_type, "header", resolved)
+                return data
+
+            task_type = self._classify_from_content(data)
+            if task_type is None:
+                return None
+
+            resolved = self._routing_table.get(task_type, DEFAULT_MODEL)
+            logger.info("Content routing: %s -> %s", task_type, resolved)
+            data["model"] = resolved
+            self._add_routing_metadata(data, task_type, "classify", resolved)
+            return data
+
+        def _classify_from_content(self, data: dict) -> Optional[str]:
+            messages = data.get("messages", [])
+            text = ""
+            for msg in messages:
+                content = msg.get("content", "")
+                if isinstance(content, str):
+                    text += " " + content
+                elif isinstance(content, list):
+                    for block in content:
+                        if isinstance(block, dict) and block.get("type") == "text":
+                            text += " " + block.get("text", "")
+            text = text.lower()
+
+            categories = [
+                ("architecture", ["architect", "design system", "trade-off", "adr", "rfc", "system design"]),
+                ("reasoning", ["step by step", "prove that", "derive", "theorem", "mathematical", "formal logic"]),
+                ("code-review", ["code review", "pr review", "find bugs", "audit code", "review this code", "review the diff"]),
+                ("code-generation", ["implement", "write code", "write a function", "create function", "add feature", "build a"]),
+                ("testing", ["write test", "add test", "test coverage", "unit test", "integration test"]),
+                ("creative-writing", ["blog post", "write an article", "write about", "essay about", "narrative"]),
+                ("documentation", ["write documentation", "update readme", "add docstring", "explain how"]),
+                ("eval-judge", ["evaluate quality", "score this", "rate this", "judge this", "assess quality"]),
+                ("research", ["research", "find out about", "investigate", "compare options", "analyze market"]),
+            ]
+
+            for category, keywords in categories:
+                if any(kw in text for kw in keywords):
+                    return category
+
+            return None
+
+        def _add_routing_metadata(self, data: dict, task_type: str, source: str, model: str) -> None:
+            meta = data.get("metadata", {})
+            meta["aegis_task_type"] = task_type
+            meta["aegis_routing_source"] = source
+            meta["aegis_routed_model"] = model
+            data["metadata"] = meta
+
+
+    router_instance = AegisRouter()
