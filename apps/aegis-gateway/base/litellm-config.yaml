@@ -182,7 +182,12 @@ data:
       budget_duration: "30d"
 
   aegis_router.py: |
-    """Aegis smart model router — LiteLLM async_pre_call_hook callback."""
+    """Aegis smart model router — LiteLLM async_pre_call_hook callback.
+
+    Header-based routing only. Consumers send x-ollin-task-type or
+    x-aegis-task-type headers to select the model. Requests without
+    headers fall through to LiteLLM's complexity_router.
+    """
 
     import asyncio
     import json
@@ -274,62 +279,25 @@ data:
                 or headers.get("x-aegis-task-type")
             )
 
-            if task_type:
-                if task_type not in self._routing_table:
-                    logger.warning("Unknown task type from header: %.100s", task_type)
-                resolved = self._routing_table.get(task_type, DEFAULT_MODEL)
-                logger.info("Header routing: %s -> %s", task_type, resolved)
-                data["model"] = resolved
-                self._add_routing_metadata(data, task_type, "header", resolved)
-                return data
-
-            task_type = self._classify_from_content(data)
-            if task_type is None:
+            if not task_type:
                 return None
 
+            if task_type not in self._routing_table:
+                logger.warning("Unknown task type: %.100s", task_type)
+
             resolved = self._routing_table.get(task_type, DEFAULT_MODEL)
-            logger.info("Content routing: %s -> %s", task_type, resolved)
+            logger.info("Aegis routing: %s -> %s", task_type, resolved)
             data["model"] = resolved
-            self._add_routing_metadata(data, task_type, "classify", resolved)
-            return data
 
-        def _classify_from_content(self, data: dict) -> Optional[str]:
-            messages = data.get("messages", [])
-            text = ""
-            for msg in messages:
-                content = msg.get("content", "")
-                if isinstance(content, str):
-                    text += " " + content
-                elif isinstance(content, list):
-                    for block in content:
-                        if isinstance(block, dict) and block.get("type") == "text":
-                            text += " " + block.get("text", "")
-            text = text.lower()
-
-            categories = [
-                ("architecture", ["architect", "design system", "trade-off", "adr", "rfc", "system design"]),
-                ("reasoning", ["step by step", "prove that", "derive", "theorem", "mathematical", "formal logic"]),
-                ("code-review", ["code review", "pr review", "find bugs", "audit code", "review this code", "review the diff"]),
-                ("code-generation", ["implement", "write code", "write a function", "create function", "add feature", "build a"]),
-                ("testing", ["write test", "add test", "test coverage", "unit test", "integration test"]),
-                ("creative-writing", ["blog post", "write an article", "write about", "essay about", "narrative"]),
-                ("documentation", ["write documentation", "update readme", "add docstring", "explain how"]),
-                ("eval-judge", ["evaluate quality", "score this", "rate this", "judge this", "assess quality"]),
-                ("research", ["research", "find out about", "investigate", "compare options", "analyze market"]),
-            ]
-
-            for category, keywords in categories:
-                if any(kw in text for kw in keywords):
-                    return category
-
-            return None
-
-        def _add_routing_metadata(self, data: dict, task_type: str, source: str, model: str) -> None:
             meta = data.get("metadata", {})
-            meta["aegis_task_type"] = task_type
-            meta["aegis_routing_source"] = source
-            meta["aegis_routed_model"] = model
+            meta["spend_logs_metadata"] = {
+                "aegis_task_type": task_type,
+                "aegis_routing_source": "header",
+                "aegis_routed_model": resolved,
+            }
             data["metadata"] = meta
+
+            return data
 
 
     router_instance = AegisRouter()
