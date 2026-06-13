@@ -134,6 +134,7 @@ data:
 
     litellm_settings:
       drop_params: true
+      callbacks: aegis_router.router_instance
       success_callback:
         - prometheus
         - otel

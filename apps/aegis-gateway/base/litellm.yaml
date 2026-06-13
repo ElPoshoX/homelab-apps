@@ -50,6 +50,10 @@ spec:
             - containerPort: 4000
               name: http
           env:
+            - name: PYTHONPATH
+              value: "/etc/aegis-router"
+            - name: AEGIS_ROUTING_TABLE_PATH
+              value: "/etc/aegis-router/routing-table.json"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
@@ -64,6 +68,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/litellm
+              readOnly: true
+            - name: aegis-router
+              mountPath: /etc/aegis-router
               readOnly: true
           resources:
             requests:
@@ -97,3 +104,6 @@ spec:
         - name: config
           configMap:
             name: litellm-config
+        - name: aegis-router
+          configMap:
+            name: aegis-router
