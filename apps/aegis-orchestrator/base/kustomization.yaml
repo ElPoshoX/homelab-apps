@@ -12,3 +12,4 @@ resources:
   - deployment.yaml
   - network-policy.yaml
   - ingress.yaml
+  - ghcr-pull-secret.yaml

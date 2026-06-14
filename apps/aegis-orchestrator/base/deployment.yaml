@@ -18,6 +18,8 @@ spec:
         app.kubernetes.io/name: aegis-orchestrator
     spec:
       automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: aegis-orchestrator
           image: ghcr.io/elposhox/aegis-orchestrator:latest
