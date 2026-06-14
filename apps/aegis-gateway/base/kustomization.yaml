@@ -14,7 +14,6 @@ resources:
   - namespace.yaml
   - secret.yaml
   - litellm-config.yaml
-  - aegis-router.yaml
   - litellm.yaml
   - ingress.yaml
   - redis.yaml

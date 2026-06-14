@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: aegis-orchestrator
+      homelab.local/OwnedBy: ElPoshoX
+namespace: aegis-orchestrator
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - network-policy.yaml
+  - ingress.yaml

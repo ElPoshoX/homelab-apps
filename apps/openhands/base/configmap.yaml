@@ -35,5 +35,5 @@ data:
 
     [llm]
     model = "openai/claude-sonnet"
-    base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000"
+    base_url = "http://aegis-orchestrator.aegis-orchestrator.svc.cluster.local:8080"
     api_key_env = "LITELLM_API_KEY"

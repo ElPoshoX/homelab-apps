@@ -18,7 +18,7 @@ data:
 
     [providers.custom-litellm]
     enabled = true
-    base_url = "http://litellm.aegis-gateway.svc.cluster.local:4000/v1"
+    base_url = "http://aegis-orchestrator.aegis-orchestrator.svc.cluster.local:8080/v1"
     models = ["claude-haiku", "claude-sonnet", "claude-opus-4-7", "claude-opus-4-6", "deepseek-v4-pro", "deepseek-v4-flash", "gemini-flash-lite"]
     fetch_models = true
     stream_transport = "sse"

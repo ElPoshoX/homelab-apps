@@ -1,0 +1,52 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: aegis-orchestrator-ingress
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: aegis-orchestrator
+  ingress:
+    - fromEntities:
+        - cluster
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: aegis-orchestrator-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: aegis-orchestrator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: aegis-gateway
+            app.kubernetes.io/name: aegis-gateway
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: otel-collector
+            app.kubernetes.io/name: opentelemetry-collector
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
