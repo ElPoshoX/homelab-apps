@@ -74,6 +74,8 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
           securityContext:
+            runAsUser: 3000
+            runAsGroup: 3000
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
