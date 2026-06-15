@@ -62,4 +62,4 @@ spec:
       - name: vault-data
         nfs:
           server: truenas.elposhox.dev
-          path: /mnt/HomeLab/Obsidian-Vault/ElPoshoX-Vault
+          path: /mnt/HomeLab/Obsidian-Vault
