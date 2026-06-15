@@ -37,7 +37,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: aegis-gateway
-            app.kubernetes.io/name: aegis-gateway
+            app.kubernetes.io/name: litellm
       toPorts:
         - ports:
             - port: "4000"
