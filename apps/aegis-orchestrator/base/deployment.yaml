@@ -34,6 +34,11 @@ spec:
               value: http://litellm.aegis-gateway.svc.cluster.local:4000
             - name: AEGIS_EVAL_MODEL
               value: deepseek-v4-flash
+            - name: LITELLM_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aegis-orchestrator-secrets
+                  key: LITELLM_MASTER_KEY
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
             - name: OTEL_SERVICE_NAME
