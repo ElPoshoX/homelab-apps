@@ -66,6 +66,7 @@ spec:
               path: /ready
               port: http
             periodSeconds: 10
+            timeoutSeconds: 5
             failureThreshold: 3
           securityContext:
             allowPrivilegeEscalation: false
