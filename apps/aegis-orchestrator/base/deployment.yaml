@@ -75,7 +75,7 @@ spec:
         - name: vault
           nfs:
             server: truenas.elposhox.dev
-            path: /mnt/HomeLab/Obsidian-Vault/agents/aegis
+            path: /mnt/HomeLab/Obsidian-Vault/ElPoshoX-Vault/agents/aegis
 ---
 apiVersion: v1
 kind: Service
