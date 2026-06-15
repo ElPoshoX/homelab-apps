@@ -26,11 +26,11 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              if [ ! -d /vault/.git ]; then
-                git config --global user.email "aegis@elposhox.dev"
-                git config --global user.name "Aegis Orchestrator"
-                cd /vault
+              cd /vault
+              if [ ! -d .git ]; then
                 git init
+                git config user.email "aegis@elposhox.dev"
+                git config user.name "Aegis Orchestrator"
                 git add -A
                 git commit -m "init: vault baseline"
               fi
@@ -66,6 +66,14 @@ spec:
               value: http://opentelemetry-collector.otel-collector.svc.cluster.local:4317
             - name: OTEL_SERVICE_NAME
               value: aegis-orchestrator
+            - name: GIT_AUTHOR_NAME
+              value: Aegis Orchestrator
+            - name: GIT_AUTHOR_EMAIL
+              value: aegis@elposhox.dev
+            - name: GIT_COMMITTER_NAME
+              value: Aegis Orchestrator
+            - name: GIT_COMMITTER_EMAIL
+              value: aegis@elposhox.dev
           volumeMounts:
             - name: vault
               mountPath: /vault
