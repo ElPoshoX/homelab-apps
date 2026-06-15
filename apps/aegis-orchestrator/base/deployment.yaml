@@ -73,9 +73,9 @@ spec:
               drop: [ALL]
       volumes:
         - name: vault
-          hostPath:
-            path: /mnt/nfs/obsidian-vault/agents/aegis
-            type: Directory
+          nfs:
+            server: truenas.elposhox.dev
+            path: /mnt/HomeLab/Obsidian-Vault/agents/aegis
 ---
 apiVersion: v1
 kind: Service
