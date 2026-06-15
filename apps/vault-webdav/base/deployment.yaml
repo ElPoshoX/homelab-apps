@@ -20,7 +20,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: dufs
-        image: sigoden/dufs:0.43.0
+        image: sigoden/dufs:v0.46.0
         args:
         - /data
         - --allow-all
