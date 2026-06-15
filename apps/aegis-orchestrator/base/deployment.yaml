@@ -20,6 +20,29 @@ spec:
       automountServiceAccountToken: false
       imagePullSecrets:
         - name: ghcr-pull-secret
+      initContainers:
+        - name: git-init
+          image: alpine/git:2.47.2
+          command: ["sh", "-c"]
+          args:
+            - |
+              if [ ! -d /vault/.git ]; then
+                git config --global user.email "aegis@elposhox.dev"
+                git config --global user.name "Aegis Orchestrator"
+                cd /vault
+                git init
+                git add -A
+                git commit -m "init: vault baseline"
+              fi
+          volumeMounts:
+            - name: vault
+              mountPath: /vault
+          securityContext:
+            runAsUser: 3000
+            runAsGroup: 3000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
       containers:
         - name: aegis-orchestrator
           image: ghcr.io/elposhox/aegis-orchestrator:latest
