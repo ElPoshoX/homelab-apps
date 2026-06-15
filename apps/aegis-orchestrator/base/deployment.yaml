@@ -31,7 +31,7 @@ spec:
             - name: AEGIS_VAULT_PATH
               value: /vault
             - name: AEGIS_LITELLM_URL
-              value: http://aegis-gateway.aegis-gateway.svc.cluster.local:4000
+              value: http://litellm.aegis-gateway.svc.cluster.local:4000
             - name: AEGIS_EVAL_MODEL
               value: deepseek-v4-flash
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
