@@ -50,4 +50,20 @@ data:
         "createdAtMs": 1718000000000,
         "updatedAtMs": 1718000000000
       }
+      ,
+      {
+        "id": "vault-consolidator-biweekly",
+        "name": "vault-consolidator-biweekly",
+        "enabled": true,
+        "deleteAfterRun": false,
+        "schedule": { "kind": "cron", "expr": "0 6 1,15 * *", "tz": "America/Mexico_City" },
+        "payload": { "kind": "agentTurn", "message": "Run the biweekly vault consolidation. Follow all 4 Workflow phases in order. Read vault-write skill first. Scan for resource/investigation clusters with 5+ notes missing consolidated-into. Consolidate top 3 clusters. Update log.md and hot.md. End with summary report.", "agentId": "vault-consolidator", "deliver": true, "channel": "TheThothAIBot", "to": "6689299547" },
+        "sessionTarget": "isolated",
+        "state": {},
+        "sandbox": { "enabled": true },
+        "wakeMode": "nextHeartbeat",
+        "system": false,
+        "createdAtMs": 1751068800000,
+        "updatedAtMs": 1751068800000
+      }
     ]
