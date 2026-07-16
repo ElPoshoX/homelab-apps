@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        officina.homelab.local/restart-trigger: "nats-wiring-v2"
+        officina.homelab.local/restart-trigger: "nats-egress-fix"
       labels:
         app: officina
         app.kubernetes.io/name: officina
