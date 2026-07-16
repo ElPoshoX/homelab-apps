@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+# Pin the image to a digest once a release is built:
+# images:
+#   - name: ghcr.io/elposhox/officina
+#     newTag: latest
+#     digest: sha256:REPLACE_WITH_DIGEST

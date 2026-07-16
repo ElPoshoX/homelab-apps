@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: officina
+  labels:
+    app: officina
+    app.kubernetes.io/name: officina
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: officina
+  template:
+    metadata:
+      labels:
+        app: officina
+        app.kubernetes.io/name: officina
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: officina
+          image: ghcr.io/elposhox/officina:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: health
+          envFrom:
+            - secretRef:
+                name: officina-secrets
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          securityContext:
+            runAsUser: 3000
+            runAsGroup: 3000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: tmp
+          emptyDir: {}
