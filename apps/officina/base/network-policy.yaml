@@ -22,7 +22,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: nats
-            app: nats
+            app.kubernetes.io/name: nats
       toPorts:
         - ports:
             - port: "4222"
