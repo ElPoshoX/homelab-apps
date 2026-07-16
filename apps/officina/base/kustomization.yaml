@@ -13,6 +13,7 @@ namespace: officina
 resources:
   - namespace.yaml
   - secret.yaml
+  - pull-secret.yaml
   - deployment.yaml
   - service.yaml
   - network-policy.yaml
