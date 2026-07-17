@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aegis-router
+  labels:
+    app.kubernetes.io/name: aegis-router
+    app.kubernetes.io/component: gateway
+data:
+  routing-table.json: |
+    {}
