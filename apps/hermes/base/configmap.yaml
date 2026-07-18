@@ -12,7 +12,7 @@ data:
     dashboard:
       enabled: true
       basic_auth:
-        username: az
+        username: poshox
         password_hash: "__DASHBOARD_PASSWORD_HASH__"
     terminal:
       backend: docker
