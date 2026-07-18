@@ -107,21 +107,21 @@ spec:
               memory: 2Gi
           startupProbe:
             httpGet:
-              path: /
+              path: /health
               port: gateway
             initialDelaySeconds: 5
             periodSeconds: 10
             failureThreshold: 30
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: gateway
             initialDelaySeconds: 30
             periodSeconds: 30
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: gateway
             initialDelaySeconds: 10
             periodSeconds: 10

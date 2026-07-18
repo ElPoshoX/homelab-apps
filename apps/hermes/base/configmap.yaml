@@ -14,3 +14,5 @@ data:
       basic_auth:
         username: az
         password_hash: "__DASHBOARD_PASSWORD_HASH__"
+    terminal:
+      backend: docker
