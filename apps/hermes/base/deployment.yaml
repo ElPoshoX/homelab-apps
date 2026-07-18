@@ -147,6 +147,12 @@ spec:
           args:
             - dockerd
             - --host=unix:///run/docker/docker.sock
+            # hermes's own internal privilege drop (s6-setuidgid) re-resolves
+            # groups from /etc/group and loses k8s's pod-level
+            # supplementalGroups, so the socket's group has to be hermes's
+            # *primary* gid (1000) instead of the dind image's default (2375)
+            # for the post-drop worker process to reach it at all.
+            - --group=1000
           securityContext:
             privileged: true
           env:
