@@ -1,0 +1,33 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: hermes
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
+      namespace: ingress
+  hostnames:
+    - hermes.elposhox.dev
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /webhooks
+      backendRefs:
+        - group: ''
+          kind: Service
+          name: hermes
+          port: 8644
+          weight: 1
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ''
+          kind: Service
+          name: hermes
+          port: 9119
+          weight: 1

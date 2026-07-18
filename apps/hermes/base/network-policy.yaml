@@ -1,0 +1,76 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: hermes-ingress
+spec:
+  endpointSelector:
+    matchLabels:
+      app: hermes
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "8642"
+              protocol: TCP
+            - port: "9119"
+              protocol: TCP
+            - port: "8644"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: hermes-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      app: hermes
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+
+    # LiteLLM gateway (in-cluster model routing)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: aegis-gateway
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+
+    # OTEL collector
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: otel-collector
+            app.kubernetes.io/name: opentelemetry-collector
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+
+    # Messaging channels, MCP servers, package registries — broad egress
+    # (same pattern as Moltis: Hermes talks to many external services by design)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
+
+    # Internal cluster services
+    - toEntities:
+        - cluster

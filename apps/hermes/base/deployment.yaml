@@ -1,0 +1,165 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes
+  labels:
+    app: hermes
+    app.kubernetes.io/name: hermes
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hermes
+  template:
+    metadata:
+      labels:
+        app: hermes
+        app.kubernetes.io/name: hermes
+    spec:
+      automountServiceAccountToken: false
+      initContainers:
+        - name: bootstrap-config
+          image: busybox
+          env:
+            - name: LITELLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: LITELLM_API_KEY
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              mkdir -p /opt/data
+              sed "s|__LITELLM_API_KEY__|$LITELLM_API_KEY|" /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
+              chown -R 1000:1000 /opt/data
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+            - name: hermes-config-tmpl
+              mountPath: /tmp/hermes-config
+
+      containers:
+        - name: hermes
+          image: nousresearch/hermes-agent:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8642
+              name: gateway
+            - containerPort: 9119
+              name: dashboard
+            - containerPort: 8644
+              name: webhook
+          env:
+            - name: HERMES_DASHBOARD
+              value: "true"
+            - name: HERMES_UID
+              value: "1000"
+            - name: HERMES_GID
+              value: "1000"
+            - name: DOCKER_HOST
+              value: unix:///run/docker/docker.sock
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
+            - name: OTEL_SERVICE_NAME
+              value: "hermes"
+            - name: no_proxy
+              value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
+            - name: NO_PROXY
+              value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
+          envFrom:
+            - secretRef:
+                name: hermes-secrets
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+            - name: docker-socket
+              mountPath: /run/docker
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          startupProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gateway
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          # Required, verified against a real self-hosted-cluster deployment writeup:
+          # the image's s6-overlay init calls setgroups() while dropping from root to
+          # the unprivileged hermes user — that syscall requires real root and cannot
+          # be satisfied by runAsNonRoot + capability grants alone.
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+                - SETUID
+                - SETGID
+                - CHOWN
+            seccompProfile:
+              type: RuntimeDefault
+
+        - name: dind
+          image: docker:27-dind
+          args:
+            - dockerd
+            - --host=unix:///run/docker/docker.sock
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          volumeMounts:
+            - name: dind-storage
+              mountPath: /var/lib/docker
+            - name: docker-socket
+              mountPath: /run/docker
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups: [2375]
+      volumes:
+        - name: hermes-data
+          persistentVolumeClaim:
+            claimName: hermes-data
+        - name: hermes-config-tmpl
+          configMap:
+            name: hermes-config
+        - name: docker-socket
+          emptyDir: {}
+        - name: dind-storage
+          persistentVolumeClaim:
+            claimName: hermes-dind-storage
