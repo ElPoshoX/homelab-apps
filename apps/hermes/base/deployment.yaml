@@ -163,6 +163,13 @@ spec:
               mountPath: /var/lib/docker
             - name: docker-socket
               mountPath: /run/docker
+            # execute_code's ephemeral containers are spawned by *this*
+            # daemon via `docker run`, so any -v bind mount they get has to
+            # resolve from dind's own filesystem view, not the sibling
+            # "hermes" container's. Same PVC, same path, mounted twice —
+            # RWO only restricts to one node, not one container.
+            - name: hermes-data
+              mountPath: /opt/data
           resources:
             requests:
               cpu: 250m
