@@ -16,3 +16,6 @@ data:
         password_hash: "__DASHBOARD_PASSWORD_HASH__"
     terminal:
       backend: docker
+    plugins:
+      enabled:
+        - basic
