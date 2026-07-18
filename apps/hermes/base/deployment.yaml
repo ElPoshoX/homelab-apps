@@ -29,13 +29,20 @@ spec:
                 secretKeyRef:
                   name: hermes-secrets
                   key: LITELLM_API_KEY
+            - name: DASHBOARD_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: DASHBOARD_PASSWORD_HASH
           command:
             - sh
             - -c
             - |
               set -e
               mkdir -p /opt/data
-              sed "s|__LITELLM_API_KEY__|$LITELLM_API_KEY|" /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
+              sed -e "s|__LITELLM_API_KEY__|$LITELLM_API_KEY|" \
+                  -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
+                  /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
               chown -R 1000:1000 /opt/data
           securityContext:
             runAsUser: 0
@@ -69,6 +76,10 @@ spec:
               value: "1000"
             - name: HERMES_GID
               value: "1000"
+            - name: API_SERVER_ENABLED
+              value: "true"
+            - name: API_SERVER_HOST
+              value: "0.0.0.0"
             - name: DOCKER_HOST
               value: unix:///run/docker/docker.sock
             - name: OTEL_EXPORTER_OTLP_ENDPOINT

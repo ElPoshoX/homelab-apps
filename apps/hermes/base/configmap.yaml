@@ -11,3 +11,6 @@ data:
       api_key: __LITELLM_API_KEY__
     dashboard:
       enabled: true
+      basic_auth:
+        username: az
+        password_hash: "__DASHBOARD_PASSWORD_HASH__"
