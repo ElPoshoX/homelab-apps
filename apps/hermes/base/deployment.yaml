@@ -49,6 +49,12 @@ spec:
         - name: hermes
           image: nousresearch/hermes-agent:latest
           imagePullPolicy: IfNotPresent
+          # Default CMD is the interactive CLI, which exits immediately when
+          # stdin isn't a TTY. "gateway run" is the documented headless/daemon
+          # mode (see docker-compose.yml in the upstream repo).
+          args:
+            - gateway
+            - run
           ports:
             - containerPort: 8642
               name: gateway
