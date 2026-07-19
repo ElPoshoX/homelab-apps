@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        officina.homelab.local/restart-trigger: "cockpit-wiring"
+        officina.homelab.local/restart-trigger: "cockpit-xff-trust"
       labels:
         app: officina
         app.kubernetes.io/name: officina
