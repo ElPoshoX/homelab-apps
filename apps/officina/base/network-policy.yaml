@@ -31,6 +31,7 @@ spec:
     - toFQDNs:
         - matchName: github.com
         - matchName: api.github.com
+        - matchName: api.telegram.org
       toPorts:
         - ports:
             - port: "443"
