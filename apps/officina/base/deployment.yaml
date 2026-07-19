@@ -33,6 +33,9 @@ spec:
               name: health
             - containerPort: 8081
               name: cockpit
+          env:
+            - name: OFFICINA_WORKDIR
+              value: /tmp
           envFrom:
             - secretRef:
                 name: officina-secrets
