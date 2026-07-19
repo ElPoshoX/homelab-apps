@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        officina.homelab.local/restart-trigger: "cockpit-xff-rightmost-security-fix"
+        officina.homelab.local/restart-trigger: "cockpit-trust-home-lan"
       labels:
         app: officina
         app.kubernetes.io/name: officina
