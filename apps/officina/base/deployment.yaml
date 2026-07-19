@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        officina.homelab.local/restart-trigger: "nats-egress-fix"
+        officina.homelab.local/restart-trigger: "cockpit-wiring"
       labels:
         app: officina
         app.kubernetes.io/name: officina
@@ -31,6 +31,8 @@ spec:
           ports:
             - containerPort: 8080
               name: health
+            - containerPort: 8081
+              name: cockpit
           envFrom:
             - secretRef:
                 name: officina-secrets
