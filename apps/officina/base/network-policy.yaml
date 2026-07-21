@@ -47,6 +47,7 @@ spec:
       app: officina
   ingress:
     - fromEntities:
+        - world
         - cluster
       toPorts:
         - ports:
