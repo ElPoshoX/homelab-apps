@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/name: officina
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 3000
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
@@ -36,12 +38,16 @@ spec:
           env:
             - name: OFFICINA_WORKDIR
               value: /tmp
+            - name: OFFICINA_APPROVED_WORKSPACE_ROOTS
+              value: /data/workspaces
           envFrom:
             - secretRef:
                 name: officina-secrets
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: workspaces
+              mountPath: /data/workspaces
           resources:
             requests:
               cpu: 100m
@@ -81,3 +87,6 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: workspaces
+          persistentVolumeClaim:
+            claimName: officina-workspaces
