@@ -4,8 +4,7 @@ kind: Kustomization
 resources:
   - ../../base
 
-# Pin the image to a digest once a release is built:
-# images:
-#   - name: ghcr.io/elposhox/officina
-#     newTag: latest
-#     digest: sha256:REPLACE_WITH_DIGEST
+images:
+  - name: ghcr.io/elposhox/officina
+    newTag: "9493c7570cc3b08e3867b623b2be5cbdd73d3871"
+    digest: sha256:4100e85bca54849666217f51f7923e3ad704c183c4c8903fe90391848059849c
