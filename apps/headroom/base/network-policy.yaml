@@ -1,0 +1,50 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headroom-ingress
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: headroom
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "8787"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headroom-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: headroom
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+
+    # LLM provider APIs — FQDN-locked, HTTPS only. Headroom relays the
+    # client's own Authorization header, so no provider credentials live
+    # in this namespace.
+    - toFQDNs:
+        - matchName: api.anthropic.com
+        - matchName: api.openai.com
+        - matchName: generativelanguage.googleapis.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

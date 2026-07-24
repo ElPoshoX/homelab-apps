@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headroom
+  labels:
+    app: headroom
+    app.kubernetes.io/name: headroom
+    app.kubernetes.io/instance: headroom
+    app.kubernetes.io/component: proxy
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: headroom
+  template:
+    metadata:
+      labels:
+        app: headroom
+        app.kubernetes.io/name: headroom
+        app.kubernetes.io/component: proxy
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: headroom
+          image: ghcr.io/headroomlabs-ai/headroom:0.32.0-code-nonroot
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: HEADROOM_HOST
+              value: "0.0.0.0"
+            - name: HOME
+              value: /home/nonroot
+            - name: HEADROOM_WORKSPACE_DIR
+              value: /home/nonroot/.headroom
+            - name: HEADROOM_CONFIG_DIR
+              value: /home/nonroot/.headroom/config
+            - name: TZ
+              value: "America/Mexico_City"
+          ports:
+            - containerPort: 8787
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            failureThreshold: 20
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: data
+              mountPath: /home/nonroot/.headroom
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: headroom-data
