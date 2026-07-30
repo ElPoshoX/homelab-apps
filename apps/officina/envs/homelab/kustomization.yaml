@@ -6,5 +6,5 @@ resources:
 
 images:
   - name: ghcr.io/elposhox/officina
-    newTag: "c01aa6b12faf15b8d94d5853da4624b9f683d457"
-    digest: sha256:3840bf790fb2f6363ae6810b7cbc694775c2c80efc488f96d4ff8a48677b8439
+    newTag: "2d4a7e9ac4ed56beb8ca0bbcfe445537666156b6"
+    digest: sha256:50d356267dc888b666c05ee8671fa64062c7c721420e437546721abe4358fc9c
