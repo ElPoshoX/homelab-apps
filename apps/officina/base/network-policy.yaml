@@ -34,6 +34,9 @@ spec:
         - matchName: api.telegram.org
         - matchName: api.moonshot.ai
         - matchName: api.kimi.com
+        - matchName: discord.com
+        - matchName: gateway.discord.gg
+        - matchName: cdn.discordapp.com
       toPorts:
         - ports:
             - port: "443"
