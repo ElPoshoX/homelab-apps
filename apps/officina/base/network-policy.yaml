@@ -33,6 +33,7 @@ spec:
         - matchName: api.github.com
         - matchName: api.telegram.org
         - matchName: api.moonshot.ai
+        - matchName: api.kimi.com
       toPorts:
         - ports:
             - port: "443"
