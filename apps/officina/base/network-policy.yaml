@@ -32,6 +32,7 @@ spec:
         - matchName: github.com
         - matchName: api.github.com
         - matchName: api.telegram.org
+        - matchName: api.moonshot.ai
       toPorts:
         - ports:
             - port: "443"
