@@ -37,7 +37,7 @@ spec:
               name: cockpit
           env:
             - name: OFFICINA_WORKDIR
-              value: /tmp
+              value: /data/state
             - name: OFFICINA_APPROVED_WORKSPACE_ROOTS
               value: /data/workspaces
           envFrom:
@@ -48,6 +48,8 @@ spec:
               mountPath: /tmp
             - name: workspaces
               mountPath: /data/workspaces
+            - name: state
+              mountPath: /data/state
           resources:
             requests:
               cpu: 100m
@@ -90,3 +92,6 @@ spec:
         - name: workspaces
           persistentVolumeClaim:
             claimName: officina-workspaces
+        - name: state
+          persistentVolumeClaim:
+            claimName: officina-state
