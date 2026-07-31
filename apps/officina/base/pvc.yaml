@@ -24,4 +24,4 @@ spec:
   storageClassName: longhorn-officina
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
