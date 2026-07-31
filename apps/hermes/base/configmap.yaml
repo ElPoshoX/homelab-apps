@@ -16,6 +16,14 @@ data:
         password_hash: "__DASHBOARD_PASSWORD_HASH__"
     terminal:
       backend: docker
+    # Discord platform — survives pod restarts because bootstrap-config
+    # regenerates /opt/data/config.yaml from THIS template every start.
+    # Credentials/allowed-users live in hermes-secrets (DISCORD_* env vars).
+    platforms:
+      discord:
+        enabled: true
+    discord:
+      require_mention: false
     plugins:
       enabled:
         - basic
