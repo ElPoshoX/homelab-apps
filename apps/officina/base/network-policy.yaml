@@ -37,6 +37,8 @@ spec:
         - matchName: discord.com
         - matchName: gateway.discord.gg
         - matchName: cdn.discordapp.com
+        - matchName: api.linear.app
+        - matchName: api.linear.app
       toPorts:
         - ports:
             - port: "443"
