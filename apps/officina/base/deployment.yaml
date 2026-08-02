@@ -21,7 +21,7 @@ spec:
         app: officina
         app.kubernetes.io/name: officina
     spec:
-      automountServiceAccountToken: false
+      automountServiceAccountToken: true
       securityContext:
         fsGroup: 3000
       serviceAccountName: officina
