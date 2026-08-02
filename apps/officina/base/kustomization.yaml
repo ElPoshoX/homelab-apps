@@ -15,6 +15,7 @@ resources:
   - secret.yaml
   - pull-secret.yaml
   - storageclass.yaml
+  - serviceaccount.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml

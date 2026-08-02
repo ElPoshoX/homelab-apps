@@ -24,6 +24,7 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         fsGroup: 3000
+      serviceAccountName: officina
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
@@ -40,6 +41,8 @@ spec:
               value: /data/state
             - name: OFFICINA_APPROVED_WORKSPACE_ROOTS
               value: /data/workspaces
+            - name: OFFICINA_VALIDATOR_IMAGE
+              value: ghcr.io/elposhox/officina-validator:latest
           envFrom:
             - secretRef:
                 name: officina-secrets
