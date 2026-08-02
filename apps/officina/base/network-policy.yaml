@@ -28,6 +28,15 @@ spec:
             - port: "4222"
               protocol: TCP
 
+    - toServices:
+        - k8sService:
+            serviceName: kubernetes
+            namespace: default
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+
     - toFQDNs:
         - matchName: github.com
         - matchName: api.github.com
