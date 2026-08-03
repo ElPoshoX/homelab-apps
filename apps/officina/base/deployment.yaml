@@ -43,6 +43,17 @@ spec:
               value: /data/workspaces
             - name: OFFICINA_VALIDATOR_IMAGE
               value: ghcr.io/elposhox/officina-validator:latest
+            # add-jetstream-bus: durable event bus against the cluster
+            # NATS (JetStream already enabled on nats-0). memory bus is
+            # rejected at boot while OFFICINA_ENV=production.
+            - name: OFFICINA_ENV
+              value: "production"
+            - name: OFFICINA_EVENT_BUS
+              value: "jetstream"
+            - name: OFFICINA_NATS_URL
+              value: "nats://nats.nats.svc:4222"
+            - name: OFFICINA_OPERATOR_TENANTS
+              value: "zero"
           envFrom:
             - secretRef:
                 name: officina-secrets
