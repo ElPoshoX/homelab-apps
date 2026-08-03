@@ -28,6 +28,15 @@ spec:
             - port: "4222"
               protocol: TCP
 
+    - toEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+
     - toCIDRSet:
         - cidr: 10.96.0.1/32
         - cidr: 192.168.5.2/32
