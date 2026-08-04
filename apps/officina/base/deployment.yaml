@@ -54,6 +54,8 @@ spec:
               value: "nats://nats.nats.svc:4222"
             - name: OFFICINA_OPERATOR_TENANTS
               value: "zero"
+            - name: OFFICINA_METALOOP_INTERVAL_SECONDS
+              value: "120"
           envFrom:
             - secretRef:
                 name: officina-secrets
