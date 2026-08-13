@@ -21,13 +21,15 @@ tempo:
   pullPolicy: IfNotPresent
 
   updateStrategy: RollingUpdate
+  # Memory: 1Gi limit < 1024Mi memBallast = guaranteed OOMKill at startup
+  # (crashlooped 2026-07-18 → 2026-08-13). Limit must exceed ballast + live set.
   resources:
     requests:
       cpu: 300m
-      memory: 512Mi
+      memory: 1Gi
     limits:
       cpu: 500m
-      memory: 1Gi
+      memory: 3Gi
 
   memBallastSizeMbs: 1024
   multitenancyEnabled: false
