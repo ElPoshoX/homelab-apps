@@ -21,3 +21,31 @@ spec:
           name: officina
           port: 8081
           weight: 1
+---
+# The external presence-only view (add-office task 2.2): read-only, structurally
+# free of tenant/card identity, served by the daemon's dedicated presence
+# server on its own port, never by the cockpit server. This is the view the
+# operator's family can open without Tailscale.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: officina-presence
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homelab-gateway
+      namespace: ingress
+  hostnames:
+    - presence.elposhox.dev
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ''
+          kind: Service
+          name: officina
+          port: 8082
+          weight: 1

@@ -16,3 +16,7 @@ spec:
       port: 8081
       targetPort: cockpit
       protocol: TCP
+    - name: presence
+      port: 8082
+      targetPort: presence
+      protocol: TCP

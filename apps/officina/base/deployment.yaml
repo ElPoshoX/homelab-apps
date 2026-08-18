@@ -36,6 +36,8 @@ spec:
               name: health
             - containerPort: 8081
               name: cockpit
+            - containerPort: 8082
+              name: presence
           env:
             - name: OFFICINA_WORKDIR
               value: /data/state
