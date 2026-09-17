@@ -82,9 +82,12 @@ tempo:
       path: /ready
       port: 3200
     initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
+    periodSeconds: 15
+    timeoutSeconds: 10
+    # /ready serves 503 for minutes while draining a backlog (prod 2026-09-17:
+    # 30-day flush backlog -> liveness kill loop, exit 137, zero progress).
+    # 40 * 15s = 10 min of grace before kubelet restarts it.
+    failureThreshold: 40
     successThreshold: 1
 
   readinessProbe:
