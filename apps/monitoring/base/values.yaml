@@ -28,7 +28,8 @@ prometheus:
     scrapeInterval: 15s
     scrapeTimeout: 10s
     evaluationInterval: 15s
-    retention: 15d
+    retention: 30d
+    retentionSize: 55GB
 
     # Accept remote_write from Tempo metrics generator
     enableRemoteWriteReceiver: true
