@@ -11,7 +11,7 @@ spec:
       value: garage
 
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.12-system-bookworm
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.2-system-bookworm
 
   primaryUpdateStrategy: unsupervised
 
@@ -44,7 +44,7 @@ spec:
 
   backup:
     barmanObjectStore:
-      destinationPath: s3://postgres-backup/
+      destinationPath: s3://postgres-backup/postgres-18/
       endpointURL: http://garage.garage.svc.cluster.local:3900
       wal:
         maxParallel: 4
