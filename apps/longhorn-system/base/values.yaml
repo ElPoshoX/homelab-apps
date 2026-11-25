@@ -19,6 +19,7 @@ persistence:
 # Network policies
 networkPolicies:
   enabled: false
+  restrictInternalTraffic: false
 
 # Ingress disabled - using standalone HTTPRoute in ingress.yaml
 # (chart's httpRoute template doesn't include explicit group/kind/weight fields,
