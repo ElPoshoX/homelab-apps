@@ -7,6 +7,7 @@ mode: daemonset
 # Image configuration
 image:
   repository: otel/opentelemetry-collector-k8s
+  tag: 0.166.0
   pullPolicy: IfNotPresent
 
 # DaemonSet specific settings
@@ -40,19 +41,6 @@ config:
     # Kubelet metrics receiver — preset handles endpoint/auth via K8S_NODE_IP
     kubeletstats:
       collection_interval: 30s
-      resource_attributes:
-        aws.volume.id:
-          enabled: false
-        fs.type:
-          enabled: false
-        gce.pd.name:
-          enabled: false
-        glusterfs.endpoints.name:
-          enabled: false
-        glusterfs.path:
-          enabled: false
-        partition:
-          enabled: false
 
   # Processors - process telemetry data
   processors:

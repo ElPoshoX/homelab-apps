@@ -1,6 +1,8 @@
 # NATS Helm Chart v2.12.6
 
 container:
+  image:
+    tag: 2.14.7-alpine
   resources:
     requests:
       cpu: 10m

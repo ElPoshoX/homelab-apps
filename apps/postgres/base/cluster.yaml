@@ -11,7 +11,7 @@ spec:
       value: garage
 
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.10
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.12-system-bookworm
 
   primaryUpdateStrategy: unsupervised
 
