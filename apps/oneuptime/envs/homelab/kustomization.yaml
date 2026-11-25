@@ -9,3 +9,4 @@ resources:
 # Remove dynamic "date" label from Helm chart that causes unnecessary restarts
 patches:
   - path: patch-remove-date-label.yaml
+  - path: patch-startup-probe.yaml
