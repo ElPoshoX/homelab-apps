@@ -5,7 +5,7 @@ global:
 nameOverride: ""
 fullnameOverride: ""
 
-replicas: 0
+replicas: 1
 
 labels:
   app.kubernetes.io/managed-by: kustomize
@@ -21,8 +21,7 @@ tempo:
   pullPolicy: IfNotPresent
 
   updateStrategy: RollingUpdate
-  # Memory: 1Gi limit < 1024Mi memBallast = guaranteed OOMKill at startup
-  # (crashlooped 2026-07-18 → 2026-08-13). Limit must exceed ballast + live set.
+  # Keep the existing resource limit until the Tempo 3 memory profile is observed.
   resources:
     requests:
       cpu: 300m
@@ -31,7 +30,6 @@ tempo:
       cpu: 500m
       memory: 16Gi
 
-  memBallastSizeMbs: 1024
   multitenancyEnabled: false
   reportingEnabled: false
 
@@ -46,8 +44,6 @@ tempo:
           - success
           - span.type
         enable_target_info: true
-      local_blocks:
-        filter_server_spans: false
     registry:
       external_labels:
         source: tempo
@@ -55,10 +51,6 @@ tempo:
     storage:
       path: "/var/tempo/metrics"
       remote_write: []
-    traces_storage:
-      path: "/var/tempo/traces"
-
-  ingester: {}
   querier:
     max_concurrent_queries: 20
   queryFrontend: {}
@@ -70,7 +62,6 @@ tempo:
       metrics_generator:
         processors:
           - span-metrics
-          - local-blocks
     per_tenant_override_config: /conf/overrides.yaml
   per_tenant_overrides: {}
 
@@ -103,6 +94,9 @@ tempo:
   storage:
     trace:
       backend: s3
+      # Preserve the Tempo 2.10 block format during the major-version migration.
+      block:
+        version: vParquet4
       s3:
         bucket: tempo-bucket
         endpoint: garage.garage.svc.cluster.local:3900
@@ -145,53 +139,6 @@ tempo:
         name: tempo-s3-credentials
 
   extraVolumeMounts: []
-
-config: |
-  memberlist:
-    cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
-  multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
-  usage_report:
-    reporting_enabled: {{ .Values.tempo.reportingEnabled }}
-  compactor:
-    compaction:
-      block_retention: {{ .Values.tempo.retention }}
-  distributor:
-    receivers:
-      {{- toYaml .Values.tempo.receivers | nindent 8 }}
-  ingester:
-    {{- toYaml .Values.tempo.ingester | nindent 6 }}
-  server:
-    {{- toYaml .Values.tempo.server | nindent 6 }}
-  storage:
-    {{- toYaml .Values.tempo.storage | nindent 6 }}
-  querier:
-    {{- toYaml .Values.tempo.querier | nindent 6 }}
-  query_frontend:
-    {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
-  overrides:
-    {{- toYaml .Values.tempo.overrides | nindent 6 }}
-    {{- if .Values.tempo.metricsGenerator.enabled }}
-  metrics_generator:
-    {{- if .Values.tempo.metricsGenerator.processor }}
-    processor:
-      {{- toYaml .Values.tempo.metricsGenerator.processor | nindent 8 }}
-    {{- end }}
-    {{- if .Values.tempo.metricsGenerator.registry }}
-    registry:
-      {{- toYaml .Values.tempo.metricsGenerator.registry | nindent 8 }}
-    {{- end }}
-    storage:
-      path: {{ .Values.tempo.metricsGenerator.storage.path | quote }}
-      {{- if .Values.tempo.metricsGenerator.storage.remote_write }}
-      remote_write:
-        {{- toYaml .Values.tempo.metricsGenerator.storage.remote_write | nindent 10 }}
-      {{- else }}
-      remote_write:
-        - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
-      {{- end }}
-    traces_storage:
-      path: {{ .Values.tempo.metricsGenerator.traces_storage.path | quote }}
-    {{- end }}
 
 tempoQuery:
   repository: grafana/tempo-query
