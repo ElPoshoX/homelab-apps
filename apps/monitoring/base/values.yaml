@@ -26,7 +26,7 @@ prometheus:
   enabled: true
   prometheusSpec:
     # Allow WAL replay to finish before the startup probe restarts Prometheus.
-    maximumStartupDurationSeconds: 3600
+    maximumStartupDurationSeconds: 14400
     scrapeInterval: 15s
     scrapeTimeout: 10s
     evaluationInterval: 15s
@@ -53,11 +53,11 @@ prometheus:
 
     resources:
       limits:
-        cpu: 4000m
-        memory: 6Gi
+        cpu: 8000m
+        memory: 8Gi
       requests:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 2000m
+        memory: 4Gi
 
     securityContext:
       runAsUser: 65534
