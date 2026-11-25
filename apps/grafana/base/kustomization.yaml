@@ -14,9 +14,10 @@ helmCharts:
   - name: grafana
     repo: https://grafana-community.github.io/helm-charts
     releaseName: grafana
-    version: "12.4.2"
+    version: "14.6.0"
     valuesFile: values.yaml
     namespace: grafana
+    skipTests: true
 
 resources:
   - namespace.yaml

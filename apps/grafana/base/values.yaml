@@ -8,6 +8,13 @@ image:
   tag: 13.3.2
   pullPolicy: IfNotPresent
 
+# Preserve the projected memory limit used by the current deployment.
+envValueFrom:
+  GOMEMLIMIT:
+    resourceFieldRef:
+      resource: limits.memory
+      divisor: "1"
+
 # Admin user configuration
 admin:
   existingSecret: grafana-admin-secret
