@@ -56,19 +56,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: oneuptime-telemetry
-  namespace: oneuptime
-  labels:
-    date: null
-spec:
-  template:
-    metadata:
-      labels:
-        date: null
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: oneuptime-worker
   namespace: oneuptime
   labels:

@@ -17,13 +17,6 @@ image:
 # Deployment replicas
 deployment:
   replicaCount: 1
-  resources:
-    requests:
-      cpu: 250m
-      memory: 512Mi
-    limits:
-      cpu: "1.5"
-      memory: 3Gi
 
 # Disable internal databases - use external on TrueNAS
 postgresql:
@@ -81,10 +74,9 @@ app:
 worker:
   enabled: true
   replicaCount: 1
-
-telemetry:
-  enabled: true
-  replicaCount: 1
+  # Preserve the existing worker port during the chart migration.
+  ports:
+    http: 1445
 
 # Optional services - disable for minimal homelab setup
 testServer:
