@@ -37,6 +37,11 @@ spec:
           env:
             - name: HEADROOM_HOST
               value: "0.0.0.0"
+            - name: HEADROOM_PROXY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: headroom-proxy-token
+                  key: HEADROOM_PROXY_TOKEN
             - name: HOME
               value: /home/nonroot
             - name: HEADROOM_WORKSPACE_DIR

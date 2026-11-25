@@ -11,6 +11,7 @@ resources:
 - namespace.yaml
 - service.yaml
 - deployment.yaml
+- secret.yaml
 - ingress.yaml
 - pvc.yaml
 - network-policy.yaml
