@@ -6,7 +6,7 @@
 image:
   repository: dxflrs/garage
   pullPolicy: IfNotPresent
-  tag: v2.3.0
+  tag: v2.6.0
 
 # Garage configuration
 garage:
