@@ -2,6 +2,9 @@
 # Metrics storage backend for homelab observability stack
 # Distributed deployment with S3 backend
 
+image:
+  tag: 3.2.6
+
 minio:
   enabled: false
 
