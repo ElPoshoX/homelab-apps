@@ -22,6 +22,7 @@ resources:
   - namespace.yaml
   - secret.yaml
   - ingress.yaml
+  - backup-target.yaml
 
 patches:
   - target:

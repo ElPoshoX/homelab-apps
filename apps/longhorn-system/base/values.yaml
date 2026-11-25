@@ -20,6 +20,10 @@ persistence:
 networkPolicies:
   enabled: false
 
+# Keep the chart's default resource in sync with the managed BackupTarget CR.
+defaultBackupStore:
+  backupTarget: nfs://192.168.5.135:/mnt/HomeLab/LongHorn-Backups/pre-longhorn-1.13-20261125
+
 # Ingress disabled - using standalone HTTPRoute in ingress.yaml
 # (chart's httpRoute template doesn't include explicit group/kind/weight fields,
 #  which causes ArgoCD drift)
