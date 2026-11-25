@@ -25,6 +25,8 @@ prometheusOperator:
 prometheus:
   enabled: true
   prometheusSpec:
+    # Allow WAL replay to finish before the startup probe restarts Prometheus.
+    maximumStartupDurationSeconds: 3600
     scrapeInterval: 15s
     scrapeTimeout: 10s
     evaluationInterval: 15s
