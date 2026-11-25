@@ -4,6 +4,9 @@
 # Mode: daemonset (runs on all nodes)
 mode: daemonset
 
+# Keep existing component IDs and telemetry labels during the chart upgrade.
+rewriteDeprecatedComponentNames: false
+
 # Image configuration
 image:
   repository: otel/opentelemetry-collector-k8s
