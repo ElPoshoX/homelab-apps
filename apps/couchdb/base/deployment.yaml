@@ -31,7 +31,7 @@ spec:
               mountPath: /opt/couchdb/etc/local.d
       containers:
         - name: couchdb
-          image: couchdb:3.5.1
+          image: couchdb:3.5.3
           ports:
             - containerPort: 5984
               name: http
