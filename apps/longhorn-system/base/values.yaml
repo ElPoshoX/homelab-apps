@@ -19,6 +19,7 @@ persistence:
 # Network policies
 networkPolicies:
   enabled: false
+  restrictInternalTraffic: false
 
 # Keep the chart's default resource in sync with the managed BackupTarget CR.
 defaultBackupStore:
