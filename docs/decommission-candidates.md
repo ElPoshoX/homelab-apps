@@ -1,23 +1,24 @@
-# Homelab decommission candidates
+# Homelab service decommission
 
-Requested on 2026-11-24. These applications are marked for removal; this list does not change their deployments.
+Completed on 2026-11-24 through GitOps commit `4de54b5` and Argo CD reconciliation.
 
-| Application | Status | Dependency to resolve before removal |
-| --- | --- | --- |
-| Moltis | Stopped; pending removal | Deployment is scaled to zero. Its local `moltis.db` and SQLite sidecars were removed on 2026-11-24. Other local databases and the `obsidian-vault` CouchDB database remain. |
-| OpenHands | Pending removal | Uses Aegis Orchestrator. |
-| Phoenix | Pending removal | Confirm whether its PostgreSQL data needs to be retained. |
-| Aegis Gateway (LiteLLM and Redis) | Pending removal | Hermes and Aegis Orchestrator still point to LiteLLM; migrate Hermes before removal. |
-| Aegis Orchestrator | Pending removal | Moltis and OpenHands point to it; both are also pending removal. |
-| Aegis Meridian | Pending removal | LiteLLM points to it for Claude models; it is currently unready because its Claude login has expired. |
-| Plane | Pending removal | Confirm whether its PostgreSQL data and Garage access grant need to be retained. Linear is the replacement. |
+Removed applications: Aegis Gateway (including LiteLLM and Redis), Aegis Orchestrator,
+Aegis Meridian, Moltis, OpenHands, Phoenix, Plane, and Pushgateway. Their GitOps
+manifests, application resources, namespaces, and dedicated persistent volumes were
+removed. The obsolete `moltis-secured` namespace and five retained Moltis volumes
+were also deleted. Moltis's local SQLite database was removed before its deployment
+was stopped.
 
-Do not remove Garage, PostgreSQL, or CouchDB as part of this list. Garage stores observability data and PostgreSQL backups; CouchDB also backs Obsidian LiveSync.
+The dedicated PostgreSQL databases `litellm`, `phoenix`, `plane`, and `langgraph`
+and the `litellm` and `plane` roles were dropped. The shared PostgreSQL cluster,
+Garage, and CouchDB remain. CouchDB's `obsidian-vault` database was not touched.
 
-Keep Headroom and NATS. Keep CloudNativePG, which manages the PostgreSQL cluster.
+Headroom, NATS, and CloudNativePG remain in service. Hermes remains installed,
+with its retired LiteLLM dependency removed; its model provider still needs
+configuration before investigation workflows can use it.
 
-## Investigate replacement
+## Pending decisions
 
-| Application | Status | Investigation |
-| --- | --- | --- |
-| Vault WebDAV | Keep running | Identify current clients and evaluate a replacement before proposing removal. |
+- Keep Vault WebDAV running while identifying its clients and evaluating a replacement.
+- Decide on Gatus after reviewing the full alert, status page, Hermes investigation,
+  and Discord update flow.
