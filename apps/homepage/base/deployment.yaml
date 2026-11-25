@@ -54,6 +54,9 @@ spec:
             httpGet:
               path: /
               port: http
+              httpHeaders:
+                - name: Host
+                  value: home.elposhox.dev
             initialDelaySeconds: 30
             periodSeconds: 10
           volumeMounts:
