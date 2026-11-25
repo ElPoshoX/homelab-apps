@@ -26,7 +26,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: headroom
-          image: ghcr.io/headroomlabs-ai/headroom:0.32.0-code-nonroot
+          image: ghcr.io/headroomlabs-ai/headroom:0.45.0-code-nonroot
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
