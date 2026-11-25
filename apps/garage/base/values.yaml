@@ -48,7 +48,7 @@ service:
   admin:
     port: 3900
 
-# Storage configuration - 35Gi data + 1Gi meta per replica
+# Storage configuration for new replicas; existing PVCs were expanded in place
 persistence:
   enabled: true
   meta:
@@ -70,16 +70,6 @@ resources:
 # Pod affinity - ONLY worker nodes (W1, W2, W3), no control plane
 # Tolerations - allow scheduling on any node
 tolerations: []
-
-# Garage node configuration
-node:
-  # Cluster bootstrap (enabled for initial setup)
-  bootstrap: false
-
-  # Per-replica configuration for distributed setup
-  layout:
-    redundancy: 2  # Data replicated across 2 zones
-    capacity: 35000  # Per replica in MB (approx 35GB)
 
 # S3 buckets to create
 buckets:
@@ -161,7 +151,7 @@ clusterConfig:
   layout:
     enabled: true
     zone: dc1
-    capacity: "35000"  # Per replica in MB
+    capacity: "90G"  # Layout capacity per replica; bare numbers are bytes
 
   # S3 buckets
   buckets:
