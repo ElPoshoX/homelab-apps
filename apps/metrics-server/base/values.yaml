@@ -3,6 +3,7 @@
 # Image configuration
 image:
   repository: registry.k8s.io/metrics-server/metrics-server
+  tag: v0.9.1
   pullPolicy: IfNotPresent
 
 # Replica configuration
