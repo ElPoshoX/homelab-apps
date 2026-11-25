@@ -14,13 +14,6 @@ spec:
         - ports:
             - port: "5984"
               protocol: TCP
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: moltis
-      toPorts:
-        - ports:
-            - port: "5984"
-              protocol: TCP
     - fromEntities:
         - world
         - cluster

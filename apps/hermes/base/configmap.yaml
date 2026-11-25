@@ -4,11 +4,7 @@ metadata:
   name: hermes-config
 data:
   config.yaml.tmpl: |
-    model:
-      default: claude-sonnet
-      provider: custom
-      base_url: http://litellm.aegis-gateway.svc.cluster.local:4000/v1
-      api_key: __LITELLM_API_KEY__
+    # Model provider will be configured when Hermes is connected to Headroom.
     dashboard:
       enabled: true
       basic_auth:

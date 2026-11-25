@@ -19,38 +19,11 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-    # Aegis LiteLLM
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: aegis-gateway
-            app.kubernetes.io/name: litellm
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
     # CloudBeaver
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: cloudbeaver
             app.kubernetes.io/name: cloudbeaver
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
-    # Plane
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: plane
-            app.kubernetes.io/part-of: plane
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
-    # Phoenix (LLM observability)
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: phoenix
-            app: phoenix
       toPorts:
         - ports:
             - port: "5432"

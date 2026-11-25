@@ -24,11 +24,6 @@ spec:
         - name: bootstrap-config
           image: busybox
           env:
-            - name: LITELLM_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: hermes-secrets
-                  key: LITELLM_API_KEY
             - name: DASHBOARD_PASSWORD_HASH
               valueFrom:
                 secretKeyRef:
@@ -40,8 +35,7 @@ spec:
             - |
               set -e
               mkdir -p /opt/data
-              sed -e "s|__LITELLM_API_KEY__|$LITELLM_API_KEY|" \
-                  -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
+              sed -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
                   /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
               chown -R 1000:1000 /opt/data
           securityContext:

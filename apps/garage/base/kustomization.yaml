@@ -21,7 +21,6 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
-  - reference-grant.yaml
   - alerts.yaml
 
 # Patches

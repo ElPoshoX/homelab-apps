@@ -41,15 +41,6 @@ spec:
             dns:
               - matchPattern: "*"
 
-    # LiteLLM gateway (in-cluster model routing)
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: aegis-gateway
-      toPorts:
-        - ports:
-            - port: "4000"
-              protocol: TCP
-
     # OTEL collector
     - toEndpoints:
         - matchLabels:
@@ -61,7 +52,7 @@ spec:
               protocol: TCP
 
     # Messaging channels, MCP servers, package registries — broad egress
-    # (same pattern as Moltis: Hermes talks to many external services by design)
+    # Hermes talks to many external services by design.
     - toEntities:
         - world
       toPorts:

@@ -30,16 +30,6 @@ spec:
       max_wal_senders: "10"
       max_replication_slots: "10"
 
-  bootstrap:
-    initdb:
-      database: litellm
-      owner: litellm
-      secret:
-        name: postgres-credentials
-      postInitApplicationSQL:
-        - CREATE DATABASE phoenix OWNER litellm
-        - CREATE DATABASE langgraph OWNER litellm
-
   storage:
     size: 20Gi
     storageClass: longhorn
