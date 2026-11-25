@@ -5,6 +5,7 @@
 replicas: 2
 image:
   repository: grafana/grafana
+  tag: 13.3.2
   pullPolicy: IfNotPresent
 
 # Admin user configuration
