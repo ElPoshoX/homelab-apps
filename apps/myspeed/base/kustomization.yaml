@@ -17,3 +17,5 @@ resources:
 - speedtest-exporter-pvc.yaml
 - service-monitor.yaml
 - alerts.yaml
+- discord-secret.yaml
+- discord-channel-job.yaml

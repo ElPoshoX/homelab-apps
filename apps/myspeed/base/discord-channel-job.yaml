@@ -1,0 +1,85 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: speedtest-discord-channel
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: configure-channel
+          image: python:3.13-alpine
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: DISCORD_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: speedtest-discord-webhook
+                  key: url
+          command:
+            - python3
+            - -c
+            - |-
+              import json
+              import os
+              import time
+              import urllib.parse
+              import urllib.request
+
+              base = "http://myspeed.myspeed.svc.cluster.local"
+              webhook = urllib.parse.urlparse(os.environ["DISCORD_WEBHOOK_URL"])
+              parts = webhook.path.strip("/").split("/")
+              if webhook.scheme != "https" or webhook.hostname not in ("discord.com", "discordapp.com") or len(parts) != 4 or parts[:2] != ["api", "webhooks"]:
+                  raise SystemExit("Invalid Discord webhook URL")
+              shoutrrr_url = f"discord://{parts[3]}@{parts[2]}"
+
+              def request(method, path, payload=None):
+                  body = None if payload is None else json.dumps(payload).encode()
+                  headers = {"Content-Type": "application/json"} if body else {}
+                  req = urllib.request.Request(base + path, data=body, headers=headers, method=method)
+                  with urllib.request.urlopen(req, timeout=10) as response:
+                      return json.load(response)
+
+              for attempt in range(60):
+                  try:
+                      request("GET", "/healthz")
+                      break
+                  except Exception:
+                      time.sleep(3)
+              else:
+                  raise SystemExit("Speedtest exporter did not become ready")
+
+              name = "Kepler Speed Tests"
+              channels = request("GET", "/api/notifications")
+              existing = next((channel for channel in channels if channel["name"] == name), None)
+              payload = {
+                  "name": name,
+                  "provider": "shoutrrr",
+                  "config": {"url": shoutrrr_url},
+                  "enabled": True,
+                  "notify_on_success": True,
+                  "notify_on_failure": True,
+              }
+              if existing:
+                  request("PUT", f"/api/notifications/{existing['id']}", payload)
+              else:
+                  request("POST", "/api/notifications", payload)
+              print("Discord speed test channel configured")
