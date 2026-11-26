@@ -20,7 +20,7 @@ Prometheus evaluates `PrometheusRule` resources from every namespace. Alertmanag
 | MySpeed | Kubernetes workload and PVC rules | Speed tests are checked through the application, not a Prometheus exporter. |
 | NATS | Kubernetes workload and PVC rules | Its `/varz` monitoring API is not Prometheus format; no exporter is installed. |
 | Officina | Kubernetes workload and PVC rules | The health port is not a Prometheus metrics endpoint. |
-| OneUptime | Kubernetes workload rules | Synthetic checks and status-page state are owned by OneUptime. |
+| Gatus | Kubernetes workload rules; ServiceMonitor | Lightweight status page for core services and aggregated critical Prometheus alerts. |
 | OpenTelemetry Collector | Kubernetes DaemonSet rules; chart PodMonitor | Refused telemetry. |
 | PostgreSQL | Kubernetes workload and PVC rules; CNPG PodMonitor | Replication, disk capacity, and WAL archiving. |
 | Tempo | Kubernetes workload and PVC rules; chart ServiceMonitor | Failed trace flushes. |
@@ -32,4 +32,4 @@ The empty `phoenix` and `pushgateway` directories have no active Argo CD applica
 
 Talos/Kubernetes nodes, control plane, etcd, CoreDNS, Cilium, ingress, and CSI workloads inherit the stack's node, API, DNS, workload, storage, and scrape-target rules. The platform rule set additionally watches the ingress wildcard TLS certificate through cert-manager metrics. Longhorn-specific storage integrity is kept with Longhorn.
 
-Availability of a pod is not the same as success of an HTTP, DNS, or S3 operation. Synthetic checks remain in OneUptime. Services without application metrics retain workload-level alerting; add a domain rule only when a measurable signal and response action exist.
+Availability of a pod is not the same as success of an HTTP, DNS, or S3 operation. Blackbox probes cover CoreDNS, AdGuard, NATS, and the Garage API; a Garage CronJob verifies S3 put/get/delete. Gatus presents core service status and critical Prometheus alert state. Services without application metrics retain workload-level alerting; add a domain rule only when a measurable signal and response action exist.

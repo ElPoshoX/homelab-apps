@@ -98,8 +98,8 @@
                 key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
 - Observability:
-      - One Uptime:
-            icon: oneuptime.png
+      - Gatus:
+            icon: gatus.png
             href: "{{HOMEPAGE_VAR_UPTIME_URL}}"
             siteMonitor: "{{HOMEPAGE_VAR_UPTIME_URL}}"
             statusStyle: "dot"
