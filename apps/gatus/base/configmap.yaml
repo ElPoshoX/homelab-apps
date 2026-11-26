@@ -36,6 +36,12 @@ data:
           query-type: A
         conditions:
           - "[DNS_RCODE] == NOERROR"
+      - name: AdGuard Sync
+        group: Network
+        url: tcp://adguard-sync.adguard-sync.svc.cluster.local:80
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
       - name: NATS
         group: Network
         url: tcp://nats.nats.svc.cluster.local:4222
@@ -48,6 +54,60 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 403"
+      - name: PostgreSQL
+        group: Storage
+        url: tcp://postgres-rw.postgres.svc.cluster.local:5432
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+      - name: CouchDB
+        group: Storage
+        url: http://couchdb.couchdb.svc.cluster.local:5984/_up
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Vault WebDAV
+        group: Storage
+        url: http://vault-webdav.vault-webdav.svc.cluster.local/
+        interval: 1m
+        conditions:
+          - "[STATUS] == 401"
+      - name: Longhorn UI
+        group: Storage
+        url: http://longhorn-frontend.longhorn-system.svc.cluster.local/
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: CloudNativePG webhook
+        group: Platform
+        url: tcp://cnpg-webhook-service.cnpg-system.svc.cluster.local:443
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+      - name: Metrics Server
+        group: Platform
+        url: tcp://metrics-server.kube-system.svc.cluster.local:443
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+      - name: Argo CD
+        group: Platform
+        url: http://argocd-server.argocd.svc.cluster.local/healthz
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Gatus
+        group: Platform
+        url: http://gatus.gatus.svc.cluster.local/health
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: OpenTelemetry Collector
+        group: Observability
+        url: tcp://opentelemetry-collector.otel-collector.svc.cluster.local:4317
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
       - name: Grafana
         group: Observability
         url: http://grafana.grafana.svc.cluster.local:3000/api/health
@@ -88,6 +148,44 @@ data:
       - name: Tempo
         group: Observability
         url: http://tempo.tempo.svc.cluster.local:3200/ready
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Hermes
+        group: Applications
+        url: http://hermes.hermes.svc.cluster.local:8642/health
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Headroom
+        group: Applications
+        url: http://headroom.headroom.svc.cluster.local/readyz
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Officina
+        group: Applications
+        url: http://officina.officina.svc.cluster.local:8080/healthz
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: CloudBeaver
+        group: Applications
+        url: http://cloudbeaver.cloudbeaver.svc.cluster.local:8978/status
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Homepage
+        group: Applications
+        url: http://homepage.homepage.svc.cluster.local/
+        headers:
+          Host: home.elposhox.dev
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+      - name: Speedtest Tracker
+        group: Applications
+        url: http://myspeed.myspeed.svc.cluster.local/api/healthcheck
         interval: 1m
         conditions:
           - "[STATUS] == 200"
