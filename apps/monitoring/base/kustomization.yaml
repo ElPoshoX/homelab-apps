@@ -23,5 +23,3 @@ helmCharts:
 resources:
   - namespace.yaml
   - ingress.yaml
-  - secret-telegram-url.yaml
-  - alertmanager-telegram.yaml

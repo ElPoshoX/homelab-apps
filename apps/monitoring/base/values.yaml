@@ -70,8 +70,6 @@ prometheus:
       fsGroup: 65534
 
 # --- AlertManager ---
-# Phase 1: default receiver only
-# Phase 2: add AlertmanagerConfig CR + SopsSecret for Telegram (see alertmanager-telegram.yaml)
 alertmanager:
   enabled: true
   alertmanagerSpec:
