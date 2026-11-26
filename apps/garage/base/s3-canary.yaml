@@ -15,9 +15,20 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: s3-canary
               image: public.ecr.aws/aws-cli/aws-cli:2.31.22
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
               command:
                 - /bin/sh
                 - -ec
