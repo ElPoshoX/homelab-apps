@@ -10,7 +10,7 @@ data:
       title: Kepler Status
       header: Kepler
       dashboard-heading: Homelab status
-      dashboard-subheading: Current health of core services
+      dashboard-subheading: Live availability across the homelab
     storage:
       type: sqlite
       path: /data/gatus.db
@@ -19,7 +19,7 @@ data:
     metrics: true
     endpoints:
       - name: CoreDNS
-        group: Network
+        group: Network & DNS
         url: kube-dns.kube-system.svc.cluster.local
         interval: 1m
         dns:
@@ -28,7 +28,7 @@ data:
         conditions:
           - "[DNS_RCODE] == NOERROR"
       - name: AdGuard DNS
-        group: Network
+        group: Network & DNS
         url: adguard-home-udp.adguard.svc.cluster.local
         interval: 1m
         dns:
@@ -37,67 +37,67 @@ data:
         conditions:
           - "[DNS_RCODE] == NOERROR"
       - name: AdGuard Sync
-        group: Network
+        group: Network & DNS
         url: tcp://adguard-sync.adguard-sync.svc.cluster.local:80
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
       - name: NATS
-        group: Network
+        group: Platform Services
         url: tcp://nats.nats.svc.cluster.local:4222
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
       - name: Garage S3
-        group: Storage
+        group: Data & Storage
         url: http://garage.garage.svc.cluster.local:3900/
         interval: 1m
         conditions:
           - "[STATUS] == 403"
       - name: PostgreSQL
-        group: Storage
+        group: Data & Storage
         url: tcp://postgres-rw.postgres.svc.cluster.local:5432
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
       - name: CouchDB
-        group: Storage
+        group: Data & Storage
         url: http://couchdb.couchdb.svc.cluster.local:5984/_up
         interval: 1m
         conditions:
           - "[STATUS] == 200"
       - name: Vault WebDAV
-        group: Storage
+        group: Data & Storage
         url: http://vault-webdav.vault-webdav.svc.cluster.local/
         interval: 1m
         conditions:
           - "[STATUS] == 401"
       - name: Longhorn UI
-        group: Storage
+        group: Data & Storage
         url: http://longhorn-frontend.longhorn-system.svc.cluster.local/
         interval: 1m
         conditions:
           - "[STATUS] == 200"
       - name: CloudNativePG webhook
-        group: Platform
+        group: Platform Services
         url: tcp://cnpg-webhook-service.cnpg-system.svc.cluster.local:443
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
       - name: Metrics Server
-        group: Platform
+        group: Platform Services
         url: tcp://metrics-server.kube-system.svc.cluster.local:443
         interval: 1m
         conditions:
           - "[CONNECTED] == true"
       - name: Argo CD
-        group: Platform
+        group: Platform Services
         url: http://argocd-server.argocd.svc.cluster.local/healthz
         interval: 1m
         conditions:
           - "[STATUS] == 200"
       - name: Gatus
-        group: Platform
+        group: Platform Services
         url: http://gatus.gatus.svc.cluster.local/health
         interval: 1m
         conditions:
