@@ -90,6 +90,15 @@ spec:
                   - -ec
                   - |-
                     attempt=0
+                    until curl -fsS --max-time 2 http://127.0.0.1/api/healthcheck >/dev/null 2>&1; do
+                      attempt=$((attempt + 1))
+                      if [ "$attempt" -ge 60 ]; then
+                        echo "Speedtest Tracker did not become healthy before metrics setup" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                    attempt=0
                     until php /etc/speedtest-tracker/enable-prometheus.php >/dev/null 2>&1; do
                       attempt=$((attempt + 1))
                       if [ "$attempt" -ge 60 ]; then
