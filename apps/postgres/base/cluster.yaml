@@ -30,6 +30,12 @@ spec:
       max_wal_senders: "10"
       max_replication_slots: "10"
 
+  # CNPG runs default monitoring queries against the bootstrap database.
+  bootstrap:
+    initdb:
+      database: postgres
+      owner: postgres
+
   storage:
     size: 20Gi
     storageClass: longhorn
