@@ -73,6 +73,8 @@ prometheus:
 alertmanager:
   enabled: true
   alertmanagerSpec:
+    secrets:
+      - alertmanager-irm-webhook
     alertmanagerConfigSelector: {}
     alertmanagerConfigNamespaceSelector: {}
     alertmanagerConfigMatcherStrategy:
@@ -102,9 +104,19 @@ alertmanager:
       resolve_timeout: 5m
     route:
       receiver: default
+      routes:
+        - receiver: "null"
+          matchers:
+            - alertname = "Watchdog"
+        - receiver: grafana-irm
     receivers:
       - name: default
       - name: "null"
+      - name: grafana-irm
+        webhook_configs:
+          - url_file: /etc/alertmanager/secrets/alertmanager-irm-webhook/url
+            send_resolved: true
+            max_alerts: 99
 
 # --- Grafana: managed separately ---
 grafana:
