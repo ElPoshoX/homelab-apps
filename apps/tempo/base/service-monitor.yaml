@@ -7,6 +7,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: tempo
       app.kubernetes.io/instance: tempo
+    matchExpressions:
+      - key: prometheus.io/service-monitor
+        operator: NotIn
+        values:
+          - "false"
   endpoints:
     - port: tempo-prom-metrics
       path: /metrics
