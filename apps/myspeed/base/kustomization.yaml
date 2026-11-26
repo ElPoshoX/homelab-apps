@@ -14,7 +14,6 @@ resources:
 - ingress.yaml
 - pvc.yaml
 - speedtest-tracker-pvc.yaml
-- secret.yaml
-- bootstrap-prometheus.yaml
+- speedtest-exporter-pvc.yaml
 - service-monitor.yaml
 - alerts.yaml

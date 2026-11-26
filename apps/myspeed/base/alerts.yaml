@@ -1,25 +1,25 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: speedtest-tracker-alerts
+  name: speedtest-exporter-alerts
 spec:
   groups:
-    - name: speedtest-tracker-tests
+    - name: speedtest-exporter-tests
       rules:
-        - alert: SpeedtestTrackerLastTestFailed
-          expr: speedtest_tracker_result_id{namespace="myspeed",status="failed"} > 0
-          for: 10m
+        - alert: SpeedtestExporterTestFailed
+          expr: sum(increase(speedtest_tests_total{namespace="myspeed",outcome="error"}[30m])) > 0
+          for: 0m
           labels:
             severity: warning
           annotations:
-            summary: "Latest internet speed test failed"
-            description: "Speedtest Tracker's latest test failed. Check its logs, DNS, and outbound connectivity."
+            summary: "Internet speed test failed"
+            description: "The Go speedtest exporter reported a failed test. Check its logs and outbound connectivity."
 
-        - alert: SpeedtestTrackerScheduleStalled
-          expr: changes((max by (namespace) (speedtest_tracker_result_id{namespace="myspeed"}))[6h:1m]) == 0
+        - alert: SpeedtestExporterScheduleStalled
+          expr: speedtest_last_test_timestamp_seconds{namespace="myspeed"} > 0 and (time() - speedtest_last_test_timestamp_seconds{namespace="myspeed"}) > 21600
           for: 30m
           labels:
             severity: warning
           annotations:
-            summary: "No new speed test result for over six hours"
-            description: "The latest Speedtest Tracker result ID has not changed across three scheduled runs. Check its scheduler and outbound connectivity."
+            summary: "No successful speed test in over six hours"
+            description: "The scheduled speed tests have not produced a result for over six hours. Check the exporter and outbound connectivity."

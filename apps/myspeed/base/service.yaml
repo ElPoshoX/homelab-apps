@@ -6,15 +6,15 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
   labels:
-    app: speedtest-tracker
+    app: speedtest-exporter
     app.kubernetes.io/instance: myspeed-homelab
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: speedtest-tracker
+    app.kubernetes.io/name: speedtest-exporter
     app.kubernetes.io/part-of: myspeed
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: speedtest-tracker
+    app: speedtest-exporter
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/part-of: myspeed
     homelab.local/OwnedBy: ElPoshoX

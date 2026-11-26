@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: speedtest-tracker
+  name: speedtest-exporter
   labels:
-    app: speedtest-tracker
-    app.kubernetes.io/name: speedtest-tracker
+    app: speedtest-exporter
+    app.kubernetes.io/name: speedtest-exporter
     app.kubernetes.io/instance: myspeed
 spec:
   replicas: 1
@@ -13,110 +13,62 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: speedtest-tracker
+      app: speedtest-exporter
   template:
     metadata:
       labels:
-        app: speedtest-tracker
-        app.kubernetes.io/name: speedtest-tracker
+        app: speedtest-exporter
+        app.kubernetes.io/name: speedtest-exporter
     spec:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
         fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-        - name: speedtest-tracker
-          image: lscr.io/linuxserver/speedtest-tracker:1.15.1
+        - name: speedtest-exporter
+          image: techblog/speedtest-exporter:2026.5.2
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: APP_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: speedtest-tracker-credentials
-                  key: APP_KEY
-            - name: ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: speedtest-tracker-credentials
-                  key: ADMIN_PASSWORD
-            - name: ADMIN_NAME
-              value: ElPoshoX
-            - name: ADMIN_EMAIL
-              value: admin@elposhox.dev
-            - name: APP_URL
-              value: https://speedtest.elposhox.dev
-            - name: DB_CONNECTION
-              value: sqlite
+            - name: SPEEDTEST_DATA_DIR
+              value: /data
+            - name: SPEEDTEST_ENGINE
+              value: go
             - name: SPEEDTEST_SCHEDULE
               value: "0 */2 * * *"
-            - name: DISPLAY_TIMEZONE
-              value: America/Mexico_City
-            - name: APP_TIMEZONE
-              value: America/Mexico_City
-            - name: TZ
-              value: America/Mexico_City
           ports:
-            - containerPort: 80
-              name: http
-              protocol: TCP
-          resources:
-            requests:
-              memory: 256Mi
-              cpu: 100m
-            limits:
-              memory: 768Mi
-          startupProbe:
-            httpGet:
-              path: /api/healthcheck
-              port: http
-            periodSeconds: 10
-            failureThreshold: 30
+            - name: http
+              containerPort: 9090
           readinessProbe:
             httpGet:
-              path: /api/healthcheck
+              path: /healthz
               port: http
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /api/healthcheck
+              path: /healthz
               port: http
-            periodSeconds: 30
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - /bin/sh
-                  - -ec
-                  - |-
-                    attempt=0
-                    until curl -fsS --max-time 2 http://127.0.0.1/api/healthcheck >/dev/null 2>&1; do
-                      attempt=$((attempt + 1))
-                      if [ "$attempt" -ge 60 ]; then
-                        echo "Speedtest Tracker did not become healthy before metrics setup" >&2
-                        exit 1
-                      fi
-                      sleep 5
-                    done
-                    attempt=0
-                    until php /etc/speedtest-tracker/enable-prometheus.php >/dev/null 2>&1; do
-                      attempt=$((attempt + 1))
-                      if [ "$attempt" -ge 60 ]; then
-                        echo "Failed to enable Speedtest Tracker Prometheus metrics" >&2
-                        exit 1
-                      fi
-                      sleep 5
-                    done
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "2"
+              memory: 512Mi
           volumeMounts:
-            - name: speedtest-tracker-config
-              mountPath: /config
-            - name: speedtest-tracker-bootstrap
-              mountPath: /etc/speedtest-tracker
-              readOnly: true
+            - name: data
+              mountPath: /data
       volumes:
-        - name: speedtest-tracker-config
+        - name: data
           persistentVolumeClaim:
-            claimName: speedtest-tracker-config
-        - name: speedtest-tracker-bootstrap
-          configMap:
-            name: speedtest-tracker-bootstrap
+            claimName: speedtest-exporter-data

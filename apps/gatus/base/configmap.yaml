@@ -183,9 +183,9 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 200"
-      - name: Speedtest Tracker
+      - name: Speedtest Exporter
         group: Applications
-        url: http://myspeed.myspeed.svc.cluster.local/api/healthcheck
+        url: http://myspeed.myspeed.svc.cluster.local/healthz
         interval: 1m
         conditions:
           - "[STATUS] == 200"

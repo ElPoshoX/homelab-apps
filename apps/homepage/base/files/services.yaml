@@ -107,13 +107,9 @@
       - Speed Test:
             icon: myspeed.png
             href: "{{HOMEPAGE_VAR_SPEEDTEST_URL}}"
-            app: speedtest-tracker
+            app: speedtest-exporter
             namespace: myspeed
             statusStyle: "dot"
-            widget:
-                type: speedtest
-                url: "{{HOMEPAGE_VAR_SPEEDTEST_URL}}"
-                version: 1
 
       - Grafana:
             icon: grafana.png
