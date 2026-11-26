@@ -35,8 +35,12 @@ spec:
             - |
               set -e
               mkdir -p /opt/data
-              sed -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
-                  /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
+              # Hermes updates its config on the PVC (including MCP connections).
+              # Only seed a new home; never erase changes on pod restart.
+              if [ ! -s /opt/data/config.yaml ]; then
+                sed -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
+                    /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
+              fi
               chown -R 1000:1000 /opt/data
           securityContext:
             runAsUser: 0
@@ -60,12 +64,10 @@ spec:
             - containerPort: 8642
               name: gateway
             - containerPort: 9119
-              name: dashboard
+              name: webapp
             - containerPort: 8644
               name: webhook
           env:
-            - name: HERMES_DASHBOARD
-              value: "true"
             - name: HERMES_UID
               value: "1000"
             - name: HERMES_GID

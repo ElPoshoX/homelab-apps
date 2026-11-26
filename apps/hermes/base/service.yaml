@@ -12,9 +12,9 @@ spec:
       port: 8642
       targetPort: gateway
       protocol: TCP
-    - name: dashboard
+    - name: webapp
       port: 9119
-      targetPort: dashboard
+      targetPort: webapp
       protocol: TCP
     - name: webhook
       port: 8644
