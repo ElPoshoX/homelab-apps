@@ -108,6 +108,7 @@ alertmanager:
         - namespace
         - alertname
         - service
+      group_interval: 1m
       routes:
         - receiver: "null"
           matchers:
