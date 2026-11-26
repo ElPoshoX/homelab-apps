@@ -23,4 +23,4 @@ helmCharts:
 resources:
   - namespace.yaml
   - ingress.yaml
-  - irm-secret.yaml
+  - discord-secret.yaml

@@ -74,7 +74,7 @@ alertmanager:
   enabled: true
   alertmanagerSpec:
     secrets:
-      - alertmanager-irm-webhook
+      - alertmanager-discord-webhook
     alertmanagerConfigSelector: {}
     alertmanagerConfigNamespaceSelector: {}
     alertmanagerConfigMatcherStrategy:
@@ -113,15 +113,20 @@ alertmanager:
         - receiver: "null"
           matchers:
             - alertname = "Watchdog"
-        - receiver: grafana-irm
+        - receiver: discord
     receivers:
       - name: default
       - name: "null"
-      - name: grafana-irm
-        webhook_configs:
-          - url_file: /etc/alertmanager/secrets/alertmanager-irm-webhook/url
+      - name: discord
+        discord_configs:
+          - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord-webhook/url
             send_resolved: true
-            max_alerts: 99
+            username: Kepler
+            title: '{{ if eq .Status "firing" }}🚨 Firing{{ else }}✅ Resolved{{ end }} · {{ .CommonLabels.alertname }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }}){{ end }}'
+            message: |-
+              {{ if eq .Status "resolved" }}The alert condition has cleared.{{ else if .CommonAnnotations.description }}{{ .CommonAnnotations.description }}{{ else if .CommonAnnotations.summary }}{{ .CommonAnnotations.summary }}{{ else }}{{ len .Alerts }} alert(s) require attention.{{ end }}
+
+              **Severity:** {{ or .CommonLabels.severity "unknown" }} · **Scope:** {{ or .CommonLabels.namespace .CommonLabels.service "cluster" }}
 
 # --- Grafana: managed separately ---
 grafana:
