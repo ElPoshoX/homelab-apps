@@ -8,7 +8,9 @@ Prepared on 2026-11-25 and deployed on 2026-11-26 UTC.
 - Updated Portainer stack `oneuptime-clickhouse` (ID 45, endpoint 4) from image `clickhouse/clickhouse-server:25.7` to `clickhouse/clickhouse-server:26.11.2.4`. Its other stack settings were preserved.
 - The new container reported healthy, `/ping` returned HTTP 200, and `SELECT version()` returned `26.11.2.4`. The `oneuptime` database retained 24 tables and zero active parts, matching the pre-upgrade baseline.
 - All four OneUptime pods were Ready, Argo CD reported `oneuptime-homelab` Synced/Healthy, and `https://uptime.elposhox.dev/dashboard/` and `/status-page/` returned HTTP 200. The application log reported `Clickhouse is connected` and `Live check: ok` after the restart.
-- An end-to-end monitor and incident lifecycle was not exercised during this maintenance. Check the next real monitor result and alert delivery before treating that behavior as verified.
+- On 2026-11-26 UTC, a controlled failure of the Speedtest monitor moved it from Operational to Offline and created an automatic incident. Restoring the original destination and interval caused the next probe check to return the monitor to Operational and automatically resolve the incident. The original monitor configuration was verified after restoration.
+- This test uncovered that the monitor's three assigned probes had been disconnected since March 2026. The currently connected probe was assigned to the monitor and completed both test checks. Probe assignment needs a durable fix across future probe replacements; the chart-rendered probe key differs from the key used by the running probe.
+- The incident was marked visible on the status page, but the public page is a client-rendered application and its visible rendering was not verified. No Discord workspace notification channel or status-page subscribers are configured, so alert delivery to Discord was not verified.
 
 ## Current state and target
 
@@ -21,7 +23,7 @@ Prepared on 2026-11-25 and deployed on 2026-11-26 UTC.
 
 ## Procedure and rollback
 
-The production change used steps 2–5 below. A test against a copy of the dataset and an end-to-end monitor and incident lifecycle were not performed; those checks remain open.
+The production change used steps 2–5 below. A test against a copy of the dataset was not performed. The controlled monitor and incident lifecycle was verified after the upgrade, with notification delivery still open.
 
 1. Confirm the exact image tag still exists and review upstream release notes and compatibility changes from 25.7 through 26.11. For future major upgrades, test the target image against a copy of the dataset before touching the live stack.
 2. Record `SELECT version()`, the tables in `oneuptime`, active part counts and sizes, and the current Portainer stack definition. Preserve the current `25.7` image and configuration for rollback.

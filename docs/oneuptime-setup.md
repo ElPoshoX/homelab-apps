@@ -6,9 +6,9 @@ OneUptime is deployed via Helm chart in the `oneuptime` namespace.
 ## External Databases (on TrueNAS)
 - PostgreSQL 15: `oneuptime-postgres.elposhox.dev:30200`
 - Redis 7.0.12: `oneuptime-redis.elposhox.dev:30201`
-- ClickHouse 25.7: `https://oneuptime-clickhouse.elposhox.dev`
+- ClickHouse 26.11.2.4: `https://oneuptime-clickhouse.elposhox.dev`
 
-See [ClickHouse upgrade preparation](oneuptime-clickhouse-upgrade.md) for the current server version, target release, backup, validation, and rollback plan.
+See [ClickHouse upgrade](oneuptime-clickhouse-upgrade.md) for the release, snapshot, validation, and rollback procedure.
 
 All databases use SSL/TLS and are configured in the SOPS-encrypted secret.
 
