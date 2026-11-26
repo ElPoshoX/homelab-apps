@@ -19,6 +19,12 @@ helmCharts:
     namespace: monitoring
     includeCRDs: true
     skipTests: true
+  - name: prometheus-blackbox-exporter
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: monitoring-blackbox-exporter
+    version: "11.24.0"
+    valuesFile: blackbox-values.yaml
+    namespace: monitoring
 
 resources:
   - namespace.yaml
@@ -26,3 +32,5 @@ resources:
   - discord-secret.yaml
   - platform-service-monitors.yaml
   - platform-alerts.yaml
+  - argocd-service-monitor.yaml
+  - core-dns-probe.yaml

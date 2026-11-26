@@ -1,0 +1,50 @@
+fullnameOverride: monitoring-blackbox-exporter
+
+replicas: 1
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+serviceMonitor:
+  selfMonitor:
+    enabled: true
+
+config:
+  modules:
+    dns_external:
+      prober: dns
+      timeout: 10s
+      dns:
+        query_name: example.com
+        query_type: A
+        valid_rcodes:
+          - NOERROR
+    dns_cluster:
+      prober: dns
+      timeout: 5s
+      dns:
+        query_name: kubernetes.default.svc.cluster.local
+        query_type: A
+        valid_rcodes:
+          - NOERROR
+    nats_protocol:
+      prober: tcp
+      timeout: 5s
+      tcp:
+        query_response:
+          - expect: '^INFO '
+          - send: "CONNECT {}\r\nPING\r\n"
+          - expect: 'PONG'
+    s3_api:
+      prober: http
+      timeout: 5s
+      http:
+        method: GET
+        valid_status_codes:
+          - 403
+        preferred_ip_protocol: ip4

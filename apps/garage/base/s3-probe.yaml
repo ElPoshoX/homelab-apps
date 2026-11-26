@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: garage-s3-api
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: s3_api
+  prober:
+    url: monitoring-blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - http://garage.garage.svc.cluster.local:3900/
+      labels:
+        service: garage-s3

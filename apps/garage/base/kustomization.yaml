@@ -23,6 +23,8 @@ resources:
   - secret.yaml
   - alerts.yaml
   - pod-monitor.yaml
+  - s3-probe.yaml
+  - s3-canary.yaml
 
 # Patches
 patches:

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: nats-protocol
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: nats_protocol
+  prober:
+    url: monitoring-blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - nats.nats.svc.cluster.local:4222
+      labels:
+        service: nats

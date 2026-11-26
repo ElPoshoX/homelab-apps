@@ -94,6 +94,9 @@ buckets:
   - name: postgres-backup
     quota: null
     description: "PostgreSQL CNPG backups"
+  - name: s3-canary
+    quota: null
+    description: "S3 read/write health checks"
 
 # Security context
 podSecurityContext:
@@ -162,6 +165,7 @@ clusterConfig:
     - name: loki-admin
     - name: tempo-bucket
     - name: postgres-backup
+    - name: s3-canary
 
   # S3 access keys - reference existing Kubernetes secret with encrypted credentials
   keys:
@@ -174,6 +178,10 @@ clusterConfig:
           read: true
           write: true
           owner: true
+        - name: s3-canary
+          read: true
+          write: true
+          owner: false
     loki-key:
       secretName: loki-s3-credentials
       keyId: accessKey

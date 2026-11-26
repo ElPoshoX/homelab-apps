@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: core-dns-functional
+spec:
+  interval: 30s
+  scrapeTimeout: 15s
+  module: dns_cluster
+  prober:
+    url: monitoring-blackbox-exporter.monitoring.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - kube-dns.kube-system.svc.cluster.local:53
+      labels:
+        service: core-dns

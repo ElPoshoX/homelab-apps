@@ -4,6 +4,37 @@ metadata:
   name: platform-alerts
 spec:
   groups:
+    - name: platform-gitops
+      rules:
+        - alert: ArgoApplicationOutOfSync
+          expr: argocd_app_info{namespace="argocd",sync_status!="Synced"} == 1
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Argo CD app out of sync: {{ $labels.name }}"
+            description: "{{ $labels.name }} has been {{ $labels.sync_status }} for 30 minutes. Inspect the Argo CD sync operation and repository revision."
+
+        - alert: ArgoApplicationDegraded
+          expr: argocd_app_info{namespace="argocd",health_status=~"Degraded|Missing|Unknown"} == 1
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Argo CD app unhealthy: {{ $labels.name }}"
+            description: "{{ $labels.name }} has health status {{ $labels.health_status }}. Inspect failing resources and recent syncs."
+
+    - name: platform-dns
+      rules:
+        - alert: CoreDnsLookupFailed
+          expr: probe_success{job="probe/monitoring/core-dns-functional"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cluster DNS lookup failed"
+            description: "The blackbox probe cannot resolve kubernetes.default.svc.cluster.local through CoreDNS. Check CoreDNS pods and the kube-dns service."
+
     - name: platform-certificates
       rules:
         - alert: CertificateExpiringSoon

@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: garage-s3-canary
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 180
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 3600
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: s3-canary
+              image: public.ecr.aws/aws-cli/aws-cli:2.31.22
+              command:
+                - /bin/sh
+                - -ec
+              args:
+                - |-
+                  endpoint=http://garage.garage.svc.cluster.local:3900
+                  bucket=s3-canary
+                  key=monitoring/garage-s3-canary
+                  printf '%s' "$HOSTNAME" > /tmp/canary
+                  aws --endpoint-url "$endpoint" s3api put-object --bucket "$bucket" --key "$key" --body /tmp/canary >/dev/null
+                  aws --endpoint-url "$endpoint" s3api get-object --bucket "$bucket" --key "$key" /tmp/fetched >/dev/null
+                  cmp /tmp/canary /tmp/fetched
+                  aws --endpoint-url "$endpoint" s3api delete-object --bucket "$bucket" --key "$key" >/dev/null
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: garage-s3-credentials
+                      key: accessKey
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: garage-s3-credentials
+                      key: secretKey
+                - name: AWS_DEFAULT_REGION
+                  value: garage
+                - name: AWS_EC2_METADATA_DISABLED
+                  value: "true"
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: adguard-alerts
+spec:
+  groups:
+    - name: adguard-dns
+      rules:
+        - alert: AdGuardDnsLookupFailed
+          expr: probe_success{job="probe/adguard/adguard-dns-functional"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "AdGuard DNS lookup failed"
+            description: "AdGuard could not resolve example.com. Check its upstream DNS servers and Starlink connectivity."

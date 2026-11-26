@@ -22,6 +22,8 @@ resources:
   - namespace.yaml
   - service-monitor.yaml
   - ingress.yaml
+  - protocol-probe.yaml
+  - alerts.yaml
 
 patches:
   - target:

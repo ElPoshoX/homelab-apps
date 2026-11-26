@@ -67,3 +67,30 @@ spec:
           annotations:
             summary: "Garage RPC timeouts on {{ $labels.pod }}"
             description: "Garage recorded {{ $value }} RPC timeouts in 10 minutes. Check cluster connectivity and node health."
+
+        - alert: GarageS3ApiUnavailable
+          expr: probe_success{job="probe/garage/garage-s3-api"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Garage S3 API did not process a request"
+            description: "The Garage S3 endpoint did not return its expected API response. Check the S3 service, Garage pods, and cluster routing."
+
+        - alert: GarageS3CanaryStale
+          expr: time() - kube_cronjob_status_last_successful_time{namespace="garage",cronjob="garage-s3-canary"} > 900
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Garage S3 read/write canary is stale"
+            description: "The S3 canary has not completed a put, get, compare, and delete cycle for over 15 minutes. Check Garage and the canary Job."
+
+        - alert: GarageS3CanaryNeverSucceeded
+          expr: kube_cronjob_info{namespace="garage",cronjob="garage-s3-canary"} unless on (namespace, cronjob) kube_cronjob_status_last_successful_time{namespace="garage",cronjob="garage-s3-canary"}
+          for: 20m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Garage S3 canary has never succeeded"
+            description: "The S3 canary has not completed a successful read/write cycle since deployment. Inspect the CronJob and Garage bucket permissions."

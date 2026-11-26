@@ -45,6 +45,7 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
 
     storageSpec:
       volumeClaimTemplate:

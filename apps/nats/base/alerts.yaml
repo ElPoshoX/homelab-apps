@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nats-alerts
+spec:
+  groups:
+    - name: nats-protocol
+      rules:
+        - alert: NatsProtocolFailed
+          expr: probe_success{job="probe/nats/nats-protocol"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "NATS protocol handshake failed"
+            description: "The NATS server did not complete INFO, CONNECT, PING, and PONG. Check the NATS pod, service, and connection limits."
