@@ -8,6 +8,8 @@ OneUptime is deployed via Helm chart in the `oneuptime` namespace.
 - Redis 7.0.12: `oneuptime-redis.elposhox.dev:30201`
 - ClickHouse 25.7: `https://oneuptime-clickhouse.elposhox.dev`
 
+See [ClickHouse upgrade preparation](oneuptime-clickhouse-upgrade.md) for the current server version, target release, backup, validation, and rollback plan.
+
 All databases use SSL/TLS and are configured in the SOPS-encrypted secret.
 
 ## Access
