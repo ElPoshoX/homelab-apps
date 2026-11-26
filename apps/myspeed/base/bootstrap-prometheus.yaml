@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: speedtest-tracker-bootstrap
+data:
+  enable-prometheus.php: |-
+    <?php
+    require '/app/www/vendor/autoload.php';
+
+    $app = require '/app/www/bootstrap/app.php';
+    $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    $settings = $app->make(App\Settings\DataIntegrationSettings::class);
+    if (! $settings->prometheus_enabled) {
+        $settings->prometheus_enabled = true;
+        $settings->save();
+    }

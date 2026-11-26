@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myspeed-deployment
+  name: speedtest-tracker
   labels:
-    app: myspeed
-    app.kubernetes.io/name: myspeed
+    app: speedtest-tracker
+    app.kubernetes.io/name: speedtest-tracker
     app.kubernetes.io/instance: myspeed
 spec:
   replicas: 1
@@ -13,50 +13,101 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: myspeed
+      app: speedtest-tracker
   template:
     metadata:
       labels:
-        app: myspeed
-        app.kubernetes.io/name: myspeed
+        app: speedtest-tracker
+        app.kubernetes.io/name: speedtest-tracker
     spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: myspeed
-        image: germannewsmaker/myspeed:1.0.9
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: DB_CONNECTION
-          value: "sqlite"
-        - name: PORT
-          value: "5216"
-        - name: TZ
-          value: "America/Mexico_City"
-        ports:
-        - containerPort: 5216
-          name: http
-          protocol: TCP
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        volumeMounts:
-        - name: myspeed-config
-          mountPath: /config
+        - name: speedtest-tracker
+          image: lscr.io/linuxserver/speedtest-tracker:1.15.1
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: speedtest-tracker-credentials
+                  key: APP_KEY
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: speedtest-tracker-credentials
+                  key: ADMIN_PASSWORD
+            - name: ADMIN_NAME
+              value: ElPoshoX
+            - name: ADMIN_EMAIL
+              value: admin@elposhox.dev
+            - name: APP_URL
+              value: https://speedtest.elposhox.dev
+            - name: DB_CONNECTION
+              value: sqlite
+            - name: SPEEDTEST_SCHEDULE
+              value: "0 */2 * * *"
+            - name: DISPLAY_TIMEZONE
+              value: America/Mexico_City
+            - name: APP_TIMEZONE
+              value: America/Mexico_City
+            - name: TZ
+              value: America/Mexico_City
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            periodSeconds: 30
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -ec
+                  - |-
+                    attempt=0
+                    until php /etc/speedtest-tracker/enable-prometheus.php >/dev/null 2>&1; do
+                      attempt=$((attempt + 1))
+                      if [ "$attempt" -ge 60 ]; then
+                        echo "Failed to enable Speedtest Tracker Prometheus metrics" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+          volumeMounts:
+            - name: speedtest-tracker-config
+              mountPath: /config
+            - name: speedtest-tracker-bootstrap
+              mountPath: /etc/speedtest-tracker
+              readOnly: true
       volumes:
-      - name: myspeed-config
-        persistentVolumeClaim:
-          claimName: myspeed-config
+        - name: speedtest-tracker-config
+          persistentVolumeClaim:
+            claimName: speedtest-tracker-config
+        - name: speedtest-tracker-bootstrap
+          configMap:
+            name: speedtest-tracker-bootstrap

@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: speedtest-tracker
+spec:
+  selector:
+    matchLabels:
+      app: speedtest-tracker
+  endpoints:
+    - port: http
+      path: /prometheus
+      interval: 1m

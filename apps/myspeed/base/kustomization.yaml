@@ -13,3 +13,8 @@ resources:
 - deployment.yaml
 - ingress.yaml
 - pvc.yaml
+- speedtest-tracker-pvc.yaml
+- secret.yaml
+- bootstrap-prometheus.yaml
+- service-monitor.yaml
+- alerts.yaml

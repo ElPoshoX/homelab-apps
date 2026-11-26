@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: speedtest-tracker-alerts
+spec:
+  groups:
+    - name: speedtest-tracker-tests
+      rules:
+        - alert: SpeedtestTrackerLastTestFailed
+          expr: speedtest_tracker_result_id{namespace="myspeed",status="failed"} > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Latest internet speed test failed"
+            description: "Speedtest Tracker's latest test failed. Check its logs, DNS, and outbound connectivity."
+
+        - alert: SpeedtestTrackerScheduleStalled
+          expr: changes((max by (namespace) (speedtest_tracker_result_id{namespace="myspeed"}))[6h:1m]) == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "No new speed test result for over six hours"
+            description: "The latest Speedtest Tracker result ID has not changed across three scheduled runs. Check its scheduler and outbound connectivity."

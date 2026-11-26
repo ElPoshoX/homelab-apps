@@ -40,6 +40,16 @@ prometheus:
     # Accept remote_write from Tempo metrics generator
     enableRemoteWriteReceiver: true
 
+    # Retain Speedtest Tracker history in local Mimir without duplicating all
+    # cluster metrics that Prometheus already stores on its own PVC.
+    remoteWrite:
+      - url: http://mimir-gateway.mimir.svc.cluster.local/api/v1/push
+        writeRelabelConfigs:
+          - sourceLabels:
+              - __name__
+            regex: speedtest_tracker_.*
+            action: keep
+
     # Select ALL ServiceMonitors/PodMonitors/Rules across all namespaces
     # Without these, only monitors with kube-prometheus-stack helm labels are picked up
     serviceMonitorSelectorNilUsesHelmValues: false

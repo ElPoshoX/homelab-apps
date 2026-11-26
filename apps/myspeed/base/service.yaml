@@ -3,16 +3,18 @@ apiVersion: v1
 kind: Service
 metadata:
   name: myspeed
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
   labels:
-    app: myspeed
+    app: speedtest-tracker
     app.kubernetes.io/instance: myspeed-homelab
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: myspeed
+    app.kubernetes.io/name: speedtest-tracker
     app.kubernetes.io/part-of: myspeed
     homelab.local/OwnedBy: ElPoshoX
 spec:
   selector:
-    app: myspeed
+    app: speedtest-tracker
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/part-of: myspeed
     homelab.local/OwnedBy: ElPoshoX
@@ -20,5 +22,5 @@ spec:
   - name: http
     protocol: TCP
     port: 80
-    targetPort: 5216
+    targetPort: http
   internalTrafficPolicy: Cluster
