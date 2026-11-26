@@ -18,6 +18,10 @@ image:
 deployment:
   replicaCount: 1
 
+# No KEDA ScaledObjects or ScaledJobs are used in this homelab.
+keda:
+  enabled: false
+
 # Disable internal databases - use external on TrueNAS
 postgresql:
   enabled: false
