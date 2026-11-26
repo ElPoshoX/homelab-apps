@@ -13,6 +13,7 @@ httpProtocol: https
 image:
   registry: docker.io
   pullPolicy: IfNotPresent
+  tag: "10.5.29"
 
 # Keep runtime identities stable across Kustomize Helm renders and pod restarts.
 externalSecrets:
