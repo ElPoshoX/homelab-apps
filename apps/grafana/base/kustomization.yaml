@@ -22,8 +22,32 @@ helmCharts:
 resources:
   - namespace.yaml
   - secret.yaml
-  - dashboard-claude-code-cm.yaml
   - dashboard-speedtest-exporter-cm.yaml
+
+configMapGenerator:
+  - name: grafana-dashboards-kubernetes
+    files:
+      - dashboards/kubernetes/k8s-views-global.json
+      - dashboards/kubernetes/k8s-views-namespaces.json
+      - dashboards/kubernetes/k8s-views-nodes.json
+      - dashboards/kubernetes/k8s-views-pods.json
+      - dashboards/kubernetes/k8s-system-api-server.json
+      - dashboards/kubernetes/k8s-system-coredns.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
+        argocd.argoproj.io/sync-options: ServerSideApply=true
+  - name: grafana-dashboard-node-exporter
+    files:
+      - dashboards/infrastructure/node-exporter.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Infrastructure
+        argocd.argoproj.io/sync-options: ServerSideApply=true
 
 patches:
   - target:
