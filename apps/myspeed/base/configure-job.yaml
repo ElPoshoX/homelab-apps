@@ -72,19 +72,29 @@ spec:
               settings["preferred_server_name"] = "Huehuetoca"
               request("PUT", "/api/settings", settings)
 
-              name = "Kepler Speed Tests"
               channels = request("GET", "/api/notifications")
-              existing = next((channel for channel in channels if channel["name"] == name), None)
-              payload = {
-                  "name": name,
-                  "provider": "shoutrrr",
-                  "config": {"url": shoutrrr_url},
-                  "enabled": True,
-                  "notify_on_success": True,
-                  "notify_on_failure": True,
-              }
-              if existing:
-                  request("PUT", f"/api/notifications/{existing['id']}", payload)
-              else:
-                  request("POST", "/api/notifications", payload)
-              print("Speedtest settings and Discord channel configured")
+
+              def upsert_channel(name, color, on_success, on_failure):
+                  query = urllib.parse.urlencode({
+                      "title": "Internet speed",
+                      "username": "Kepler",
+                      "color": color,
+                      "splitLines": "No",
+                  })
+                  payload = {
+                      "name": name,
+                      "provider": "shoutrrr",
+                      "config": {"url": shoutrrr_url + "?" + query},
+                      "enabled": True,
+                      "notify_on_success": on_success,
+                      "notify_on_failure": on_failure,
+                  }
+                  existing = next((channel for channel in channels if channel["name"] == name), None)
+                  if existing:
+                      request("PUT", f"/api/notifications/{existing['id']}", payload)
+                  else:
+                      request("POST", "/api/notifications", payload)
+
+              upsert_channel("Kepler Speed Tests", "0x16a34a", True, False)
+              upsert_channel("Kepler Speed Test Failures", "0xdc2626", False, True)
+              print("Speedtest settings and formatted Discord channels configured")
