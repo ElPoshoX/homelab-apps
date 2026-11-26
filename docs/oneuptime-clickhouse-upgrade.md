@@ -1,19 +1,29 @@
-# OneUptime ClickHouse upgrade preparation
+# OneUptime ClickHouse upgrade
 
-Prepared on 2026-11-25. This runbook does not deploy the upgrade.
+Prepared on 2026-11-25 and deployed on 2026-11-26 UTC.
+
+## Deployment result
+
+- Stopped the old ClickHouse container and verified TrueNAS snapshot `HomeLab/OneUptime/ClickHouse@pre-clickhouse-26-11-20261126-015311` before the stack update.
+- Updated Portainer stack `oneuptime-clickhouse` (ID 45, endpoint 4) from image `clickhouse/clickhouse-server:25.7` to `clickhouse/clickhouse-server:26.11.2.4`. Its other stack settings were preserved.
+- The new container reported healthy, `/ping` returned HTTP 200, and `SELECT version()` returned `26.11.2.4`. The `oneuptime` database retained 24 tables and zero active parts, matching the pre-upgrade baseline.
+- All four OneUptime pods were Ready, Argo CD reported `oneuptime-homelab` Synced/Healthy, and `https://uptime.elposhox.dev/dashboard/` and `/status-page/` returned HTTP 200. The application log reported `Clickhouse is connected` and `Live check: ok` after the restart.
+- An end-to-end monitor and incident lifecycle was not exercised during this maintenance. Check the next real monitor result and alert delivery before treating that behavior as verified.
 
 ## Current state and target
 
 - TrueNAS SCALE 25.04.2.6 runs the Portainer stack `oneuptime-clickhouse`.
-- The stack uses `clickhouse/clickhouse-server:25.7`; the server reports `25.7.8.71`.
-- Target: `clickhouse/clickhouse-server:26.11.2.4`, the latest upstream stable release observed on 2026-11-25. Pin this exact tag, not `latest`.
+- Before the upgrade, the stack used `clickhouse/clickhouse-server:25.7` and the server reported `25.7.8.71`.
+- Deployed image: `clickhouse/clickhouse-server:26.11.2.4`, the latest upstream stable release observed on 2026-11-25. Keep this exact tag pinned.
 - The container bind-mounts `/mnt/HomeLab/OneUptime/ClickHouse/data` and `/mnt/HomeLab/OneUptime/ClickHouse/logs` from the TrueNAS dataset `HomeLab/OneUptime/ClickHouse`. Ports 30202 and 30203 are published for HTTP and native traffic.
-- The `oneuptime` database currently has 24 tables and no active data parts. The ClickHouse `system` database has about 19.44 GiB of active parts, mostly `text_log`, `trace_log`, `metric_log`, and `asynchronous_metric_log`. These log tables contain data back to 2026-03-18 and have no TTL. Recheck immediately before upgrading.
+- At the pre-upgrade check, the `oneuptime` database had 24 tables and no active data parts. The ClickHouse `system` database had about 19.44 GiB of active parts, mostly `text_log`, `trace_log`, `metric_log`, and `asynchronous_metric_log`. These log tables contain data back to 2026-03-18 and have no TTL.
 - OneUptime 10.5.29 requires ClickHouse at startup and writes monitor logs there. The OpenTelemetry Collector sends general traces, metrics, and logs to Tempo, Mimir, and Loki; it does not send them to OneUptime.
 
-## Upgrade gate
+## Procedure and rollback
 
-1. Confirm the exact image tag still exists and review upstream release notes and compatibility changes from 25.7 through 26.11. Test the target image against a copy of this dataset before touching the live stack.
+The production change used steps 2–5 below. A test against a copy of the dataset and an end-to-end monitor and incident lifecycle were not performed; those checks remain open.
+
+1. Confirm the exact image tag still exists and review upstream release notes and compatibility changes from 25.7 through 26.11. For future major upgrades, test the target image against a copy of the dataset before touching the live stack.
 2. Record `SELECT version()`, the tables in `oneuptime`, active part counts and sizes, and the current Portainer stack definition. Preserve the current `25.7` image and configuration for rollback.
 3. Take a verified backup of the `oneuptime` database and a TrueNAS snapshot of `HomeLab/OneUptime/ClickHouse` after stopping the ClickHouse container. The snapshot must include the bind-mounted `data` and `logs` directories. Verify the snapshot exists before changing the stack.
 4. Change only the image in the Portainer stack `oneuptime-clickhouse` to `clickhouse/clickhouse-server:26.11.2.4`; retain mounts, ports, credentials, and health check. Expect a brief OneUptime outage while ClickHouse restarts.
