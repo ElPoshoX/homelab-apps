@@ -22,6 +22,11 @@ image:
 
 # DaemonSet specific settings
 presets:
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: false
+  kubernetesAttributes:
+    enabled: true
   kubeletMetrics:
     enabled: true
   hostMetrics:
@@ -31,6 +36,22 @@ presets:
 config:
   # Receivers - accept telemetry data
   receivers:
+    # Read container logs on each node. The pod UID lets k8sattributes resolve
+    # the workload even though filelog has no network connection to its pod.
+    filelog:
+      exclude:
+        - /var/log/pods/otel-collector_opentelemetry-collector*_*/opentelemetry-collector/*.log
+        - /var/log/pods/loki_loki-canary-*_*/canary/*.log
+      operators:
+        - type: container
+          id: container-parser
+          max_log_size: 102400
+        - type: regex_parser
+          parse_from: attributes["log.file.path"]
+          regex: '^/var/log/pods/[^_]+_[^_]+_(?P<pod_uid>[^/]+)/[^/]+/[^/]+\.log$'
+        - type: move
+          from: attributes.pod_uid
+          to: resource["k8s.pod.uid"]
     # OTLP gRPC receiver (default port 4317)
     otlp:
       protocols:
