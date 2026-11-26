@@ -48,12 +48,6 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 403"
-      - name: PostgreSQL
-        group: Storage
-        url: tcp://postgres-rw.postgres.svc.cluster.local:5432
-        interval: 1m
-        conditions:
-          - "[CONNECTED] == true"
       - name: Grafana
         group: Observability
         url: http://grafana.grafana.svc.cluster.local:3000/api/health
@@ -72,6 +66,13 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 200"
+      - name: Critical alerts
+        group: Observability
+        url: http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=count%28ALERTS%7Balertstate%3D%22firing%22%2Cseverity%3D%22critical%22%7D%29%20or%20vector%280%29
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].data.result[0].value[1] == 0"
       - name: Loki
         group: Observability
         url: http://loki.loki.svc.cluster.local:3100/ready
