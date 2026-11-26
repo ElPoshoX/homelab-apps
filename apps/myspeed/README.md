@@ -8,6 +8,6 @@ The ServiceMonitor scrapes `/metrics` every minute. Prometheus forwards only `sp
 
 The exporter has no built-in authentication. Its hostname resolves to the homelab's private gateway address. Keep the route on the trusted LAN; do not publish it through a public tunnel without adding authentication. Its API includes settings changes, test runs, and unencrypted settings export.
 
-The `#speed-tests` Discord notification channel is configured through the exporter's API and stored encrypted in its SQLite database. Keep its Discord webhook in the encrypted GitOps secret so the channel can be restored if the PVC is lost.
+The PostSync configuration Job pins the preferred Speedtest.net server to Huehuetoca (61286) and configures the `#speed-tests` Discord notification channel through the exporter's API. It updates an existing channel by name, so repeated syncs do not create duplicates. The channel is encrypted in SQLite, and its webhook is encrypted in the GitOps SopsSecret for restoration if the PVC is lost.
 
 For rollback, restore the previous Speedtest Tracker Deployment, Service, ServiceMonitor, alert, and dashboard manifests from Git, and remount `speedtest-tracker-config`. Keep the new PVC until its results are no longer needed.

@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: speedtest-discord-channel
+  name: speedtest-configure
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
@@ -18,7 +18,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: configure-channel
+        - name: configure-exporter
           image: python:3.13-alpine
           securityContext:
             allowPrivilegeEscalation: false
@@ -67,6 +67,11 @@ spec:
               else:
                   raise SystemExit("Speedtest exporter did not become ready")
 
+              settings = request("GET", "/api/settings")
+              settings["preferred_server_id"] = "61286"
+              settings["preferred_server_name"] = "Huehuetoca"
+              request("PUT", "/api/settings", settings)
+
               name = "Kepler Speed Tests"
               channels = request("GET", "/api/notifications")
               existing = next((channel for channel in channels if channel["name"] == name), None)
@@ -82,4 +87,4 @@ spec:
                   request("PUT", f"/api/notifications/{existing['id']}", payload)
               else:
                   request("POST", "/api/notifications", payload)
-              print("Discord speed test channel configured")
+              print("Speedtest settings and Discord channel configured")

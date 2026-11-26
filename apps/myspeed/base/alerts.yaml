@@ -23,3 +23,12 @@ spec:
           annotations:
             summary: "No successful speed test in over six hours"
             description: "The scheduled speed tests have not produced a result for over six hours. Check the exporter and outbound connectivity."
+
+        - alert: SpeedtestExporterZeroDownload
+          expr: speedtest_download_mbps{namespace="myspeed"} == 0 and speedtest_last_test_timestamp_seconds{namespace="myspeed"} > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Speed test reported zero download throughput"
+            description: "The Go speedtest exporter completed a test with zero download throughput. Check the selected test server and outbound connectivity."
