@@ -9,6 +9,7 @@ OneUptime is deployed via Helm chart in the `oneuptime` namespace.
 - ClickHouse 26.11.2.4: `https://oneuptime-clickhouse.elposhox.dev`
 
 See [ClickHouse upgrade](oneuptime-clickhouse-upgrade.md) for the release, snapshot, validation, and rollback procedure.
+See [Discord incident notifications](oneuptime-discord.md) for stable probe identity and incident delivery.
 
 All databases use SSL/TLS and are configured in the SOPS-encrypted secret.
 
