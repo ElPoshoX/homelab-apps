@@ -29,6 +29,7 @@ resources:
   - ingress.yaml
   - secret.yaml
   - runtime-secret.yaml
+  - discord-secret.yaml
 
 patches:
   - target:
