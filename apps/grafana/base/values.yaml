@@ -55,6 +55,8 @@ route:
 sidecar:
   dashboards:
     enabled: true
+    env:
+      REQ_USERNAME: admin
     searchNamespace: ALL
     label: grafana_dashboard
     labelValue: "1"
