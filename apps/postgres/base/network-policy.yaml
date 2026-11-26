@@ -37,6 +37,15 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
+    # Gatus availability probe
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gatus
+            app.kubernetes.io/name: gatus
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
   egress:
     # DNS
     - toEndpoints:

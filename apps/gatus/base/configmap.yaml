@@ -56,11 +56,10 @@ data:
           - "[STATUS] == 403"
       - name: PostgreSQL
         group: Storage
-        url: http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/query?query=max%28cnpg_collector_up%7Bnamespace%3D%22postgres%22%2Ccluster%3D%22postgres%22%7D%29%20or%20vector%280%29
+        url: tcp://postgres-rw.postgres.svc.cluster.local:5432
         interval: 1m
         conditions:
-          - "[STATUS] == 200"
-          - "[BODY].data.result[0].value[1] == 1"
+          - "[CONNECTED] == true"
       - name: CouchDB
         group: Storage
         url: http://couchdb.couchdb.svc.cluster.local:5984/_up
