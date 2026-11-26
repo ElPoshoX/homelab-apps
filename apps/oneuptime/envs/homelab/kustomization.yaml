@@ -10,3 +10,4 @@ resources:
 patches:
   - path: patch-remove-date-label.yaml
   - path: patch-startup-probe.yaml
+  - path: patch-probe-key.yaml

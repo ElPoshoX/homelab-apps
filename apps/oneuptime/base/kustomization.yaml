@@ -28,8 +28,19 @@ resources:
   - namespace.yaml
   - ingress.yaml
   - secret.yaml
+  - runtime-secret.yaml
 
 patches:
+  - target:
+      version: v1
+      kind: Secret
+      name: oneuptime-secrets
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: oneuptime-secrets
   - target:
       group: apps
       version: v1

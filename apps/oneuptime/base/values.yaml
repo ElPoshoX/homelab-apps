@@ -14,6 +14,21 @@ image:
   registry: docker.io
   pullPolicy: IfNotPresent
 
+# Keep runtime identities stable across Kustomize Helm renders and pod restarts.
+externalSecrets:
+  oneuptimeSecret:
+    existingSecret:
+      name: oneuptime-runtime-secret
+      passwordKey: ONEUPTIME_SECRET
+  registerProbeKey:
+    existingSecret:
+      name: oneuptime-runtime-secret
+      passwordKey: REGISTER_PROBE_KEY
+  encryptionSecret:
+    existingSecret:
+      name: oneuptime-runtime-secret
+      passwordKey: ENCRYPTION_SECRET
+
 # Deployment replicas
 deployment:
   replicaCount: 1
