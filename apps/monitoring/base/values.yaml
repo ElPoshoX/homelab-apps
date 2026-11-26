@@ -104,6 +104,10 @@ alertmanager:
       resolve_timeout: 5m
     route:
       receiver: default
+      group_by:
+        - namespace
+        - alertname
+        - service
       routes:
         - receiver: "null"
           matchers:
