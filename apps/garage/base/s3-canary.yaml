@@ -26,10 +26,12 @@ spec:
                   endpoint=http://garage.garage.svc.cluster.local:3900
                   bucket=s3-canary
                   key=monitoring/garage-s3-canary
-                  printf '%s' "$HOSTNAME" > /tmp/canary
+                  printf '%s\n' "$HOSTNAME" > /tmp/canary
                   aws --endpoint-url "$endpoint" s3api put-object --bucket "$bucket" --key "$key" --body /tmp/canary >/dev/null
                   aws --endpoint-url "$endpoint" s3api get-object --bucket "$bucket" --key "$key" /tmp/fetched >/dev/null
-                  cmp /tmp/canary /tmp/fetched
+                  read -r expected < /tmp/canary
+                  read -r actual < /tmp/fetched
+                  test "$expected" = "$actual"
                   aws --endpoint-url "$endpoint" s3api delete-object --bucket "$bucket" --key "$key" >/dev/null
               env:
                 - name: AWS_ACCESS_KEY_ID
