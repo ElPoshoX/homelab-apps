@@ -8,6 +8,11 @@ spec:
       app.kubernetes.io/name: loki
       app.kubernetes.io/instance: loki
       app.kubernetes.io/component: single-binary
+    matchExpressions:
+      - key: prometheus.io/service-monitor
+        operator: NotIn
+        values:
+          - "false"
   endpoints:
     - port: http-metrics
       path: /metrics

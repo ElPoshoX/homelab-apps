@@ -186,7 +186,7 @@ service:
   targetPort: ""
 
 serviceMonitor:
-  enabled: true
+  enabled: false
   interval: ""
   additionalLabels: {}
   annotations: {}
