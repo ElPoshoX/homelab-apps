@@ -83,8 +83,10 @@ gateway:
   enabled: true
 
 lokiCanary:
-  image:
-    tag: 3.7.10
+  enabled: false
+
+test:
+  enabled: false
 
 chunksCache:
   enabled: false
