@@ -68,8 +68,7 @@ nginx:
 
 # Core Services
 home:
-  enabled: true
-  replicaCount: 1
+  enabled: false
 
 app:
   enabled: true

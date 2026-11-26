@@ -12,7 +12,7 @@ All databases use SSL/TLS and are configured in the SOPS-encrypted secret.
 
 ## Access
 - Web UI: https://uptime.elposhox.dev
-- Storage: 40Gi Longhorn PVC for application data
+- Persistent application state is stored in the external databases. The Helm deployments do not mount a local PVC.
 
 ## Deployment
 Managed by ArgoCD ApplicationSet: `homelab-appset`

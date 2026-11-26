@@ -26,7 +26,6 @@ helmCharts:
 # Additional Kubernetes resources (non-Helm)
 resources:
   - namespace.yaml
-  - pvc.yaml
   - ingress.yaml
   - secret.yaml
 
