@@ -24,3 +24,5 @@ resources:
   - namespace.yaml
   - ingress.yaml
   - discord-secret.yaml
+  - platform-service-monitors.yaml
+  - platform-alerts.yaml

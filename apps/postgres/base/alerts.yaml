@@ -56,7 +56,7 @@ spec:
 
         - alert: PostgresBackupFailed
           expr: |
-            time() - cnpg_pg_last_archived_wal_timestamp{namespace="postgres"} > 86400
+            time() - cnpg_pg_stat_archiver_last_archived_time{namespace="postgres"} > 86400
           for: 10m
           labels:
             severity: warning

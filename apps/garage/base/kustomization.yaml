@@ -22,6 +22,7 @@ resources:
   - namespace.yaml
   - secret.yaml
   - alerts.yaml
+  - pod-monitor.yaml
 
 # Patches
 patches:

@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: garage
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: garage
+      app.kubernetes.io/instance: garage
+  podMetricsEndpoints:
+    - port: admin
+      path: /metrics
+      interval: 30s

@@ -22,6 +22,8 @@ resources:
   - namespace.yaml
   - secret.yaml
   - ingress.yaml
+  - pod-monitor.yaml
+  - alerts.yaml
 
 patches:
   - target:

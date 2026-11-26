@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: opentelemetry-collector-alerts
+spec:
+  groups:
+    - name: opentelemetry-delivery
+      rules:
+        - alert: OtelCollectorRefusingTelemetry
+          expr: sum by (pod) (increase(otelcol_receiver_refused_spans{namespace="otel-collector"}[10m]) + increase(otelcol_receiver_refused_metric_points{namespace="otel-collector"}[10m])) > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OpenTelemetry Collector refusing telemetry on {{ $labels.pod }}"
+            description: "The collector refused {{ $value }} telemetry items in 10 minutes. Check memory pressure and exporter backpressure."

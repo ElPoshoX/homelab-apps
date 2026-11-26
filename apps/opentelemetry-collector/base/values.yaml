@@ -4,6 +4,13 @@
 # Mode: daemonset (runs on all nodes)
 mode: daemonset
 
+ports:
+  metrics:
+    enabled: true
+
+podMonitor:
+  enabled: true
+
 # Keep existing component IDs and telemetry labels during the chart upgrade.
 rewriteDeprecatedComponentNames: false
 

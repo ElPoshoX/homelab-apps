@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: tempo-alerts
+spec:
+  groups:
+    - name: tempo-storage
+      rules:
+        - alert: TempoTraceFlushFailed
+          expr: increase(tempo_live_store_local_failed_flushes_total{namespace="tempo"}[10m]) > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Tempo failed to flush traces"
+            description: "Tempo failed {{ $value }} local trace flushes in 10 minutes. Check its WAL, Garage, and storage connectivity."

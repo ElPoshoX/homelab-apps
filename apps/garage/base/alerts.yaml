@@ -58,3 +58,12 @@ spec:
           annotations:
             summary: "Garage replicas < worker node count"
             description: "Garage has {{ $value }} fewer replicas than worker nodes. Consider scaling."
+
+        - alert: GarageRpcTimeouts
+          expr: sum by (pod) (increase(rpc_timeout_counter{namespace="garage"}[10m])) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Garage RPC timeouts on {{ $labels.pod }}"
+            description: "Garage recorded {{ $value }} RPC timeouts in 10 minutes. Check cluster connectivity and node health."

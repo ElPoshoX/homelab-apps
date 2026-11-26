@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mimir-alerts
+spec:
+  groups:
+    - name: mimir-ingestion
+      rules:
+        - alert: MimirDistributorRejectingRequests
+          expr: sum(increase(cortex_distributor_instance_rejected_requests_total{namespace="mimir"}[10m])) > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Mimir is rejecting metrics"
+            description: "Mimir rejected {{ $value }} distributor requests in 10 minutes. Check distributor limits, ingesters, and Garage."
+
+        - alert: MimirIngesterRingIncomplete
+          expr: min(cortex_ring_members{namespace="mimir",name="ingester",state="ACTIVE"}) < 3
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Mimir ingester ring has fewer than three active members"
+            description: "Only {{ $value }} Mimir ingesters are active. Check the ingester pods and ring membership."

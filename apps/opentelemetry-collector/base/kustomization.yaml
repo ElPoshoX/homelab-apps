@@ -27,6 +27,7 @@ resources:
   - namespace.yaml
   - service.yaml
   - ingress.yaml
+  - alerts.yaml
 
 patches:
   - target:

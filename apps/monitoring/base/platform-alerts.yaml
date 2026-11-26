@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: platform-alerts
+spec:
+  groups:
+    - name: platform-certificates
+      rules:
+        - alert: CertificateExpiringSoon
+          expr: certmanager_certificate_expiration_timestamp_seconds{namespace="ingress",name="homelab-wildcard-tls"} - time() < 604800
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Homelab TLS certificate expires within seven days"
+            description: "The ingress wildcard certificate expires in {{ $value | humanizeDuration }}. Check cert-manager renewal and the Cloudflare DNS challenge."
+
+        - alert: CertificateNotReady
+          expr: certmanager_certificate_ready_status{namespace="ingress",name="homelab-wildcard-tls",condition="True"} == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Homelab TLS certificate is not ready"
+            description: "The ingress wildcard certificate is not ready. Check its CertificateRequest and cert-manager logs."

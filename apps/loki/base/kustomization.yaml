@@ -23,6 +23,8 @@ resources:
   - namespace.yaml
   - secret.yaml
   - ingress.yaml
+  - service-monitor.yaml
+  - alerts.yaml
 
 patches:
   - target:

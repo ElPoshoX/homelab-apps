@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: loki-alerts
+spec:
+  groups:
+    - name: loki-ingestion
+      rules:
+        - alert: LokiWalSamplesDiscarded
+          expr: increase(loki_ingester_wal_discarded_samples_total{namespace="loki"}[10m]) > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Loki discarded WAL samples"
+            description: "Loki discarded {{ $value }} log samples from its WAL in 10 minutes. Inspect the ingester and its storage before logs are lost."
+
+        - alert: LokiApiServerErrors
+          expr: sum(increase(loki_request_duration_seconds_count{namespace="loki",status_code=~"5..",route=~"loki_api_v1_(push|query|query_range)"}[10m])) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki API is returning server errors"
+            description: "Loki returned {{ $value }} ingestion or query errors in 10 minutes. Check Loki and its Garage backend."
