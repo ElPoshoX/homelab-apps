@@ -24,3 +24,14 @@ spec:
         - ports:
             - port: "8083"
               protocol: TCP
+    # Gatus probes controller health and the pilot agent card.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gatus
+            app.kubernetes.io/name: gatus
+      toPorts:
+        - ports:
+            - port: "8083"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
