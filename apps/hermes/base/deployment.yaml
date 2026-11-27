@@ -282,6 +282,45 @@ spec:
               cpu: "2"
               memory: 4Gi
 
+        # The model proxy reuses the existing Nous Portal login. It is reachable
+        # only from the kagent namespace through a ClusterIP and Cilium policy.
+        - name: model-proxy
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
+          imagePullPolicy: IfNotPresent
+          args:
+            - proxy
+            - start
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8645"
+          env:
+            - name: HERMES_UID
+              value: "1000"
+            - name: HERMES_GID
+              value: "1000"
+          ports:
+            - containerPort: 8645
+              name: model-proxy
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+            allowPrivilegeEscalation: true
+            capabilities:
+              add: [SETUID, SETGID, CHOWN]
+            seccompProfile:
+              type: RuntimeDefault
+
         - name: incident-listener
           image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent

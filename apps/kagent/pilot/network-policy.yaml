@@ -1,0 +1,26 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kagent-pilot-ingress
+  namespace: kagent
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  endpointSelector: {}
+  ingress:
+    # Controller, UI, database, and agent communicate within this namespace.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kagent
+    # Kubelet probes and kubectl port-forward traverse the node.
+    - fromEntities:
+        - host
+    # Hermes is the only external caller of the controller's MCP endpoint.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: hermes
+            app: hermes
+      toPorts:
+        - ports:
+            - port: "8083"
+              protocol: TCP

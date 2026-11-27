@@ -31,6 +31,14 @@ spec:
         - ports:
             - port: "8642"
               protocol: TCP
+    # The proxy accepts any bearer, so only kagent pods may reach it.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kagent
+      toPorts:
+        - ports:
+            - port: "8645"
+              protocol: TCP
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
