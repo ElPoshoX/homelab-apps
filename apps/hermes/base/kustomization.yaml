@@ -16,6 +16,7 @@ resources:
   - secret.yaml
   - grafana-mcp-secret.yaml
   - incident-api-secret.yaml
+  - github-mcp-secret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml
@@ -29,5 +30,8 @@ configMapGenerator:
   - name: hermes-catalog-overlay
     files:
       - hide-composio.py
+  - name: hermes-github-mcp-config
+    files:
+      - configure-github-mcp.py
 generatorOptions:
   disableNameSuffixHash: true

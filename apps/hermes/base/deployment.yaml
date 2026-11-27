@@ -21,6 +21,7 @@ spec:
       annotations:
         homelab.local/incident-listener-revision: "4"
         homelab.local/catalog-overlay-revision: "2"
+        homelab.local/github-mcp-revision: "1"
     spec:
       automountServiceAccountToken: false
       initContainers:
@@ -85,6 +86,34 @@ spec:
               mountPath: /opt/data
             - name: hermes-config-tmpl
               mountPath: /tmp/hermes-config
+
+        - name: configure-github-mcp
+          image: nousresearch/hermes-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: [/opt/hermes/.venv/bin/python, /opt/hermes-github-mcp/configure-github-mcp.py]
+          env:
+            - name: GITHUB_MCP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-github-mcp
+                  key: token
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+            - name: github-mcp-config
+              mountPath: /opt/hermes-github-mcp
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
 
       containers:
         - name: hermes
@@ -300,6 +329,9 @@ spec:
             name: hermes-catalog-overlay
         - name: catalog-overlay-code
           emptyDir: {}
+        - name: github-mcp-config
+          configMap:
+            name: hermes-github-mcp-config
         - name: hermes-data
           persistentVolumeClaim:
             claimName: hermes-data
