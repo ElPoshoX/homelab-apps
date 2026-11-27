@@ -165,6 +165,8 @@ spec:
               value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
             - name: OTEL_SERVICE_NAME
               value: "hermes"
+            - name: HERMES_CODEX_BASE_URL
+              value: "http://headroom.headroom.svc.cluster.local:8081/backend-api/codex"
             - name: OPENMAIL_MODE
               value: channel
             - name: OPENMAIL_ALLOWED_USERS
