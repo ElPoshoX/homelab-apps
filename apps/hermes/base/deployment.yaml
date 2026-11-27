@@ -223,8 +223,6 @@ spec:
               value: http://grafana.grafana.svc.cluster.local:3000
             - name: GRAFANA_SERVICE_ACCOUNT_TOKEN_FILE
               value: /var/run/secrets/grafana/token
-            - name: GRAFANA_USAGE_STATS
-              value: disabled
           ports:
             - containerPort: 8000
               name: grafana-mcp
