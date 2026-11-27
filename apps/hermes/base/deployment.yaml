@@ -19,7 +19,7 @@ spec:
         app: hermes
         app.kubernetes.io/name: hermes
       annotations:
-        homelab.local/incident-listener-revision: "2"
+        homelab.local/incident-listener-revision: "3"
     spec:
       automountServiceAccountToken: false
       initContainers:
@@ -177,8 +177,9 @@ spec:
               memory: 4Gi
 
         - name: incident-listener
-          image: python:3.13-alpine
-          command: [python3, -u, /opt/incident-listener/listen.py]
+          image: nousresearch/hermes-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: [/opt/hermes/.venv/bin/python, -u, /opt/incident-listener/listen.py]
           env:
             - name: DISCORD_BOT_TOKEN
               valueFrom:

@@ -4,58 +4,62 @@ metadata:
   name: hermes-incident-listener
 data:
   listen.py: |
-    """Persist incident cards from the dedicated Discord channel for Hermes."""
+    """Persist Discord incident cards as Gateway events, with startup catch-up."""
+    import asyncio
     import json
     import os
     import sqlite3
-    import time
-    import urllib.error
     import urllib.parse
     import urllib.request
     from pathlib import Path
 
-    CHANNEL_ID = "1575334680360788098"
-    GUILD_ID = "1527730002660036889"
+    import discord
+
+    CHANNEL_ID = 1575334680360788098
+    GUILD_ID = 1527730002660036889
     DB_PATH = Path("/opt/data/incident-events.sqlite3")
     API = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages"
+    TOKEN = os.environ["DISCORD_BOT_TOKEN"]
     HEADERS = {
-        "Authorization": f"Bot {os.environ['DISCORD_BOT_TOKEN']}",
+        "Authorization": f"Bot {TOKEN}",
         "User-Agent": "KeplerIncidentListener/1.0",
     }
 
 
-    def fetch(after):
-        query = {"limit": "100"}
-        if after:
-            query["after"] = after
-        request = urllib.request.Request(
-            f"{API}?{urllib.parse.urlencode(query)}", headers=HEADERS
-        )
-        with urllib.request.urlopen(request, timeout=20) as response:
-            return json.load(response)
+    def connect():
+        return sqlite3.connect(DB_PATH, timeout=30)
 
 
-    def initialize(db):
-        db.execute("PRAGMA journal_mode=WAL")
-        db.execute("""CREATE TABLE IF NOT EXISTS incident_cards (
-            message_id TEXT PRIMARY KEY,
-            state TEXT NOT NULL,
-            title TEXT NOT NULL,
-            description TEXT NOT NULL,
-            embed_json TEXT NOT NULL,
-            message_url TEXT NOT NULL,
-            observed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )""")
-        db.execute("""CREATE TABLE IF NOT EXISTS listener_state (
-            key TEXT PRIMARY KEY,
-            value TEXT NOT NULL
-        )""")
-        db.commit()
+    def initialize():
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with connect() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("""CREATE TABLE IF NOT EXISTS incident_cards (
+                message_id TEXT PRIMARY KEY,
+                state TEXT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                embed_json TEXT NOT NULL,
+                message_url TEXT NOT NULL,
+                observed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )""")
+            db.execute("""CREATE TABLE IF NOT EXISTS listener_state (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            )""")
 
 
-    def save_batch(db, messages):
+    def cursor():
+        with connect() as db:
+            row = db.execute(
+                "SELECT value FROM listener_state WHERE key = 'cursor'"
+            ).fetchone()
+            return row[0] if row else None
+
+
+    def save_batch(messages):
         count = 0
-        with db:
+        with connect() as db:
             for message in sorted(messages, key=lambda item: int(item["id"])):
                 embeds = message.get("embeds") or []
                 if message.get("webhook_id") and embeds:
@@ -76,40 +80,85 @@ data:
                         )
                         count += result.rowcount
             if messages:
-                db.execute(
-                    """INSERT INTO listener_state (key, value) VALUES ('cursor', ?)
-                    ON CONFLICT(key) DO UPDATE SET value = excluded.value""",
-                    (max(messages, key=lambda item: int(item["id"]))["id"],)
-                )
-        return count
+                newest = max(messages, key=lambda item: int(item["id"]))["id"]
+                previous = db.execute(
+                    "SELECT value FROM listener_state WHERE key = 'cursor'"
+                ).fetchone()
+                if previous is None or int(newest) > int(previous[0]):
+                    db.execute(
+                        """INSERT INTO listener_state (key, value) VALUES ('cursor', ?)
+                        ON CONFLICT(key) DO UPDATE SET value = excluded.value""",
+                        (newest,)
+                    )
+        if count:
+            print(f"Stored {count} incident card(s)", flush=True)
 
 
-    def main():
-        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(DB_PATH, timeout=30) as db:
-            initialize(db)
+    def fetch(after):
+        query = {"limit": "100"}
+        if after:
+            query["after"] = after
+        request = urllib.request.Request(
+            f"{API}?{urllib.parse.urlencode(query)}", headers=HEADERS
+        )
+        with urllib.request.urlopen(request, timeout=20) as response:
+            return json.load(response)
+
+
+    def catch_up():
+        after = cursor()
+        while True:
+            messages = fetch(after)
+            save_batch(messages)
+            if len(messages) < 100 or after is None:
+                return
+            after = max(messages, key=lambda item: int(item["id"]))["id"]
+
+
+    async def main():
+        initialize()
+        intents = discord.Intents.none()
+        intents.guilds = True
+        intents.guild_messages = True
+        intents.message_content = True
+        client = discord.Client(intents=intents)
+        recovery_task = None
+
+        async def recover():
             while True:
                 try:
-                    row = db.execute(
-                        "SELECT value FROM listener_state WHERE key = 'cursor'"
-                    ).fetchone()
-                    cursor = row[0] if row else None
-                    messages = fetch(cursor)
-                    count = save_batch(db, messages)
-                    if count:
-                        print(f"Stored {count} incident card(s)", flush=True)
-                    # Catch up immediately if more than one page arrived while offline.
-                    if len(messages) == 100 and cursor:
-                        continue
-                    time.sleep(15)
-                except urllib.error.HTTPError as error:
-                    delay = float(error.headers.get("Retry-After", "30")) if error.code == 429 else 30
-                    print(f"Discord API returned HTTP {error.code}; retrying", flush=True)
-                    time.sleep(max(delay, 1))
+                    await asyncio.to_thread(catch_up)
+                    return
                 except (OSError, ValueError, KeyError, sqlite3.Error) as error:
-                    print(f"Incident listener error: {type(error).__name__}: {error}", flush=True)
-                    time.sleep(30)
+                    print(f"Catch-up failed: {type(error).__name__}: {error}", flush=True)
+                    await asyncio.sleep(30)
+
+        def schedule_recovery():
+            nonlocal recovery_task
+            if recovery_task is None or recovery_task.done():
+                recovery_task = asyncio.create_task(recover())
+
+        @client.event
+        async def on_ready():
+            print("Discord Gateway connected; recovering missed incident cards", flush=True)
+            schedule_recovery()
+
+        @client.event
+        async def on_resumed():
+            schedule_recovery()
+
+        @client.event
+        async def on_message(message):
+            if message.channel.id != CHANNEL_ID:
+                return
+            save_batch([{
+                "id": str(message.id),
+                "webhook_id": message.webhook_id,
+                "embeds": [embed.to_dict() for embed in message.embeds],
+            }])
+
+        await client.start(TOKEN)
 
 
     if __name__ == "__main__":
-        main()
+        asyncio.run(main())
