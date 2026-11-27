@@ -102,11 +102,11 @@ def register(ctx):
 
         def buttons(ident):
             view = discord.ui.View(timeout=None)
-            for label, style, action, emoji in [
-                ("Done", discord.ButtonStyle.success, "done", "✓"),
-                ("In 1 hour", discord.ButtonStyle.secondary, "snooze_1h", "⏱"),
-                ("Tomorrow", discord.ButtonStyle.secondary, "snooze_1d", "↪")]:
-                view.add_item(discord.ui.Button(label=label, style=style, emoji=emoji,
+            for label, style, action in [
+                ("Done", discord.ButtonStyle.success, "done"),
+                ("In 1 hour", discord.ButtonStyle.secondary, "snooze_1h"),
+                ("Tomorrow", discord.ButtonStyle.secondary, "snooze_1d")]:
+                view.add_item(discord.ui.Button(label=label, style=style,
                                                 custom_id=f"kepler-reminder:{ident}:{action}"))
             return view
 
