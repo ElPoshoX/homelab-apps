@@ -172,5 +172,10 @@ def register(ctx):
 
         bot.add_listener(on_ready, "on_ready")
         bot.add_listener(on_interaction, "on_interaction")
+        # Hermes v0.23.4 wires plugin handlers after waiting for Discord READY.
+        # Start now when that first event has already passed; later READY events
+        # still use the guarded listener above after a reconnect.
+        if bot.is_ready():
+            asyncio.create_task(on_ready(), name="kepler-reminders-start")
 
     ctx.register_platform_handler("discord", wire)
