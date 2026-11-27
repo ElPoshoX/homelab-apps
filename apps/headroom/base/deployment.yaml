@@ -82,7 +82,48 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/nonroot/.headroom
+        - name: dashboard-gateway
+          image: caddy:2.10.2-alpine
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: XDG_CONFIG_HOME
+              value: /tmp/caddy-config
+            - name: XDG_DATA_HOME
+              value: /tmp/caddy-data
+            - name: HEADROOM_PROXY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: headroom-proxy-token
+                  key: HEADROOM_PROXY_TOKEN
+            - name: HEADROOM_DASHBOARD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: headroom-dashboard-auth
+                  key: HEADROOM_DASHBOARD_HASH
+          ports:
+            - containerPort: 8080
+              name: auth-http
+          volumeMounts:
+            - name: dashboard-gateway
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+              readOnly: true
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: headroom-data
+        - name: dashboard-gateway
+          configMap:
+            name: headroom-dashboard-gateway
