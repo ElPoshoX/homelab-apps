@@ -157,6 +157,12 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 200"
+      - name: Hindsight
+        group: Platform Services
+        url: http://hindsight.hindsight.svc.cluster.local:8888/health/ready
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
       - name: Headroom
         group: Applications
         url: http://headroom.headroom.svc.cluster.local/readyz

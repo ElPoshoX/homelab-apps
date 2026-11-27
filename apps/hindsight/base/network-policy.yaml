@@ -10,6 +10,8 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: hermes
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gatus
       toPorts:
         - ports:
             - port: "8888"
