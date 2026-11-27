@@ -100,11 +100,6 @@ spec:
                 secretKeyRef:
                   name: headroom-proxy-token
                   key: HEADROOM_PROXY_TOKEN
-            - name: HEADROOM_DASHBOARD_HASH
-              valueFrom:
-                secretKeyRef:
-                  name: headroom-dashboard-auth
-                  key: HEADROOM_DASHBOARD_HASH
           ports:
             - containerPort: 8080
               name: auth-http
