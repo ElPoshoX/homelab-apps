@@ -21,6 +21,8 @@ spec:
         app: headroom
         app.kubernetes.io/name: headroom
         app.kubernetes.io/component: proxy
+      annotations:
+        homelab.local/dashboard-gateway-revision: "2"
     spec:
       enableServiceLinks: false
       securityContext:
