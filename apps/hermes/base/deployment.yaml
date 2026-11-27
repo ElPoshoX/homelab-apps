@@ -18,6 +18,8 @@ spec:
       labels:
         app: hermes
         app.kubernetes.io/name: hermes
+      annotations:
+        homelab.local/incident-listener-revision: "2"
     spec:
       automountServiceAccountToken: false
       initContainers:
