@@ -16,6 +16,7 @@ resources:
   - incident-listener.yaml
   - secret.yaml
   - grafana-mcp-secret.yaml
+  - incident-api-secret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml

@@ -31,6 +31,11 @@ spec:
                 secretKeyRef:
                   name: hermes-secrets
                   key: DASHBOARD_PASSWORD_HASH
+            - name: INCIDENT_API_SERVER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-incident-api
+                  key: key
           command:
             - sh
             - -c
@@ -42,6 +47,13 @@ spec:
               if [ ! -s /opt/data/config.yaml ]; then
                 sed -e "s|__DASHBOARD_PASSWORD_HASH__|$DASHBOARD_PASSWORD_HASH|" \
                     /tmp/hermes-config/config.yaml.tmpl > /opt/data/config.yaml
+              fi
+              if [ -d /opt/data/profiles/incident ]; then
+                env_file=/opt/data/profiles/incident/.env
+                touch "$env_file"
+                sed -i '/^API_SERVER_KEY=/d' "$env_file"
+                printf 'API_SERVER_KEY=%s\n' "$INCIDENT_API_SERVER_KEY" >> "$env_file"
+                chmod 600 "$env_file"
               fi
               chown -R 1000:1000 /opt/data
           securityContext:
@@ -186,6 +198,11 @@ spec:
                 secretKeyRef:
                   name: hermes-secrets
                   key: DISCORD_BOT_TOKEN
+            - name: INCIDENT_API_SERVER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-incident-api
+                  key: key
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
