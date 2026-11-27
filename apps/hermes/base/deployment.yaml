@@ -22,6 +22,7 @@ spec:
         homelab.local/incident-listener-revision: "4"
         homelab.local/catalog-overlay-revision: "2"
         homelab.local/github-mcp-revision: "5"
+        homelab.local/reminder-plugin-revision: "1"
     spec:
       automountServiceAccountToken: false
       initContainers:
@@ -138,6 +139,27 @@ spec:
               cpu: 100m
               memory: 128Mi
 
+        - name: install-reminder-plugin
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
+          command: [/opt/hermes/.venv/bin/python, /opt/hermes-reminders/install.py]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+            - name: reminder-plugin
+              mountPath: /opt/hermes-reminders
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+
       containers:
         - name: hermes
           image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
@@ -174,6 +196,10 @@ spec:
               value: channel
             - name: OPENMAIL_ALLOWED_USERS
               value: poshox.pr@gmail.com
+            - name: KEPLER_REMINDER_CHANNEL_ID
+              value: "1575712003639484577"
+            - name: KEPLER_REMINDER_OWNER_ID
+              value: "1261063491540746291"
             - name: no_proxy
               value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
             - name: NO_PROXY
@@ -409,6 +435,9 @@ spec:
         - name: github-mcp-config
           configMap:
             name: hermes-github-mcp-config
+        - name: reminder-plugin
+          configMap:
+            name: hermes-reminder-plugin
         - name: hermes-data
           persistentVolumeClaim:
             claimName: hermes-data

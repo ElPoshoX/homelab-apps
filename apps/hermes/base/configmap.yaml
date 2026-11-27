@@ -60,3 +60,4 @@ data:
     plugins:
       enabled:
         - basic
+        - kepler-reminders

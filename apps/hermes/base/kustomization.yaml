@@ -36,6 +36,13 @@ configMapGenerator:
     files:
       - configure-github-mcp.py
       - github-token-reminder.py
+  - name: hermes-reminder-plugin
+    files:
+      - __init__.py=reminder-plugin/__init__.py
+      - core.py=reminder-plugin/core.py
+      - plugin.yaml=reminder-plugin/plugin.yaml
+      - install.py=reminder-plugin/install.py
+      - skill.md=reminder-plugin/skills/reminders/SKILL.md
   - name: hermes-vault-skills
     files:
       - vault-consolidate=vault-skills/vault-consolidate.md

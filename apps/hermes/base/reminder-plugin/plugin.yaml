@@ -1,0 +1,7 @@
+name: kepler-reminders
+version: 0.1.0
+description: Durable Discord reminders with native acknowledgment and snooze buttons
+provides_tools:
+  - reminder_create
+  - reminder_list
+  - reminder_cancel
