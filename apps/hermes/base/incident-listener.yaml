@@ -15,6 +15,7 @@ data:
     from pathlib import Path
 
     CHANNEL_ID = "1575334680360788098"
+    GUILD_ID = "1527730002660036889"
     DB_PATH = Path("/opt/data/incident-events.sqlite3")
     API = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages"
     HEADERS = {
@@ -71,7 +72,7 @@ data:
                             VALUES (?, ?, ?, ?, ?, ?)""",
                             (message["id"], state, title, embed.get("description") or "",
                              json.dumps(embed, ensure_ascii=False),
-                             f"https://discord.com/channels/{message['guild_id']}/{CHANNEL_ID}/{message['id']}")
+                             f"https://discord.com/channels/{GUILD_ID}/{CHANNEL_ID}/{message['id']}")
                         )
                         count += result.rowcount
             if messages:
