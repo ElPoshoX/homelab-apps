@@ -7,16 +7,29 @@ spec:
     matchLabels:
       app: hermes
   ingress:
+    # Only Cilium Gateway may reach the web UI and webhook receiver.
     - fromEntities:
-        - world
-        - cluster
+        - ingress
+      toPorts:
+        - ports:
+            - port: "9119"
+              protocol: TCP
+            - port: "8644"
+              protocol: TCP
+    # Gatus checks gateway health; kubelet probes originate on the node.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gatus
+            app.kubernetes.io/name: gatus
       toPorts:
         - ports:
             - port: "8642"
               protocol: TCP
-            - port: "9119"
-              protocol: TCP
-            - port: "8644"
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "8642"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2

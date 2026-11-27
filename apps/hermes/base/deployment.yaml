@@ -26,7 +26,7 @@ spec:
       automountServiceAccountToken: false
       initContainers:
         - name: catalog-overlay
-          image: nousresearch/hermes-agent:latest
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
           command: [/opt/hermes/.venv/bin/python, /opt/hermes-catalog-overlay/hide-composio.py]
           securityContext:
@@ -111,7 +111,7 @@ spec:
               readOnly: true
 
         - name: configure-github-mcp
-          image: nousresearch/hermes-agent:latest
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
           command: [/opt/hermes/.venv/bin/python, /opt/hermes-github-mcp/configure-github-mcp.py]
           env:
@@ -140,7 +140,7 @@ spec:
 
       containers:
         - name: hermes
-          image: nousresearch/hermes-agent:latest
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
           # Default CMD is the interactive CLI, which exits immediately when
           # stdin isn't a TTY. "gateway run" is the documented headless/daemon
@@ -283,7 +283,7 @@ spec:
               memory: 4Gi
 
         - name: incident-listener
-          image: nousresearch/hermes-agent:latest
+          image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
           command: [/opt/hermes/.venv/bin/python, -u, /opt/incident-listener/listen.py]
           env:
