@@ -20,9 +20,31 @@ spec:
         app.kubernetes.io/name: hermes
       annotations:
         homelab.local/incident-listener-revision: "4"
+        homelab.local/catalog-overlay-revision: "1"
     spec:
       automountServiceAccountToken: false
       initContainers:
+        - name: catalog-overlay
+          image: nousresearch/hermes-agent:latest
+          imagePullPolicy: IfNotPresent
+          command: [/opt/hermes/.venv/bin/python, /opt/hermes-catalog-overlay/hide-composio.py]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: catalog-overlay-script
+              mountPath: /opt/hermes-catalog-overlay
+              readOnly: true
+            - name: catalog-overlay-code
+              mountPath: /opt/hermes-patch
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
         - name: bootstrap-config
           image: busybox
           env:
@@ -104,6 +126,10 @@ spec:
             - secretRef:
                 name: hermes-secrets
           volumeMounts:
+            - name: catalog-overlay-code
+              mountPath: /opt/hermes/hermes_cli/plugin_catalog.py
+              subPath: plugin_catalog.py
+              readOnly: true
             - name: hermes-data
               mountPath: /opt/data
             - name: docker-socket
@@ -269,6 +295,11 @@ spec:
         fsGroup: 1000
         supplementalGroups: [2375]
       volumes:
+        - name: catalog-overlay-script
+          configMap:
+            name: hermes-catalog-overlay
+        - name: catalog-overlay-code
+          emptyDir: {}
         - name: hermes-data
           persistentVolumeClaim:
             claimName: hermes-data

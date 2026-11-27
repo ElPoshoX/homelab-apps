@@ -26,5 +26,8 @@ configMapGenerator:
   - name: hermes-incident-listener
     files:
       - listen.py=incident-listener.py
+  - name: hermes-catalog-overlay
+    files:
+      - hide-composio.py
 generatorOptions:
   disableNameSuffixHash: true
