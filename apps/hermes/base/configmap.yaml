@@ -26,6 +26,10 @@ data:
         enabled: true
     discord:
       require_mention: false
+    mcp_servers:
+      grafana:
+        url: http://127.0.0.1:8000/mcp
+        enabled: true
     plugins:
       enabled:
         - basic

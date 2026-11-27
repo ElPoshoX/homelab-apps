@@ -15,6 +15,7 @@ resources:
   - configmap.yaml
   - incident-listener.yaml
   - secret.yaml
+  - grafana-mcp-secret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml

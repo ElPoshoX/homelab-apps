@@ -209,6 +209,49 @@ spec:
               cpu: 100m
               memory: 128Mi
 
+        - name: grafana-mcp
+          image: grafana/mcp-grafana:2.4.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - -t
+            - streamable-http
+            - --address
+            - 127.0.0.1:8000
+            - --log-tool-calls
+          env:
+            - name: GRAFANA_URL
+              value: http://grafana.grafana.svc.cluster.local:3000
+            - name: GRAFANA_SERVICE_ACCOUNT_TOKEN_FILE
+              value: /var/run/secrets/grafana/token
+          ports:
+            - containerPort: 8000
+              name: grafana-mcp
+          readinessProbe:
+            tcpSocket:
+              port: grafana-mcp
+            periodSeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: grafana-mcp-token
+              mountPath: /var/run/secrets/grafana
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
       securityContext:
         fsGroup: 1000
         supplementalGroups: [2375]
@@ -227,3 +270,6 @@ spec:
         - name: incident-listener
           configMap:
             name: hermes-incident-listener
+        - name: grafana-mcp-token
+          secret:
+            secretName: hermes-grafana-mcp
