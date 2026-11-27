@@ -58,13 +58,20 @@ subprocess.run([sys.executable, str(destination), "--seed"], check=True)
 
 jobs_file = HOME / "cron/jobs.json"
 jobs = json.loads(jobs_file.read_text()).get("jobs", []) if jobs_file.exists() else []
-if not any(job.get("name") == "GitHub PAT renewal" for job in jobs):
+reminder = next((job for job in jobs if job.get("name") == "GitHub PAT renewal"), None)
+delivery = "discord:1575712003639484577"
+if reminder is None:
     subprocess.run([
         "hermes", "cron", "create", "0 21 * * *",
         "--name", "GitHub PAT renewal",
-        "--deliver", "discord:1527905641262350376",
+        "--deliver", delivery,
         "--script", "github-token-reminder.py", "--no-agent", "--no-wrap-response",
         "--timezone", "America/Mexico_City", "--catch-up", "on",
         "--grace-minutes", "1440",
     ], check=True, stdout=subprocess.DEVNULL)
     print("Created GitHub PAT renewal cron job")
+elif reminder.get("deliver") != delivery:
+    subprocess.run([
+        "hermes", "cron", "edit", reminder["id"], "--deliver", delivery,
+    ], check=True, stdout=subprocess.DEVNULL)
+    print("Moved GitHub PAT renewal cron job to #reminders")

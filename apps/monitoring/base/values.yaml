@@ -133,6 +133,7 @@ alertmanager:
           - webhook_url_file: /etc/alertmanager/secrets/alertmanager-discord-webhook/url
             send_resolved: true
             username: Kepler
+            content: '{{ if eq .Status "firing" }}<@1261063491540746291>{{ end }}'
             title: '{{ if eq .Status "firing" }}🚨 Firing{{ else }}✅ Resolved{{ end }} · {{ reReplaceAll "([a-z0-9])([A-Z])" "${1} ${2}" .CommonLabels.alertname }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }}){{ end }}'
             message: |-
               {{ if eq .Status "resolved" }}The alert condition has cleared.{{ else if .CommonAnnotations.description }}{{ .CommonAnnotations.description }}{{ else if .CommonAnnotations.summary }}{{ .CommonAnnotations.summary }}{{ else }}{{ len .Alerts }} alert(s) require attention.{{ end }}
