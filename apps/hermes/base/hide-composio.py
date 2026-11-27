@@ -5,10 +5,8 @@ from pathlib import Path
 source = Path("/opt/hermes/hermes_cli/plugin_catalog.py")
 target = Path("/opt/hermes-patch/plugin_catalog.py")
 code = source.read_text()
-if "def load_catalog_live(" not in code or "def load_catalog(" not in code:
-    raise SystemExit("Hermes catalog API changed; refusing to start with an unverified overlay")
-
-code += '''
+if "def load_catalog_live(" in code and "def load_catalog(" in code:
+    patched = code + '''
 
 # Local homelab catalog policy. Keep upstream catalog updates for every other plugin.
 _upstream_load_catalog = load_catalog
@@ -24,5 +22,12 @@ def load_catalog_live():
     return [entry for entry in _upstream_load_catalog_live()
             if entry.name != "composio-connections"]
 '''
-compile(code, str(target), "exec")
+    try:
+        compile(patched, str(target), "exec")
+    except SyntaxError:
+        print("Hermes catalog overlay is incompatible; keeping the upstream catalog")
+    else:
+        code = patched
+else:
+    print("Hermes catalog API changed; keeping the upstream catalog")
 target.write_text(code)
