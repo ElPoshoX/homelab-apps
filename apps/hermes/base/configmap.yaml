@@ -17,8 +17,9 @@ data:
       public_url: https://hermes.elposhox.dev
     terminal:
       backend: docker
-    # Discord platform — survives pod restarts because bootstrap-config
-    # regenerates /opt/data/config.yaml from THIS template every start.
+    agent:
+      max_turns: 90
+    # Discord platform — bootstrap-config seeds a new home from this template.
     # Credentials/allowed-users live in hermes-secrets (DISCORD_* env vars).
     platforms:
       discord:
