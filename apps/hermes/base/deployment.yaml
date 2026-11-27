@@ -87,6 +87,11 @@ spec:
               done
               for home in /opt/data /opt/data/profiles/*; do
                 [ -d "$home" ] || continue
+                env_file="$home/.env"
+                touch "$env_file"
+                sed -i '/^HERMES_CODEX_BASE_URL=/d' "$env_file"
+                printf '%s\n' 'HERMES_CODEX_BASE_URL=http://headroom.headroom.svc.cluster.local:8081/backend-api/codex' >> "$env_file"
+                chmod 600 "$env_file"
                 for skill in /tmp/vault-skills/*; do
                   name="${skill##*/}"
                   mkdir -p "$home/skills/$name"
@@ -165,8 +170,6 @@ spec:
               value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
             - name: OTEL_SERVICE_NAME
               value: "hermes"
-            - name: HERMES_CODEX_BASE_URL
-              value: "http://headroom.headroom.svc.cluster.local:8081/backend-api/codex"
             - name: OPENMAIL_MODE
               value: channel
             - name: OPENMAIL_ALLOWED_USERS
