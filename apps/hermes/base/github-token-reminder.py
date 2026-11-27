@@ -86,7 +86,7 @@ def run(seed=False, now=None):
             remaining = str(max(0, (datetime.fromisoformat(state["expires_at"]) - now).days))
         reason = ("GitHub rejected the current token." if invalid else
                   "The token has entered its renewal window.")
-        return ("🔐 **Kepler · GitHub token renewal**\n"
+        return ("<@1261063491540746291> 🔐 **Kepler · GitHub token renewal**\n"
                 f"{reason} Access: `ElPoshoX` · Days until expiry: **{remaining}**.\n"
                 "Create a replacement fine-grained PAT for this organization and update the "
                 "encrypted GitOps secret. Do not post the token in Discord.\n"
