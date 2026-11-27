@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hindsight
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hindsight
+  template:
+    metadata:
+      labels:
+        app: hindsight
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 75
+      initContainers:
+        - name: prepare-volumes
+          image: busybox:1.37
+          command: [sh, -c, "chown -R 1000:1000 /pg0 /auth"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /pg0
+            - name: auth
+              mountPath: /auth
+      containers:
+        - name: hindsight
+          image: ghcr.io/vectorize-io/hindsight:1.3.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HINDSIGHT_API_LLM_PROVIDER
+              value: chatgpt
+            - name: HINDSIGHT_API_LLM_MODEL
+              value: gpt-6-luna
+            - name: HINDSIGHT_API_WORKER_ID
+              value: kepler-hindsight
+          ports:
+            - name: api
+              containerPort: 8888
+          volumeMounts:
+            - name: data
+              mountPath: /home/hindsight/.pg0
+            - name: auth
+              mountPath: /home/hindsight/.hindsight
+            - name: shm
+              mountPath: /dev/shm
+          startupProbe:
+            httpGet:
+              path: /health/ready
+              port: api
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: api
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: api
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: "2"
+              memory: 6Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: hindsight-data
+        - name: auth
+          persistentVolumeClaim:
+            claimName: hindsight-auth
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hindsight
+  labels:
+    app.kubernetes.io/part-of: hindsight
+    homelab.local/OwnedBy: ElPoshoX
