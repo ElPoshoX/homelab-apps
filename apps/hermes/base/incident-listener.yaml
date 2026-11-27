@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-incident-listener
+data:
+  listen.py: |
+    """Persist incident cards from the dedicated Discord channel for Hermes."""
+    import json
+    import os
+    import sqlite3
+    import time
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+    from pathlib import Path
+
+    CHANNEL_ID = "1575334680360788098"
+    DB_PATH = Path("/opt/data/incident-events.sqlite3")
+    API = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages"
+    HEADERS = {
+        "Authorization": f"Bot {os.environ['DISCORD_BOT_TOKEN']}",
+        "User-Agent": "KeplerIncidentListener/1.0",
+    }
+
+
+    def fetch(after):
+        query = {"limit": "100"}
+        if after:
+            query["after"] = after
+        request = urllib.request.Request(
+            f"{API}?{urllib.parse.urlencode(query)}", headers=HEADERS
+        )
+        with urllib.request.urlopen(request, timeout=20) as response:
+            return json.load(response)
+
+
+    def initialize(db):
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("""CREATE TABLE IF NOT EXISTS incident_cards (
+            message_id TEXT PRIMARY KEY,
+            state TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            embed_json TEXT NOT NULL,
+            message_url TEXT NOT NULL,
+            observed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )""")
+        db.execute("""CREATE TABLE IF NOT EXISTS listener_state (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )""")
+        db.commit()
+
+
+    def save_batch(db, messages):
+        count = 0
+        with db:
+            for message in sorted(messages, key=lambda item: int(item["id"])):
+                embeds = message.get("embeds") or []
+                if message.get("webhook_id") and embeds:
+                    embed = embeds[0]
+                    title = embed.get("title") or ""
+                    state = (
+                        "firing" if title.startswith("🚨 Firing · ") else
+                        "resolved" if title.startswith("✅ Resolved · ") else None
+                    )
+                    if state:
+                        result = db.execute(
+                            """INSERT OR IGNORE INTO incident_cards
+                            (message_id, state, title, description, embed_json, message_url)
+                            VALUES (?, ?, ?, ?, ?, ?)""",
+                            (message["id"], state, title, embed.get("description") or "",
+                             json.dumps(embed, ensure_ascii=False),
+                             f"https://discord.com/channels/{message['guild_id']}/{CHANNEL_ID}/{message['id']}")
+                        )
+                        count += result.rowcount
+            if messages:
+                db.execute(
+                    """INSERT INTO listener_state (key, value) VALUES ('cursor', ?)
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value""",
+                    (max(messages, key=lambda item: int(item["id"]))["id"],)
+                )
+        return count
+
+
+    def main():
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with sqlite3.connect(DB_PATH, timeout=30) as db:
+            initialize(db)
+            while True:
+                try:
+                    row = db.execute(
+                        "SELECT value FROM listener_state WHERE key = 'cursor'"
+                    ).fetchone()
+                    cursor = row[0] if row else None
+                    messages = fetch(cursor)
+                    count = save_batch(db, messages)
+                    if count:
+                        print(f"Stored {count} incident card(s)", flush=True)
+                    # Catch up immediately if more than one page arrived while offline.
+                    if len(messages) == 100 and cursor:
+                        continue
+                    time.sleep(15)
+                except urllib.error.HTTPError as error:
+                    delay = float(error.headers.get("Retry-After", "30")) if error.code == 429 else 30
+                    print(f"Discord API returned HTTP {error.code}; retrying", flush=True)
+                    time.sleep(max(delay, 1))
+                except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+                    print(f"Incident listener error: {type(error).__name__}: {error}", flush=True)
+                    time.sleep(30)
+
+
+    if __name__ == "__main__":
+        main()

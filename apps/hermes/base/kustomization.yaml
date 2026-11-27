@@ -13,6 +13,7 @@ namespace: hermes
 resources:
   - namespace.yaml
   - configmap.yaml
+  - incident-listener.yaml
   - secret.yaml
   - pvc.yaml
   - deployment.yaml
