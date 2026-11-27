@@ -17,6 +17,7 @@ resources:
   - grafana-mcp-secret.yaml
   - incident-api-secret.yaml
   - github-mcp-secret.yaml
+  - openmail-secret.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml
@@ -34,5 +35,14 @@ configMapGenerator:
     files:
       - configure-github-mcp.py
       - github-token-reminder.py
+  - name: hermes-vault-skills
+    files:
+      - vault-consolidate=vault-skills/vault-consolidate.md
+      - vault-cross-link=vault-skills/vault-cross-link.md
+      - vault-dedup=vault-skills/vault-dedup.md
+      - vault-ingest=vault-skills/vault-ingest.md
+      - vault-insights=vault-skills/vault-insights.md
+      - vault-lint=vault-skills/vault-lint.md
+      - vault-synthesize=vault-skills/vault-synthesize.md
 generatorOptions:
   disableNameSuffixHash: true

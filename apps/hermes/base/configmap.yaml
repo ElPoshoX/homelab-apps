@@ -17,8 +17,24 @@ data:
       public_url: https://hermes.elposhox.dev
     terminal:
       backend: docker
+      docker_run_as_host_user: true
+      docker_volumes:
+        - /vault:/vault:rw
+    memory:
+      provider: hindsight
     agent:
       max_turns: 90
+    delegation:
+      backend: profile_routes
+      backends:
+        profile_routes:
+          profiles:
+            - name: platform
+              description: Kubernetes, GitOps, infrastructure, and operational changes.
+            - name: incident
+              description: Alert triage, evidence gathering, and incident response.
+            - name: knowledge
+              description: Research, documentation, and knowledge maintenance.
     # Discord platform — bootstrap-config seeds a new home from this template.
     # Credentials/allowed-users live in hermes-secrets (DISCORD_* env vars).
     platforms:

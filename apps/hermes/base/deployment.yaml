@@ -78,6 +78,21 @@ spec:
                 printf 'API_SERVER_KEY=%s\n' "$INCIDENT_API_SERVER_KEY" >> "$env_file"
                 chmod 600 "$env_file"
               fi
+              # Existing PVC homes are not replaced by the template above.
+              for config in /opt/data/config.yaml /opt/data/profiles/*/config.yaml; do
+                [ -f "$config" ] || continue
+                if ! grep -q 'docker_run_as_host_user:' "$config"; then
+                  sed -i '/^terminal:$/a\  docker_run_as_host_user: true\n  docker_volumes:\n    - /vault:/vault:rw' "$config"
+                fi
+              done
+              for home in /opt/data /opt/data/profiles/*; do
+                [ -d "$home" ] || continue
+                for skill in /tmp/vault-skills/*; do
+                  name="${skill##*/}"
+                  mkdir -p "$home/skills/$name"
+                  cp "$skill" "$home/skills/$name/SKILL.md"
+                done
+              done
               chown -R 1000:1000 /opt/data
           securityContext:
             runAsUser: 0
@@ -86,6 +101,9 @@ spec:
               mountPath: /opt/data
             - name: hermes-config-tmpl
               mountPath: /tmp/hermes-config
+            - name: vault-skills
+              mountPath: /tmp/vault-skills
+              readOnly: true
 
         - name: configure-github-mcp
           image: nousresearch/hermes-agent:latest
@@ -147,6 +165,10 @@ spec:
               value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
             - name: OTEL_SERVICE_NAME
               value: "hermes"
+            - name: OPENMAIL_MODE
+              value: channel
+            - name: OPENMAIL_ALLOWED_USERS
+              value: poshox.pr@gmail.com
             - name: no_proxy
               value: ".svc.cluster.local,.cluster.local,10.0.0.0/8"
             - name: NO_PROXY
@@ -154,6 +176,8 @@ spec:
           envFrom:
             - secretRef:
                 name: hermes-secrets
+            - secretRef:
+                name: hermes-openmail
           volumeMounts:
             - name: catalog-overlay-code
               mountPath: /opt/hermes/hermes_cli/plugin_catalog.py
@@ -161,6 +185,9 @@ spec:
               readOnly: true
             - name: hermes-data
               mountPath: /opt/data
+            - name: obsidian-vault
+              mountPath: /vault
+              subPath: ElPoshoX-Vault
             - name: docker-socket
               mountPath: /run/docker
           resources:
@@ -235,6 +262,9 @@ spec:
             # RWO only restricts to one node, not one container.
             - name: hermes-data
               mountPath: /opt/data
+            - name: obsidian-vault
+              mountPath: /vault
+              subPath: ElPoshoX-Vault
           resources:
             requests:
               cpu: 250m
@@ -343,6 +373,13 @@ spec:
         - name: dind-storage
           persistentVolumeClaim:
             claimName: hermes-dind-storage
+        - name: obsidian-vault
+          nfs:
+            server: truenas.elposhox.dev
+            path: /mnt/HomeLab/Obsidian-Vault
+        - name: vault-skills
+          configMap:
+            name: hermes-vault-skills
         - name: incident-listener
           configMap:
             name: hermes-incident-listener
