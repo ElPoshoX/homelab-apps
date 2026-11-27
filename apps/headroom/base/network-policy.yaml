@@ -45,6 +45,7 @@ spec:
     - toFQDNs:
         - matchName: api.anthropic.com
         - matchName: api.openai.com
+        - matchName: chatgpt.com
         - matchName: generativelanguage.googleapis.com
       toPorts:
         - ports:
