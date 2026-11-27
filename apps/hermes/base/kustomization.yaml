@@ -33,5 +33,6 @@ configMapGenerator:
   - name: hermes-github-mcp-config
     files:
       - configure-github-mcp.py
+      - github-token-reminder.py
 generatorOptions:
   disableNameSuffixHash: true

@@ -21,7 +21,7 @@ spec:
       annotations:
         homelab.local/incident-listener-revision: "4"
         homelab.local/catalog-overlay-revision: "2"
-        homelab.local/github-mcp-revision: "1"
+        homelab.local/github-mcp-revision: "2"
     spec:
       automountServiceAccountToken: false
       initContainers:
