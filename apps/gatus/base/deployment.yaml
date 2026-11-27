@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: gatus
+      annotations:
+        homelab.local/kagent-probe-revision: "1"
     spec:
       securityContext:
         runAsUser: 1000
