@@ -287,6 +287,9 @@ spec:
         - name: model-proxy
           image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
+          # The image entrypoint starts every s6 gateway slot. Run only the
+          # proxy CLI here so this sidecar cannot start a second gateway.
+          command: [/opt/hermes/.venv/bin/hermes]
           args:
             - proxy
             - start
@@ -294,11 +297,6 @@ spec:
             - 0.0.0.0
             - --port
             - "8645"
-          env:
-            - name: HERMES_UID
-              value: "1000"
-            - name: HERMES_GID
-              value: "1000"
           ports:
             - containerPort: 8645
               name: model-proxy
@@ -313,11 +311,12 @@ spec:
               cpu: 500m
               memory: 512Mi
           securityContext:
-            runAsUser: 0
-            runAsNonRoot: false
-            allowPrivilegeEscalation: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
             capabilities:
-              add: [SETUID, SETGID, CHOWN]
+              drop: [ALL]
             seccompProfile:
               type: RuntimeDefault
 
