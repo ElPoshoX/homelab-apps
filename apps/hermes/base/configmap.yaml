@@ -6,7 +6,9 @@ data:
   managed.env: |
     HERMES_CODEX_BASE_URL=http://headroom.headroom.svc.cluster.local:8081/backend-api/codex
   config.yaml.tmpl: |
-    # Model provider will be configured when Hermes is connected to Headroom.
+    model:
+      default: gpt-6-sol
+      provider: openai-codex
     dashboard:
       enabled: true
       basic_auth:
