@@ -17,3 +17,8 @@ data:
         reverse_proxy {$POD_IP}:8787
       }
     }
+    :8081 {
+      reverse_proxy {$POD_IP}:8787 {
+        header_up X-Headroom-Proxy-Token {$HEADROOM_PROXY_TOKEN}
+      }
+    }

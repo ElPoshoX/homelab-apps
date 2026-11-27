@@ -13,3 +13,7 @@ spec:
       port: 80
       targetPort: auth-http
       protocol: TCP
+    - name: agent-http
+      port: 8081
+      targetPort: agent-http
+      protocol: TCP

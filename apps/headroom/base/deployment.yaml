@@ -22,7 +22,7 @@ spec:
         app.kubernetes.io/name: headroom
         app.kubernetes.io/component: proxy
       annotations:
-        homelab.local/dashboard-gateway-revision: "3"
+        homelab.local/dashboard-gateway-revision: "4"
     spec:
       enableServiceLinks: false
       securityContext:
@@ -112,6 +112,8 @@ spec:
           ports:
             - containerPort: 8080
               name: auth-http
+            - containerPort: 8081
+              name: agent-http
           volumeMounts:
             - name: dashboard-gateway
               mountPath: /etc/caddy/Caddyfile
