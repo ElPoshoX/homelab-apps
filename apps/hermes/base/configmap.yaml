@@ -52,6 +52,9 @@ data:
       grafana:
         url: http://127.0.0.1:8000/mcp
         enabled: true
+      kagent:
+        url: http://kagent-controller.kagent.svc.cluster.local:8083/mcp
+        enabled: true
     plugins:
       enabled:
         - basic
