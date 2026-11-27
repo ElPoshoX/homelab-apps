@@ -21,7 +21,6 @@ resources:
   - pvc.yaml
   - deployment.yaml
   - service.yaml
-  - model-proxy-service.yaml
   - ingress.yaml
   - network-policy.yaml
 

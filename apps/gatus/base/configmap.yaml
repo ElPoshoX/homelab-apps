@@ -163,18 +163,6 @@ data:
         interval: 1m
         conditions:
           - "[STATUS] == 200"
-      - name: kagent Controller
-        group: Platform Services
-        url: http://kagent-controller.kagent.svc.cluster.local:8083/health
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-      - name: Kepler Pilot Agent
-        group: Platform Services
-        url: http://kepler-pilot.kagent.svc.cluster.local:8080/.well-known/agent-card.json
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
       - name: Headroom
         group: Applications
         url: http://headroom.headroom.svc.cluster.local/readyz
