@@ -47,6 +47,10 @@ def write_state(state):
     temporary = STATE_FILE.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(state, sort_keys=True) + "\n")
     temporary.chmod(0o600)
+    # kubectl exec may run this check as root; keep the PVC owner's access.
+    if os.geteuid() == 0:
+        owner = HOME.stat()
+        os.chown(temporary, owner.st_uid, owner.st_gid)
     temporary.replace(STATE_FILE)
 
 
