@@ -84,6 +84,9 @@ spec:
               mountPath: /home/nonroot/.headroom
         - name: dashboard-gateway
           image: caddy:2.10.2-alpine
+          command: [sh, -c]
+          args:
+            - cp /usr/bin/caddy /tmp/caddy && exec /tmp/caddy run --config /etc/caddy/Caddyfile
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
