@@ -18,8 +18,11 @@ resources:
   - incident-api-secret.yaml
   - github-mcp-secret.yaml
   - openmail-secret.yaml
+  - pull-secret.yaml
+  - executor-ssh-secret.yaml
   - pvc.yaml
   - deployment.yaml
+  - executor-deployment.yaml
   - service.yaml
   - ingress.yaml
   - network-policy.yaml

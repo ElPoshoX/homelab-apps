@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kepler-executor
+  labels:
+    app: kepler-executor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kepler-executor
+  template:
+    metadata:
+      labels:
+        app: kepler-executor
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      securityContext:
+        fsGroup: 3000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: executor
+          image: ghcr.io/elposhox/kepler-executor@sha256:4efb9346806f02d9b0161e74e83c2cedf550d5d4327f229316ce529a79e96842
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: ssh
+              containerPort: 2222
+          volumeMounts:
+            - name: server-ssh
+              mountPath: /etc/kepler/authorized_keys
+              subPath: authorized_keys
+              readOnly: true
+            - name: server-ssh
+              mountPath: /etc/kepler/hostkeys/ssh_host_ed25519_key
+              subPath: ssh_host_ed25519_key
+              readOnly: true
+            - name: executor-home
+              mountPath: /home/executor
+            - name: obsidian-vault
+              mountPath: /vault
+              subPath: ElPoshoX-Vault
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          startupProbe:
+            tcpSocket:
+              port: ssh
+            periodSeconds: 5
+            failureThreshold: 20
+          readinessProbe:
+            tcpSocket:
+              port: ssh
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: ssh
+            periodSeconds: 30
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: true
+            capabilities:
+              drop: [ALL]
+              add: [SETUID, SETGID, SYS_CHROOT, CHOWN, DAC_OVERRIDE]
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: server-ssh
+          secret:
+            secretName: kepler-executor-server-ssh
+            defaultMode: 0400
+        - name: executor-home
+          persistentVolumeClaim:
+            claimName: kepler-executor-home
+        - name: obsidian-vault
+          nfs:
+            server: truenas.elposhox.dev
+            path: /mnt/HomeLab/Obsidian-Vault
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kepler-executor-home
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kepler-executor
+spec:
+  selector:
+    app: kepler-executor
+  ports:
+    - name: ssh
+      port: 2222
+      targetPort: ssh
+      protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kepler-executor-network
+spec:
+  endpointSelector:
+    matchLabels:
+      app: kepler-executor
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: hermes
+      toPorts:
+        - ports:
+            - port: "2222"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEntities: [cluster]
+    - toEntities: [world]
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
