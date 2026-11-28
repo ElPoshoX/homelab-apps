@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: LOG_LEVEL
-              value: "debug"
+              value: "info"
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "home.elposhox.dev"
           envFrom:
@@ -91,5 +91,5 @@ spec:
           configMap:
             name: homepage
         - name: logs
-          persistentVolumeClaim:
-            claimName: homepage-logs
+          emptyDir:
+            sizeLimit: 256Mi

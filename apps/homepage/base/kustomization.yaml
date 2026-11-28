@@ -30,4 +30,3 @@ resources:
 - sa.yaml
 - sa-token.yaml
 - secret.yaml
-- pvc.yaml
