@@ -19,7 +19,7 @@ spec:
         app: hermes
         app.kubernetes.io/name: hermes
       annotations:
-        homelab.local/incident-listener-revision: "5"
+        homelab.local/incident-listener-revision: "6"
         homelab.local/incident-policy-revision: "1"
         homelab.local/catalog-overlay-revision: "2"
         homelab.local/github-mcp-revision: "5"
