@@ -67,10 +67,10 @@ spec:
 
         - alert: PostgresBackupStale
           expr: |
-            time() - max by (namespace) (cnpg_collector_last_available_backup_timestamp{namespace="postgres"}) > 21600
+            time() - max by (namespace) (cnpg_collector_last_available_backup_timestamp{namespace="postgres"}) > 108000
           for: 10m
           labels:
             severity: warning
           annotations:
-            summary: "PostgreSQL base backup is over 6 hours old"
-            description: "No successful CNPG base backup has been available for over 6 hours. Check the scheduled backup and Garage target."
+            summary: "PostgreSQL base backup is over 30 hours old"
+            description: "No successful CNPG base backup has been available for over 30 hours. Check the scheduled backup and Garage target."
