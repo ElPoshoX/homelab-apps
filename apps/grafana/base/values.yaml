@@ -26,6 +26,9 @@ persistence:
   type: pvc
   storageClassName: longhorn
   size: 20Gi
+  extraPvcLabels:
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/app-state: enabled
   accessModes:
     - ReadWriteMany
 
