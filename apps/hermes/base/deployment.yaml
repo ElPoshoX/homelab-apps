@@ -79,8 +79,6 @@ spec:
                 secretKeyRef:
                   name: hermes-incident-api
                   key: key
-            - name: KEPLER_INCIDENT_OWNER_ID
-              value: "1261063491540746291"
           command:
             - sh
             - -c
@@ -330,6 +328,8 @@ spec:
                 secretKeyRef:
                   name: hermes-incident-api
                   key: key
+            - name: KEPLER_INCIDENT_OWNER_ID
+              value: "1261063491540746291"
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
