@@ -54,12 +54,23 @@ spec:
             summary: "PostgreSQL replication lag > 30s"
             description: "Replica {{ $labels.pod }} is {{ $value }}s behind primary."
 
-        - alert: PostgresBackupFailed
+        - alert: PostgresWALArchivingFailed
           expr: |
-            time() - cnpg_pg_stat_archiver_last_archived_time{namespace="postgres"} > 86400
+            cnpg_pg_stat_archiver_last_failed_time{namespace="postgres"}
+              > cnpg_pg_stat_archiver_last_archived_time{namespace="postgres"}
           for: 10m
           labels:
             severity: warning
           annotations:
-            summary: "PostgreSQL backup stale > 24h"
-            description: "Last WAL archive for {{ $labels.pod }} was {{ $value | humanizeDuration }} ago."
+            summary: "PostgreSQL WAL archiving failed"
+            description: "The last WAL archive attempt on {{ $labels.pod }} failed after the last successful archive. Check the CNPG archiver and backup target."
+
+        - alert: PostgresBackupStale
+          expr: |
+            time() - max by (namespace) (cnpg_collector_last_available_backup_timestamp{namespace="postgres"}) > 21600
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL base backup is over 6 hours old"
+            description: "No successful CNPG base backup has been available for over 6 hours. Check the scheduled backup and Garage target."
