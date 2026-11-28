@@ -42,6 +42,25 @@ class IncidentListenerTest(unittest.TestCase):
         self.listener.initialize()
         self.assertEqual(self.listener.case("case")["decision_notified"], 0)
 
+    def test_alert_instance_identity_distinguishes_new_incidents(self):
+        listener = self.listener
+        title = "🚨 Firing · Longhorn Backup Stale"
+        first = "**Scope:** cluster\n**Incident ID:** `abcdef0123456789:1795836079`"
+        second = "**Scope:** cluster\n**Incident ID:** `fedcba9876543210:1795836079`"
+        repeat = ("101", "firing", title, first, "https://example.test/101")
+        first_key = listener.ensure_case(("100", "firing", title, first, "https://example.test/100"))
+        self.assertEqual(listener.ensure_case(repeat), first_key)
+        second_key = listener.ensure_case(("102", "firing", title, second, "https://example.test/102"))
+        self.assertNotEqual(first_key, second_key)
+        later = first.replace("1795836079", "1795837079")
+        later_key = listener.ensure_case(("104", "firing", title, later, "https://example.test/104"))
+        self.assertNotEqual(first_key, later_key)
+        resolved_key = listener.ensure_case(("103", "resolved", "✅ Resolved · Longhorn Backup Stale",
+                                             second, "https://example.test/103"))
+        self.assertEqual(resolved_key, second_key)
+        self.assertEqual(listener.case(first_key)["state"], "firing")
+        self.assertEqual(listener.case(second_key)["source_id"], "102")
+
     def test_decision_pings_owner_once_and_resolved_alert_is_verified(self):
         listener = self.listener
         calls = []

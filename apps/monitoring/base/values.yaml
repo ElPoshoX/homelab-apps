@@ -125,6 +125,8 @@ alertmanager:
           matchers:
             - alertname = "Watchdog"
         - receiver: discord
+          group_by:
+            - '...'
     receivers:
       - name: default
       - name: "null"
@@ -139,6 +141,7 @@ alertmanager:
               {{ if eq .Status "resolved" }}The alert condition has cleared.{{ else if .CommonAnnotations.description }}{{ .CommonAnnotations.description }}{{ else if .CommonAnnotations.summary }}{{ .CommonAnnotations.summary }}{{ else }}{{ len .Alerts }} alert(s) require attention.{{ end }}
 
               **Severity:** {{ or .CommonLabels.severity "unknown" }} · **Scope:** {{ or .CommonLabels.namespace .CommonLabels.service "cluster" }}
+              **Incident ID:** `{{ (index .Alerts 0).Fingerprint }}:{{ (index .Alerts 0).StartsAt.Unix }}`
 
 # --- Grafana: managed separately ---
 grafana:

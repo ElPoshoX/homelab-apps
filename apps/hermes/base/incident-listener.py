@@ -158,6 +158,9 @@ def identity(title, description):
     name = re.sub(r" \(\d+\)$", "", name)
     match = re.search(r"\*\*Scope:\*\*\s*([^\n·]+)", description)
     scope = match.group(1).strip() if match else "cluster"
+    incident = re.search(r"\*\*Incident ID:\*\*\s*`?([0-9a-f]+:\d+)`?", description)
+    if incident:
+        return name, scope, json.dumps(["alertmanager", incident.group(1)])
     return name, scope, json.dumps([name.casefold(), scope.casefold()])
 
 
