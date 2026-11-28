@@ -19,7 +19,8 @@ spec:
         app: hermes
         app.kubernetes.io/name: hermes
       annotations:
-        homelab.local/incident-listener-revision: "4"
+        homelab.local/incident-listener-revision: "5"
+        homelab.local/incident-policy-revision: "1"
         homelab.local/catalog-overlay-revision: "2"
         homelab.local/github-mcp-revision: "5"
         homelab.local/reminder-plugin-revision: "3"
@@ -78,6 +79,8 @@ spec:
                 secretKeyRef:
                   name: hermes-incident-api
                   key: key
+            - name: KEPLER_INCIDENT_OWNER_ID
+              value: "1261063491540746291"
           command:
             - sh
             - -c
@@ -96,12 +99,19 @@ spec:
                 sed -i '/^API_SERVER_KEY=/d' "$env_file"
                 printf 'API_SERVER_KEY=%s\n' "$INCIDENT_API_SERVER_KEY" >> "$env_file"
                 chmod 600 "$env_file"
+                cp /tmp/incident-policy/SOUL.md /opt/data/profiles/incident/SOUL.md
+                chmod 0640 /opt/data/profiles/incident/SOUL.md
+                cat > /opt/data/profiles/incident/profile.yaml <<'EOF'
+              description: Owns homelab incidents through safe remediation and verified recovery; escalates material decisions.
+              description_auto: false
+              EOF
               fi
               # Existing PVC homes are not replaced by the template above.
               for config in /opt/data/config.yaml /opt/data/profiles/*/config.yaml; do
                 [ -f "$config" ] || continue
                 sed -i 's/^  backend: docker$/  backend: ssh/' "$config"
                 sed -i '/^  docker_run_as_host_user: true$/d; /^  docker_volumes:$/d; /^    - \/vault:\/vault:rw$/d' "$config"
+                sed -i 's/Alert triage, evidence gathering, and incident response\./Owns homelab incidents through safe remediation and verified recovery; escalates material decisions./' "$config"
               done
               for home in /opt/data /opt/data/profiles/*; do
                 [ -d "$home" ] || continue
@@ -135,6 +145,9 @@ spec:
               mountPath: /tmp/hermes-config
             - name: vault-skills
               mountPath: /tmp/vault-skills
+              readOnly: true
+            - name: incident-policy
+              mountPath: /tmp/incident-policy
               readOnly: true
 
         - name: configure-github-mcp
@@ -416,6 +429,9 @@ spec:
         - name: incident-listener
           configMap:
             name: hermes-incident-listener
+        - name: incident-policy
+          configMap:
+            name: hermes-incident-policy
         - name: grafana-mcp-token
           secret:
             secretName: hermes-grafana-mcp

@@ -28,6 +28,9 @@ resources:
   - network-policy.yaml
 
 configMapGenerator:
+  - name: hermes-incident-policy
+    files:
+      - SOUL.md=incident-soul.md
   - name: hermes-incident-listener
     files:
       - listen.py=incident-listener.py

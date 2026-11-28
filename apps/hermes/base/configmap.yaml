@@ -33,7 +33,7 @@ data:
             - name: platform
               description: Kubernetes, GitOps, infrastructure, and operational changes.
             - name: incident
-              description: Alert triage, evidence gathering, and incident response.
+              description: Owns homelab incidents through safe remediation and verified recovery; escalates material decisions.
             - name: knowledge
               description: Research, documentation, and knowledge maintenance.
     # Discord platform — bootstrap-config seeds a new home from this template.
