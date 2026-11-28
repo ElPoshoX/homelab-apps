@@ -20,10 +20,7 @@ data:
       port: 9119
       public_url: https://hermes.elposhox.dev
     terminal:
-      backend: docker
-      docker_run_as_host_user: true
-      docker_volumes:
-        - /vault:/vault:rw
+      backend: ssh
     memory:
       provider: hindsight
     agent:

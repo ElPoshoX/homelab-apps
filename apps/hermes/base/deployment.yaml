@@ -26,6 +26,24 @@ spec:
     spec:
       automountServiceAccountToken: false
       initContainers:
+        - name: executor-client-key
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              cp /source/id_ed25519 /key/id_ed25519
+              chown 1000:1000 /key/id_ed25519
+              chmod 0600 /key/id_ed25519
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: executor-client-secret
+              mountPath: /source
+              readOnly: true
+            - name: executor-client-key
+              mountPath: /key
         - name: catalog-overlay
           image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
           imagePullPolicy: IfNotPresent
@@ -82,9 +100,8 @@ spec:
               # Existing PVC homes are not replaced by the template above.
               for config in /opt/data/config.yaml /opt/data/profiles/*/config.yaml; do
                 [ -f "$config" ] || continue
-                if ! grep -q 'docker_run_as_host_user:' "$config"; then
-                  sed -i '/^terminal:$/a\  docker_run_as_host_user: true\n  docker_volumes:\n    - /vault:/vault:rw' "$config"
-                fi
+                sed -i 's/^  backend: docker$/  backend: ssh/' "$config"
+                sed -i '/^  docker_run_as_host_user: true$/d; /^  docker_volumes:$/d; /^    - \/vault:\/vault:rw$/d' "$config"
               done
               for home in /opt/data /opt/data/profiles/*; do
                 [ -d "$home" ] || continue
@@ -186,6 +203,14 @@ spec:
               value: "true"
             - name: API_SERVER_HOST
               value: "0.0.0.0"
+            - name: TERMINAL_SSH_HOST
+              value: kepler-executor.hermes.svc.cluster.local
+            - name: TERMINAL_SSH_USER
+              value: executor
+            - name: TERMINAL_SSH_PORT
+              value: "2222"
+            - name: TERMINAL_SSH_KEY
+              value: /var/run/secrets/kepler-executor/id_ed25519
             - name: DOCKER_HOST
               value: unix:///run/docker/docker.sock
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
@@ -225,6 +250,9 @@ spec:
               subPath: ElPoshoX-Vault
             - name: docker-socket
               mountPath: /run/docker
+            - name: executor-client-ssh
+              mountPath: /var/run/secrets/kepler-executor
+              readOnly: true
           resources:
             requests:
               cpu: 250m
@@ -408,6 +436,13 @@ spec:
             name: hermes-config
         - name: docker-socket
           emptyDir: {}
+        - name: executor-client-secret
+          secret:
+            secretName: kepler-executor-client-ssh
+            defaultMode: 0400
+        - name: executor-client-key
+          emptyDir:
+            medium: Memory
         - name: dind-storage
           persistentVolumeClaim:
             claimName: hermes-dind-storage
