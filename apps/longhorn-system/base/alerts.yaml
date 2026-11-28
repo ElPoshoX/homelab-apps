@@ -32,3 +32,21 @@ spec:
           annotations:
             summary: "Longhorn disk not ready on {{ $labels.node }}"
             description: "Disk {{ $labels.disk }} is not ready. Inspect the disk and affected volume replicas."
+
+        - alert: LonghornBackupStale
+          expr: |
+            (time() - max by (pvc_namespace, pvc, volume) (longhorn_volume_last_backup_at{namespace="longhorn-system"}) > 129600)
+            and on (pvc_namespace, pvc)
+            label_replace(
+              label_replace(
+                kube_persistentvolumeclaim_labels{label_recurring_job_group_longhorn_io_app_state="enabled"},
+                "pvc_namespace", "$1", "namespace", "(.*)"
+              ),
+              "pvc", "$1", "persistentvolumeclaim", "(.*)"
+            )
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Longhorn backup stale: {{ $labels.pvc_namespace }}/{{ $labels.pvc }}"
+            description: "The protected application volume has no successful backup in the last 36 hours. Inspect its recurring job and the NFS backup target."
