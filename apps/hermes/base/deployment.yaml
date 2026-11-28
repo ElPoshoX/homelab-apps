@@ -220,8 +220,6 @@ spec:
               value: "2222"
             - name: TERMINAL_SSH_KEY
               value: /var/run/secrets/kepler-executor/id_ed25519
-            - name: DOCKER_HOST
-              value: unix:///run/docker/docker.sock
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://opentelemetry-collector.otel-collector.svc.cluster.local:4317"
             - name: OTEL_SERVICE_NAME
@@ -257,8 +255,6 @@ spec:
             - name: obsidian-vault
               mountPath: /vault
               subPath: ElPoshoX-Vault
-            - name: docker-socket
-              mountPath: /run/docker
             - name: executor-client-key
               mountPath: /var/run/secrets/kepler-executor
               readOnly: true
@@ -305,45 +301,6 @@ spec:
                 - CHOWN
             seccompProfile:
               type: RuntimeDefault
-
-        - name: dind
-          image: docker:27-dind
-          args:
-            - dockerd
-            - --host=unix:///run/docker/docker.sock
-            # hermes's own internal privilege drop (s6-setuidgid) re-resolves
-            # groups from /etc/group and loses k8s's pod-level
-            # supplementalGroups, so the socket's group has to be hermes's
-            # *primary* gid (1000) instead of the dind image's default (2375)
-            # for the post-drop worker process to reach it at all.
-            - --group=1000
-          securityContext:
-            privileged: true
-          env:
-            - name: DOCKER_TLS_CERTDIR
-              value: ""
-          volumeMounts:
-            - name: dind-storage
-              mountPath: /var/lib/docker
-            - name: docker-socket
-              mountPath: /run/docker
-            # execute_code's ephemeral containers are spawned by *this*
-            # daemon via `docker run`, so any -v bind mount they get has to
-            # resolve from dind's own filesystem view, not the sibling
-            # "hermes" container's. Same PVC, same path, mounted twice —
-            # RWO only restricts to one node, not one container.
-            - name: hermes-data
-              mountPath: /opt/data
-            - name: obsidian-vault
-              mountPath: /vault
-              subPath: ElPoshoX-Vault
-          resources:
-            requests:
-              cpu: 250m
-              memory: 512Mi
-            limits:
-              cpu: "2"
-              memory: 4Gi
 
         - name: incident-listener
           image: nousresearch/hermes-agent:v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
@@ -424,7 +381,6 @@ spec:
 
       securityContext:
         fsGroup: 1000
-        supplementalGroups: [2375]
       volumes:
         - name: catalog-overlay-script
           configMap:
@@ -443,8 +399,6 @@ spec:
         - name: hermes-config-tmpl
           configMap:
             name: hermes-config
-        - name: docker-socket
-          emptyDir: {}
         - name: executor-client-secret
           secret:
             secretName: kepler-executor-client-ssh
@@ -452,9 +406,6 @@ spec:
         - name: executor-client-key
           emptyDir:
             medium: Memory
-        - name: dind-storage
-          persistentVolumeClaim:
-            claimName: hermes-dind-storage
         - name: obsidian-vault
           nfs:
             server: truenas.elposhox.dev
