@@ -5,7 +5,7 @@ metadata:
   labels:
     app: kepler-executor
 spec:
-  replicas: 1
+  replicas: 0
   revisionHistoryLimit: 2
   strategy:
     type: Recreate
@@ -20,9 +20,15 @@ spec:
       automountServiceAccountToken: false
       imagePullSecrets:
         - name: ghcr-pull-secret
-      securityContext:
-        fsGroup: 3000
-        fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        - name: home-permissions
+          image: busybox:1.37
+          command: [sh, -c, 'chown 3000:3000 /home/executor && chmod 0700 /home/executor']
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: executor-home
+              mountPath: /home/executor
       containers:
         - name: executor
           image: ghcr.io/elposhox/kepler-executor@sha256:4efb9346806f02d9b0161e74e83c2cedf550d5d4327f229316ce529a79e96842
