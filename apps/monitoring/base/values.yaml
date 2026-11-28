@@ -150,6 +150,8 @@ grafana:
 # --- kube-state-metrics: replaces standalone app ---
 kube-state-metrics:
   enabled: true
+  metricLabelsAllowlist:
+    - persistentvolumeclaims=[recurring-job-group.longhorn.io/app-state]
   resources:
     requests:
       cpu: 50m
