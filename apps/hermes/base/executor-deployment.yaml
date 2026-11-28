@@ -5,7 +5,7 @@ metadata:
   labels:
     app: kepler-executor
 spec:
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 2
   strategy:
     type: Recreate
@@ -31,7 +31,7 @@ spec:
               mountPath: /home/executor
       containers:
         - name: executor
-          image: ghcr.io/elposhox/kepler-executor@sha256:4efb9346806f02d9b0161e74e83c2cedf550d5d4327f229316ce529a79e96842
+          image: ghcr.io/elposhox/kepler-executor@sha256:f375588200013baf45b6d28d12ca87a2227fee9bc1b1a1e0a57fcb8e814bd4bd
           imagePullPolicy: IfNotPresent
           ports:
             - name: ssh
