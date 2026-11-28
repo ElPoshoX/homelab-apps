@@ -13,11 +13,16 @@ rsync tasks: rsync cannot enumerate or authenticate against the S3 API.
 | `loki-ruler` | `loki-ruler/` | 00:45 |
 | `loki-admin` | `loki-admin/` | 01:00 |
 | `tempo-bucket` | `tempo-bucket/` | 01:15 |
-| `postgres-backup` | `postgres-backup/` | 01:30 |
+| `postgres-backup` | `postgres-backup/` | 03:00 |
 
 Each task pulls with `SYNC` transfer mode. S3 signatures must use region
 `garage`; the TrueNAS S3 credential must have `skip_region` disabled. The
 Garage LAN NetworkPolicy permits TrueNAS (`192.168.5.135/32`).
+
+CloudNativePG creates one PostgreSQL base backup daily at 02:00 UTC. Its
+six-field cron expression is `0 0 2 * * *`; a five-field expression of
+`0 2 * * *` instead ran hourly at minute 02. The TrueNAS pull runs at 03:00
+local time, after the base backup, and the dataset snapshot runs at 04:00.
 
 A daily ZFS snapshot of the dataset runs at 04:00 and is retained for seven
 days. The snapshot protects a recent copy when the source deletes an object
