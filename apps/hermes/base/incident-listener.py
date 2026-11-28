@@ -121,8 +121,14 @@ def request_json(url, *, method="GET", headers=None, body=None, timeout=30):
             raw = response.read()
             return json.loads(raw) if raw else {}
     except urllib.error.HTTPError as error:
-        # Do not log response bodies: upstream errors may contain private data.
-        raise RuntimeError(f"{method} {url.split('?')[0]} returned HTTP {error.code}") from None
+        # Expose only a machine-readable error code, never a response body that may contain private data.
+        try:
+            payload = json.loads(error.read())
+            reason = payload.get("error", {}).get("code", "")
+            reason = reason if re.fullmatch(r"[a-z_]{1,60}", str(reason)) else ""
+        except (ValueError, AttributeError, TypeError):
+            reason = ""
+        raise RuntimeError(f"{method} {url.split('?')[0]} returned HTTP {error.code} {reason}".strip()) from None
 
 
 def discord_api(path, *, method="GET", body=None):
