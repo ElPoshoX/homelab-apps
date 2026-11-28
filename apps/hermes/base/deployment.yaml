@@ -250,7 +250,7 @@ spec:
               subPath: ElPoshoX-Vault
             - name: docker-socket
               mountPath: /run/docker
-            - name: executor-client-ssh
+            - name: executor-client-key
               mountPath: /var/run/secrets/kepler-executor
               readOnly: true
           resources:
