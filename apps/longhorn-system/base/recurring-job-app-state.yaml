@@ -1,0 +1,12 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: app-state-daily
+spec:
+  name: app-state-daily
+  groups:
+    - app-state
+  task: backup
+  cron: "0 4 * * *"
+  retain: 7
+  concurrency: 2

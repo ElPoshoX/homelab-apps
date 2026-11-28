@@ -21,9 +21,9 @@ networkPolicies:
   enabled: false
   restrictInternalTraffic: false
 
-# Backups are paused while the protected PVC set is redesigned.
+# Back up only volumes labeled with the app-state recurring job group.
 defaultBackupStore:
-  backupTarget: ""
+  backupTarget: nfs://192.168.5.135:/mnt/HomeLab/LongHorn-Backups
 
 # Ingress disabled - using standalone HTTPRoute in ingress.yaml
 # (chart's httpRoute template doesn't include explicit group/kind/weight fields,

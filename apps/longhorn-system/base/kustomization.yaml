@@ -23,6 +23,7 @@ resources:
   - secret.yaml
   - ingress.yaml
   - backup-target.yaml
+  - recurring-job-app-state.yaml
   - pod-monitor.yaml
   - alerts.yaml
 
