@@ -110,6 +110,15 @@ spec:
                   sed -i '/^HERMES_CODEX_BASE_URL=/d' "$env_file"
                   chmod 600 "$env_file"
                 fi
+                touch "$env_file"
+                sed -i '/^TERMINAL_SSH_\(HOST\|USER\|PORT\|KEY\)=/d' "$env_file"
+                cat >> "$env_file" <<'EOF'
+              TERMINAL_SSH_HOST=kepler-executor.hermes.svc.cluster.local
+              TERMINAL_SSH_USER=executor
+              TERMINAL_SSH_PORT=2222
+              TERMINAL_SSH_KEY=/var/run/secrets/kepler-executor/id_ed25519
+              EOF
+                chmod 600 "$env_file"
                 for skill in /tmp/vault-skills/*; do
                   name="${skill##*/}"
                   mkdir -p "$home/skills/$name"
