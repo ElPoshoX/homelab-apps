@@ -31,7 +31,7 @@ spec:
               mountPath: /home/executor
       containers:
         - name: executor
-          image: ghcr.io/elposhox/kepler-executor@sha256:f375588200013baf45b6d28d12ca87a2227fee9bc1b1a1e0a57fcb8e814bd4bd
+          image: ghcr.io/elposhox/kepler-executor@sha256:43707f71327fd7c4b70451fc6d1996838d88d8c9c95cb7ed7afb05d5f46f0449
           imagePullPolicy: IfNotPresent
           ports:
             - name: ssh
