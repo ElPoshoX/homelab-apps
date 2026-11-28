@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-s3-lan
+  annotations:
+    lbipam.cilium.io/ips: "192.168.5.13"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: s3
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app.kubernetes.io/component: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/name: garage

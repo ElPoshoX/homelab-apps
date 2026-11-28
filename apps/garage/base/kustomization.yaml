@@ -25,6 +25,8 @@ resources:
   - pod-monitor.yaml
   - s3-probe.yaml
   - s3-canary.yaml
+  - s3-lan-service.yaml
+  - s3-lan-network-policy.yaml
 
 # Patches
 patches:
