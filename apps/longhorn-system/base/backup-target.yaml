@@ -3,6 +3,6 @@ kind: BackupTarget
 metadata:
   name: default
 spec:
-  backupTargetURL: nfs://192.168.5.135:/mnt/HomeLab/LongHorn-Backups/pre-longhorn-1.13-20261125
+  backupTargetURL: ""
   credentialSecret: ""
   pollInterval: 5m0s

@@ -21,9 +21,9 @@ networkPolicies:
   enabled: false
   restrictInternalTraffic: false
 
-# Keep the chart's default resource in sync with the managed BackupTarget CR.
+# Backups are paused while the protected PVC set is redesigned.
 defaultBackupStore:
-  backupTarget: nfs://192.168.5.135:/mnt/HomeLab/LongHorn-Backups/pre-longhorn-1.13-20261125
+  backupTarget: ""
 
 # Ingress disabled - using standalone HTTPRoute in ingress.yaml
 # (chart's httpRoute template doesn't include explicit group/kind/weight fields,
