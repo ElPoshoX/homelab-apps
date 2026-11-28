@@ -10,7 +10,7 @@ spec:
     - name: s3
       port: 9000
       protocol: TCP
-      targetPort: 9000
+      targetPort: 3900
   selector:
     app.kubernetes.io/component: garage
     app.kubernetes.io/instance: garage
